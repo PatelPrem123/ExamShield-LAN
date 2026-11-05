@@ -1,0 +1,153 @@
+================================================================================
+   EXAMSHIELD LAN 🛡️ — TEACHER & ADMINISTRATOR OPERATIONS GUIDE
+   Version 2.5.0 (Enterprise Hardened Edition — with 1-Click Data Portability)
+   100% Offline Air-Gapped Campus Examination System
+================================================================================
+
+1. HOW TO START THE SERVER & TEACHER CONTROL CENTER
+--------------------------------------------------------------------------------
+1. Double-click "ExamShield_Teacher_Server.exe" inside this folder.
+2. The server initializes in under 2 seconds using the embedded portable runtime.
+   - NO Node.js or third-party software installation required on the Teacher PC!
+3. The Teacher Control Center opens automatically in a dedicated application window.
+4. Note the host URL displayed at the top:
+   Example: http://192.168.29.139:3000
+5. Write or project this URL on the whiteboard for students to access.
+
+
+2. TEACHER AUTHENTICATION & SECURITY PIN
+--------------------------------------------------------------------------------
+- Default Security PIN: admin123
+- All teacher operations (changing exam settings, uploading papers, unfreezing
+  candidates, and downloading grade sheets) are protected by this PIN.
+- Changing PIN: Click "Change PIN" in the top bar, enter current PIN, and set a
+  new secure PIN.
+
+
+3. EXAM CONFIGURATION & MARKING SCHEMES
+--------------------------------------------------------------------------------
+Navigate to the "Exam Settings" tab in the Teacher Control Center:
+- Exam Title: e.g. "Term 1 Final Examination - Computer Science"
+- Duration (Minutes): Overall time limit (e.g. 60 minutes)
+- Passing Percentage: e.g. 70%
+- Questions Per Topic: Balance of questions drawn per subject topic (e.g. 15)
+- Competitive Marking Mode (+4 / -1):
+  * When ENABLED: +4 marks for correct answer, -1 mark penalty for wrong answer,
+    0 marks for unattempted questions. Percentage is calculated out of max possible marks.
+  * When DISABLED (Standard Mode): +1 mark for correct, 0 for wrong/unattempted.
+- Per-Question Timer:
+  * When enabled, candidates have a fixed time (e.g. 60s) per question.
+  * Note: Mutually exclusive with Competitive Mode (competitive exams give students
+    flexibility across the entire duration).
+
+
+4. QUESTION BANK MANAGEMENT (DOCX IMPORT)
+--------------------------------------------------------------------------------
+- Uploading Questions: Click "Question Bank", then "Upload DOCX".
+- Select one or more Microsoft Word (.docx) files. Sample papers are provided
+  in the "sample-papers/" folder.
+- Supported Question Formats in DOCX:
+  * Single Choice: Answer: A  (or Answer: A (single))
+  * Multiple Choice: Answer: A, C  (or Answer: A, C (multiple))
+  * Embedded Diagrams & Images in questions or options are fully supported!
+  * Explanations / Solutions are automatically excluded from student view.
+- Manual Question Creator: Add individual custom questions with embedded diagrams directly
+  from the teacher UI.
+- Export Question Bank: Click "Export DOCX" to download your active question bank
+  as a clean, printable Word document.
+
+
+5. MULTI-BATCH MANAGEMENT (COHORT ISOLATION)
+--------------------------------------------------------------------------------
+- Designed for computer labs hosting multiple student groups across the day.
+- Create new batches (e.g. "BATCH-01", "BATCH-02", "AFTERNOON_SHIFT").
+- Active Batch: Only candidates assigned to the active batch can take the exam.
+- Name Collision Protection: Candidates with the same name in different batches
+  remain strictly isolated with independent sessions, papers, and grades.
+- Filter Dashboard: Filter candidate leaderboard by specific batch or view "All Batches".
+
+
+6. REAL-TIME PROCTORING & ANTI-CHEAT SYSTEM
+--------------------------------------------------------------------------------
+- Zero-Tolerance Focus Detection: If a candidate minimizes the exam window,
+  presses Alt+Tab, or switches to another browser tab/app:
+  1. The candidate's screen is IMMEDIATELY FROZEN with a Red Warning Banner.
+  2. A RED ALERT notification sounds and highlights on the Teacher Dashboard.
+  3. The violation timestamp and reason are permanently logged in the audit trail.
+- 1-Click Candidate Unfreeze:
+  * The invigilator speaks with the candidate to investigate the incident.
+  * Click the green "Unfreeze" button on the student's dashboard card to restore
+    their exam attempt with all previously answered questions intact.
+- Force Submit: Invigilators can override and submit an individual candidate's paper
+  at any time, or click "End Exam for All" at the end of the session.
+
+
+7. ANSWER KEY REVIEW & POST-EXAM RESULTS
+--------------------------------------------------------------------------------
+- Safe Scorecards: After submitting, students immediately see their Net Score,
+  Right Answers, Wrong Answers, and Skipped Questions.
+- Answer Key Lockdown: By default, detailed question-by-question answer keys
+  are LOCKED to prevent candidates from leaking answers to adjacent students.
+- Publishing Answer Keys:
+  * Click "Publish Answers to All" to unlock the solution key for the entire cohort.
+  * Or click "Allow Review" on individual students for one-on-one reviews.
+
+
+8. DATA PORTABILITY: SCHOOL PC ➔ HOME LAPTOP TRANSFER (NEW in v2.5.0)
+--------------------------------------------------------------------------------
+Want to review student papers or check grades at home on your personal laptop?
+ExamShield provides seamless 1-Click Database Portability:
+
+[AT SCHOOL (TEACHER PC)]
+1. Open the Teacher Control Center.
+2. In the "Results" tab or "Exam Settings" tab, click the blue "💾 Backup DB" button.
+3. A complete snapshot file (e.g. "ExamShield_Backup_2026-11-03.db") will download.
+4. Copy this file onto your USB Pen Drive.
+
+[AT HOME (PERSONAL LAPTOP)]
+1. Open ExamShield LAN on your home laptop.
+2. Click the orange "📥 Restore DB" button.
+3. Select the backup file from your USB Pen Drive and confirm.
+4. Instantly, all student papers, batches, and question banks will appear on your
+   laptop exactly as they were in school!
+
+
+9. COMPREHENSIVE REPORTS & EXCEL EXPORTS
+--------------------------------------------------------------------------------
+Click "Export Results" at any time:
+- Master Excel (.xlsx):
+  * Beautiful formatted report with Dark Indigo header and alternating rows.
+  * Columns: Rank, Candidate Name, Total Score, Max Marks, Right Answers,
+    Wrong Answers, Overall %, Result (PASSED/FAILED), individual Topic Scores,
+    and Start/Submission timestamps.
+  * Option to sort by: "Rank Order (High to Low)" or "Normal Candidate Order".
+- Master CSV (.csv): UTF-8 encoded comma-separated file for automated import
+  into school/university grading software.
+
+
+10. PERMANENT AUDIT HISTORY ARCHIVE
+--------------------------------------------------------------------------------
+Even if you reset the exam or clear live sessions for a new batch, all historical
+records are permanently preserved in the root folder:
+- history.bat : Double-click to view a interactive colored console viewer of all past exams.
+- history.txt : Human-readable chronological audit ledger.
+- history.csv : Cumulative spreadsheet of all candidates across all dates and batches.
+
+
+11. TROUBLESHOOTING & COMMON QUESTIONS
+--------------------------------------------------------------------------------
+Q: Students cannot open the exam URL on their devices.
+A: Ensure all candidate devices are connected to the SAME Wi-Fi or LAN switch.
+   Check Windows Defender Firewall: click "Allow access" if prompted on server launch.
+
+Q: A student's laptop battery died or browser closed accidentally.
+A: ExamShield features Safe Auto-Reconnection. The student simply re-enters their
+   exact name; the system restores their exact questions, answered choices, and timer!
+
+Q: Can candidates inspect source code to find correct answers?
+A: No. ExamShield LAN runs 100% server-side validation. Correct answers are completely
+   stripped from student network payloads before transmission.
+
+================================================================================
+  ExamShield LAN 🛡️ — Developed for Rock-Solid Offline Educational Integrity
+================================================================================

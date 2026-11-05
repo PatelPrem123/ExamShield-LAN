@@ -1,0 +1,58 @@
+name: Quality Checks & Automated Audit
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+permissions:
+  contents: read
+
+jobs:
+  quality-audit:
+    name: Run Automated Test Suites & Security Hardening Checks
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js Runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: teacher-server-app/package-lock.json
+
+      - name: Install Project Dependencies
+        working-directory: teacher-server-app
+        run: npm ci
+
+      - name: Execute Core Unit Tests
+        working-directory: teacher-server-app
+        run: npm test
+
+      - name: Execute Security & Penetration Hardening Tests
+        working-directory: teacher-server-app
+        run: npm run test:security
+
+      - name: Execute End-to-End Integration Tests
+        working-directory: teacher-server-app
+        run: npm run test:integration
+
+      - name: Execute Multi-Batch Isolation Tests
+        working-directory: teacher-server-app
+        run: npm run test:batch
+
+      - name: Execute System & Concurrency SLA Checks
+        working-directory: teacher-server-app
+        run: npm run test:system
+
+      - name: Execute User Acceptance Tests (UAT)
+        working-directory: teacher-server-app
+        run: npm run test:acceptance
+
+      - name: Execute Analytics & Integrity TDD Specs
+        working-directory: teacher-server-app
+        run: npm run test:tdd

@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+**/node_modules/
+package-lock.json
+**/package-lock.json
+
+# SQLite databases & runtime locks
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+examshield.db
+**/examshield.db
+
+# Build outputs & distribution packages
+build_temp/
+dist/
+build/
+*.zip
+*.7z
+ExamShield_LAN_v2.5.0_Setup.exe
+runtime/node.exe
+**/node.exe
+**/runtime/node.exe
+ExamShield LAN * - Teacher Control Center/
+ExamShield LAN * - Student Portal/
+quality-audit/
+
+# Keep launcher binaries & scripts
+!ExamShield_Student.exe
+!ExamShield_Teacher_Server.exe
+
+# Audit logs & history
+history.bat
+history.csv
+history.txt
+*.log
+
+# System & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.tmp

@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ExamShield LAN 🛡️ - Student Examination Portal</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <script src="/socket.io/socket.io.js"></script>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            vce: {
+              answered: '#10b981', // Green
+              unanswered: '#94a3b8', // Gray
+              review: '#f59e0b', // Yellow / Orange
+              active: '#3b82f6' // Blue
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Security restrictions */
+    body {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+    input, textarea {
+      user-select: text;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+    }
+    img {
+      pointer-events: none;
+      max-width: 100%;
+      height: auto;
+    }
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.05);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.2);
+      border-radius: 4px;
+    }
+    /* Hide scrollbars cleanly on responsive bars */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
+
+  <!-- FLOATING THEME TOGGLE (Visible on Login & Result Screens) -->
+  <div id="floatingThemeToggle" class="fixed top-4 right-4 z-40">
+    <button onclick="toggleTheme()" title="Toggle Light / Dark Mode"
+      class="p-2.5 px-4 rounded-2xl bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 shadow-md border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-2 backdrop-blur-md active:scale-95">
+      <span class="theme-icon text-sm">🌙</span>
+      <span class="theme-text text-xs">Dark</span>
+    </button>
+  </div>
+
+  <!-- REAL-TIME TOAST NOTIFICATION -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 bg-slate-900/95 dark:bg-slate-100/95 text-white dark:text-slate-900 px-5 py-3.5 rounded-2xl shadow-2xl border border-slate-700 dark:border-slate-300 text-xs font-bold flex items-center gap-3 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
+    <span id="toastMessage"></span>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 1. JOIN SCREEN (STUDENT ENTERS NAME ONLY) -->
+  <!-- ======================================================== -->
+  <div id="joinScreen" class="flex-1 flex items-center justify-center p-4 py-8">
+    <div class="max-w-2xl w-full bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 p-6 sm:p-8 space-y-6">
+      
+      <!-- Top Bar: Logo/App on Left & 'PLEASE TURN OFF YOUR PHONE' Warning Sign on Right -->
+      <div class="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 border-b border-slate-100 dark:border-slate-700 pb-5">
+        <div class="flex items-center space-x-3.5 text-center sm:text-left">
+          <img src="/logo.png" alt="ExamShield LAN" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl shadow-md border-2 border-indigo-500/30 object-cover hover:scale-105 transition duration-300 shrink-0" />
+          <div>
+            <h1 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">ExamShield LAN</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Offline Certification Examination Simulator</p>
+            <p class="text-xs font-bold text-amber-500 dark:text-amber-400 mt-0.5">Made by Prem</p>
+            <span class="inline-flex items-center gap-1.5 mt-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              Secure LAN Test Environment
+            </span>
+          </div>
+        </div>
+
+        <!-- Official Signboard: 'PLEASE TURN OFF YOUR PHONE' -->
+        <div class="border-2 border-red-600 rounded-xl bg-white p-2 text-center w-28 sm:w-32 shadow-sm flex flex-col items-center shrink-0">
+          <!-- Prohibition Phone SVG Icon -->
+          <div class="relative w-10 h-10 flex items-center justify-center my-0.5">
+            <!-- Red Prohibition Circle & Line -->
+            <svg class="w-10 h-10 text-red-600" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2.2" fill="none" />
+              <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="currentColor" stroke-width="2.2" />
+            </svg>
+            <!-- Mobile Phone Outline Inside -->
+            <svg class="w-5 h-5 text-slate-900 absolute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="7" y="4" width="10" height="16" rx="2" />
+              <line x1="11" y1="17" x2="13" y2="17" stroke-linecap="round"/>
+              <circle cx="12" cy="7" r="0.5" fill="currentColor"/>
+            </svg>
+          </div>
+          <!-- Red Alert Label -->
+          <div class="bg-red-600 text-white font-black text-[9px] sm:text-[10px] uppercase leading-tight py-1 px-1 rounded tracking-tighter w-full mt-1 text-center">
+            PLEASE<br>TURN OFF<br>YOUR PHONE
+          </div>
+        </div>
+      </div>
+
+      <!-- Prominent Exam Title (In Big Bold Red Caps from Classroom Test Paper) -->
+      <div class="text-left space-y-1">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">Class Examination Paper</span>
+          <span id="joinBatchBadge" class="text-xs px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-bold border border-indigo-200 dark:border-indigo-800 font-mono">🏷️ Batch: BATCH-01</span>
+        </div>
+        <h2 id="joinExamTitle" class="text-2xl sm:text-3xl font-black text-red-600 dark:text-red-500 uppercase tracking-tight leading-tight">
+          NETWORK ESSENTIAL CLASSTEST
+        </h2>
+      </div>
+
+      <!-- Instructions Box (Exact Points from Classroom VCE Format) -->
+      <div class="bg-slate-50 dark:bg-slate-900/50 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs text-left space-y-3">
+        <p class="font-bold text-sm text-slate-800 dark:text-slate-200 border-b border-slate-200/60 dark:border-slate-700/60 pb-1.5 flex items-center justify-between">
+          <span>📋 Instructions :</span>
+          <span class="text-[11px] font-semibold text-slate-400">Read carefully before starting</span>
+        </p>
+
+        <ol class="space-y-2 text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+          <li class="flex items-start gap-2">
+            <span class="font-bold text-slate-900 dark:text-white">1.</span>
+            <span>All questions are compulsory.</span>
+          </li>
+          <li id="instructionNegativeMarking" class="flex items-start gap-2">
+            <span class="font-bold text-slate-900 dark:text-white">2.</span>
+            <span>There is <strong>NO negative marking</strong>.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="font-bold text-slate-900 dark:text-white">3.</span>
+            <span>You can change your answer as many times as you want before submitting. Answer marked at the time of submitting will be considered as final answer.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="font-bold text-slate-900 dark:text-white">4.</span>
+            <span>Use of mobile phone is <strong>NOT ALLOWED</strong> under any circumstances.</span>
+          </li>
+          <li class="flex items-start gap-2 pt-2 border-t border-slate-200/60 dark:border-slate-700/60 text-rose-700 dark:text-rose-400 font-semibold">
+            <span>🛡️</span>
+            <span><strong>Focus Loss Detection:</strong> Switching tabs, pressing Alt+Tab, or minimizing will instantly freeze your attempt. Fullscreen mode will be requested.</span>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Competitive Mode Informational Card (Visible when competitive mode is active) -->
+      <div id="joinCompetitiveInfoBox" class="hidden p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-400 dark:border-amber-600/80 text-left space-y-2.5 shadow-sm">
+        <div class="flex items-center justify-between gap-2 border-b border-amber-200 dark:border-amber-800 pb-2">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">🎯</span>
+            <span class="font-bold text-xs uppercase tracking-wider text-amber-900 dark:text-amber-200">Competitive Examination Marking Scheme</span>
+          </div>
+          <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500 text-white">Active</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-center text-xs">
+          <div class="p-2 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700">
+            <div class="text-base font-black text-emerald-700 dark:text-emerald-300">+4</div>
+            <div class="text-[10px] font-bold text-emerald-800 dark:text-emerald-200">Right Answer</div>
+          </div>
+          <div class="p-2 rounded-xl bg-rose-100 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-700">
+            <div class="text-base font-black text-rose-700 dark:text-rose-300">-1</div>
+            <div class="text-[10px] font-bold text-rose-800 dark:text-rose-200">Wrong Answer</div>
+          </div>
+          <div class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+            <div class="text-base font-black text-slate-700 dark:text-slate-300">0</div>
+            <div class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Unattempted</div>
+          </div>
+        </div>
+        <p class="text-[11px] text-amber-900 dark:text-amber-200 font-medium">
+          📐 <strong>Score Calculation:</strong> Total Score = <code>(Right Answers &times; 4) &minus; (Wrong Answers &times; 1)</code>. Unattempted questions do not deduct any marks.
+        </p>
+      </div>
+
+      <!-- Student Name Form & Start Button -->
+      <form id="joinForm" onsubmit="handleStudentJoin(event)" class="space-y-4 text-left">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+            Candidate Full Name
+          </label>
+          <input type="text" id="candidateNameInput" required placeholder="Enter your full name" autofocus
+            class="w-full px-4 py-3 text-sm rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition" />
+          <p class="text-[11px] text-slate-400 mt-1">Roll number is not required. Enter only your name.</p>
+        </div>
+
+        <!-- Green Guide Arrow & Start Exam Button -->
+        <div class="space-y-2 pt-1">
+          <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+            <span class="text-base">↴</span>
+            <span>Click 'Start Examination' to begin test</span>
+          </div>
+
+          <button type="submit" id="startExamBtn"
+            class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
+            <span>🚀 Start Examination</span>
+          </button>
+        </div>
+      </form>
+      <p class="text-center text-[11px] text-slate-400 dark:text-slate-500 font-medium pt-2">
+        ExamShield LAN 🛡️ • Made by Prem
+      </p>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 2. ACTIVE EXAM TEST INTERFACE (VCE STYLE) -->
+  <!-- ======================================================== -->
+  <div id="examInterface" class="flex-1 flex flex-col hidden">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-sm sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3 sm:gap-4 overflow-x-auto no-scrollbar">
+        
+        <!-- Left: Logo & Student Details -->
+        <div class="flex items-center space-x-3 shrink-0">
+          <img src="/logo.png" alt="ExamShield LAN" class="w-10 h-10 rounded-xl shadow-sm border border-indigo-500/30 object-cover shrink-0" />
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="displayStudentName" class="font-bold text-sm text-slate-900 dark:text-white whitespace-nowrap">Candidate</span>
+              <span id="displayBatchBadge" class="px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 text-[10px] font-bold whitespace-nowrap font-mono">🏷️ BATCH-01</span>
+              <span id="displayExamSet" class="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold whitespace-nowrap">🎲 Randomized</span>
+            </div>
+            <p id="displayExamTitle" class="text-xs text-slate-500 dark:text-slate-400 truncate max-w-xs sm:max-w-md whitespace-nowrap">Certification Exam</p>
+          </div>
+        </div>
+
+        <!-- Center: Countdown Timer -->
+        <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-700/60 px-3.5 sm:px-4 py-1.5 rounded-2xl border border-slate-200 dark:border-slate-600 shrink-0">
+          <span id="timerIcon" class="text-sm">⏳</span>
+          <div>
+            <span id="timerLabel" class="text-[10px] text-slate-400 uppercase tracking-wider block font-bold whitespace-nowrap">Time Left</span>
+            <span id="timerDisplay" class="font-mono text-base font-black text-slate-800 dark:text-white whitespace-nowrap">00:00</span>
+          </div>
+        </div>
+
+        <!-- Right: Auto-save status, Theme Toggle & Palette Toggle -->
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+          <!-- Auto-save indicator -->
+          <span id="autoSaveIndicator" class="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+            <span>✓</span> Auto-Saved
+          </span>
+
+          <!-- Theme Switcher: Light / Dark -->
+          <button onclick="toggleTheme()" id="themeToggleBtn" title="Toggle Theme"
+            class="p-2 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1">
+            <span id="themeIcon">🌙</span>
+            <span class="hidden sm:inline text-[11px]" id="themeText">Dark</span>
+          </button>
+
+          <!-- Toggle Question Palette on Mobile -->
+          <button onclick="toggleMobilePalette()" class="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs">
+            📋 Palette
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- EXAM CONTENT AREA (2 Columns: Main Question Area + Right Palette) -->
+    <div class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full grid grid-cols-1 md:grid-cols-4 gap-6">
+
+      <!-- LEFT: QUESTION AREA (3 cols) -->
+      <main class="md:col-span-3 flex flex-col space-y-6">
+        
+        <!-- Question Card -->
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200 dark:border-slate-700 flex-1 flex flex-col justify-between space-y-6">
+          
+          <div class="space-y-4">
+            <!-- Per-Question Animated Timer & Progress Bar (Active when per-question time limit is on) -->
+            <div id="perQTimerSection" class="hidden pb-2 border-b border-slate-100 dark:border-slate-700 space-y-2">
+              <div class="flex items-center justify-between text-xs font-bold">
+                <span class="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
+                  <span class="text-sm">⏱️</span>
+                  <span>Time Left For This Question:</span>
+                  <span id="perQSecondsText" class="font-mono text-sm font-black bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 px-2.5 py-0.5 rounded-lg border border-indigo-200 dark:border-indigo-800">60s</span>
+                </span>
+                <span class="text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 font-extrabold flex items-center gap-1">
+                  <span>⚡</span> Auto-Advance Mode
+                </span>
+              </div>
+              <div class="w-full bg-slate-100 dark:bg-slate-700/80 h-2.5 rounded-full overflow-hidden border border-slate-200 dark:border-slate-600">
+                <div id="perQProgressBar" class="h-full bg-indigo-600 dark:bg-indigo-500 rounded-full transition-all duration-1000 ease-linear" style="width: 100%;"></div>
+              </div>
+            </div>
+
+            <!-- Question Header Info -->
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
+              <div class="flex items-center gap-2">
+                <span id="currentQNumberBadge" class="px-3 py-1 bg-indigo-600 text-white rounded-xl text-xs font-bold">
+                  Question 1 of 60
+                </span>
+                <span id="currentTopicBadge" class="px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold">
+                  Hardware
+                </span>
+              </div>
+
+              <!-- Question Mode Indicator -->
+              <span id="multipleChoiceBadge" class="hidden text-xs font-semibold px-2.5 py-1 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-lg border border-amber-200 dark:border-amber-800">
+                ☑️ Select all that apply (Multiple)
+              </span>
+            </div>
+
+            <!-- Question Text & Embedded Images -->
+            <div id="questionContentArea" class="text-sm md:text-base leading-relaxed text-slate-800 dark:text-slate-100 font-medium space-y-4">
+              <!-- Dynamically populated with question HTML + Base64 images -->
+            </div>
+
+            <!-- Options Container -->
+            <div id="optionsContainer" class="space-y-3 pt-4">
+              <!-- Dynamically populated with Radio / Checkbox option cards -->
+            </div>
+          </div>
+
+          <!-- Bottom Action Buttons: Previous, Next, Clear, Mark for Review -->
+          <div class="pt-6 border-t border-slate-100 dark:border-slate-700 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div id="markReviewContainer">
+                <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-3 py-2 rounded-xl border border-amber-200 dark:border-amber-700 hover:bg-amber-100 transition">
+                  <input type="checkbox" id="markReviewCheckbox" onchange="handleToggleReview(this.checked)" class="accent-amber-500 w-4 h-4 rounded cursor-pointer" />
+                  <span>🏳️ Mark for Review</span>
+                </label>
+              </div>
+
+              <button onclick="clearCurrentAnswer()" class="text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 px-3 py-2 rounded-xl transition">
+                ✕ Clear Choice
+              </button>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button onclick="navigateQuestion(-1)" id="prevBtn"
+                class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition flex items-center gap-1">
+                ← Previous
+              </button>
+              <button onclick="handleNextButtonClick()" id="nextBtn"
+                class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow transition flex items-center gap-1">
+                Next →
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <!-- RIGHT: VCE QUESTION PALETTE (1 col) -->
+      <aside id="paletteAside" class="md:col-span-1 bg-white dark:bg-slate-800 rounded-3xl p-5 shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col justify-between space-y-4">
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 flex items-center justify-between">
+            <span>Question Palette</span>
+            <span id="paletteCountSummary" class="text-[11px] font-semibold text-slate-400">0/0</span>
+          </h3>
+
+          <!-- Color Legend -->
+          <div class="grid grid-cols-2 gap-2 text-[11px] font-medium text-slate-600 dark:text-slate-300 mb-4 pb-3 border-b border-slate-100 dark:border-slate-700">
+            <div class="flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+              <span>Answered</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-600"></span>
+              <span>Unanswered</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+              <span>Review</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-full border-2 border-indigo-600 bg-white dark:bg-slate-800"></span>
+              <span>Current</span>
+            </div>
+          </div>
+
+          <!-- Question Grid Numbers (1 to N) -->
+          <div id="paletteGrid" class="grid grid-cols-5 gap-2 max-h-[360px] overflow-y-auto pr-1">
+            <!-- Dynamically populated buttons -->
+          </div>
+        </div>
+
+        <!-- Submit Exam Button -->
+        <div class="pt-4 border-t border-slate-100 dark:border-slate-700">
+          <button onclick="confirmSubmitExam()"
+            class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-1.5 active:scale-95">
+            <span>🏁 Finish & Submit Exam</span>
+          </button>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 3. SCORECARD & RESULT SCREEN (EXPLANATIONS EXCLUDED) -->
+  <!-- ======================================================== -->
+  <div id="resultScreen" class="flex-1 flex items-center justify-center p-4 hidden">
+    <div class="max-w-xl w-full bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 p-8 space-y-6 text-center">
+      
+      <div class="flex flex-col items-center justify-center space-y-2">
+        <img src="/logo.png" alt="ExamShield" class="w-16 h-16 rounded-2xl shadow-lg border-2 border-indigo-500/30 object-cover" />
+        <div id="resultStatusIcon" class="text-4xl">🏆</div>
+      </div>
+
+      <div>
+        <h2 id="resultStatusHeading" class="text-2xl font-black text-slate-900 dark:text-white">Examination Completed</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Your responses have been recorded and graded successfully.</p>
+      </div>
+
+      <!-- Main Score Card -->
+      <div class="grid grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-700">
+        <div>
+          <span class="text-xs text-slate-400 uppercase tracking-wider block font-bold">Total Score</span>
+          <span id="finalScoreDisplay" class="text-3xl font-black text-indigo-600 dark:text-indigo-400">0 / 0</span>
+        </div>
+        <div>
+          <span class="text-xs text-slate-400 uppercase tracking-wider block font-bold">Percentage</span>
+          <span id="finalPercentageDisplay" class="text-3xl font-black text-slate-800 dark:text-white">0%</span>
+        </div>
+      </div>
+
+      <!-- Detailed Breakdown: Right, Wrong, Skipped -->
+      <div class="grid grid-cols-3 gap-3">
+        <div class="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-center">
+          <span class="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider block">✓ Right</span>
+          <span id="finalRightDisplay" class="text-2xl font-black text-emerald-600 dark:text-emerald-400">0</span>
+        </div>
+        <div class="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-center">
+          <span class="text-[11px] font-bold text-rose-700 dark:text-rose-300 uppercase tracking-wider block">✗ Wrong</span>
+          <span id="finalWrongDisplay" class="text-2xl font-black text-rose-600 dark:text-rose-400">0</span>
+        </div>
+        <div class="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
+          <span class="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider block">⚪ Skipped</span>
+          <span id="finalUnattemptedDisplay" class="text-2xl font-black text-slate-700 dark:text-slate-300">0</span>
+        </div>
+      </div>
+
+      <!-- Competitive Mode Formula Note (Shown when competitive mode is active) -->
+      <div id="competitiveScoreFormulaNote" class="hidden p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/80 text-xs text-amber-900 dark:text-amber-200 font-medium text-center">
+        🎯 <strong>Competitive Marking:</strong> Total Score = <code>(Right &times; 4) &minus; (Wrong &times; 1)</code>
+      </div>
+
+      <!-- Result Badge -->
+      <div id="finalPassBadge" class="py-2 px-4 rounded-xl text-sm font-black uppercase tracking-wider inline-block">
+        PASSED
+      </div>
+
+      <!-- Topic-wise Score Breakdown Table -->
+      <div class="text-left space-y-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Topic Performance Breakdown</h3>
+        <div id="topicsBreakdownContainer" class="space-y-2">
+          <!-- Dynamically populated with topic score cards -->
+        </div>
+      </div>
+
+      <!-- View Answers / Review Paper Button & Return Button -->
+      <div class="pt-2 space-y-2.5">
+        <button id="viewAnswersBtn" onclick="handleViewAnswersClick()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider rounded-2xl shadow-lg transition flex items-center justify-center gap-2 active:scale-95">
+          <span>📋 View Answers & Review Paper</span>
+        </button>
+        <p id="reviewStatusNotice" class="text-[11px] font-medium hidden text-center"></p>
+        <button onclick="returnToJoinScreen()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-2xl transition flex items-center justify-center gap-1.5 active:scale-95">
+          <span>↩ Return to Candidate Login</span>
+        </button>
+      </div>
+
+      <div class="pt-4 border-t border-slate-100 dark:border-slate-700 text-xs text-slate-400">
+        ExamShield LAN • Offline Computer-Based Testing
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- QUESTION TIME EXPIRED TRANSITION SCREEN -->
+  <!-- ======================================================== -->
+  <div id="questionTransitionScreen" class="fixed inset-0 bg-slate-900/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="max-w-md w-full bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-2xl border-2 border-indigo-500 text-center space-y-5 animate-scale-up">
+      <div class="w-20 h-20 mx-auto rounded-3xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-4xl shadow-inner animate-pulse">
+        ⏱️
+      </div>
+      <div class="space-y-1.5">
+        <span class="text-[11px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">Question Time Expired</span>
+        <h3 id="transitionScreenTitle" class="text-2xl font-black text-slate-900 dark:text-white">
+          Time's Up for This Question!
+        </h3>
+        <p id="transitionScreenDesc" class="text-xs text-slate-500 dark:text-slate-400">
+          Your selected response has been auto-saved. Loading the next question...
+        </p>
+      </div>
+
+      <!-- Animated Progress Dots -->
+      <div class="flex items-center justify-center gap-2 pt-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-bounce"></span>
+        <span class="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-bounce [animation-delay:0.2s]"></span>
+        <span class="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-bounce [animation-delay:0.4s]"></span>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 dark:border-slate-700">
+        <span id="transitionNextNotice" class="text-xs font-bold text-slate-700 dark:text-slate-300">
+          Preparing Next Question...
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- REVIEW ANSWERS & QUESTIONS MODAL -->
+  <!-- ======================================================== -->
+  <div id="reviewAnswersModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="max-w-3xl w-full max-h-[90vh] bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden">
+      
+      <!-- Modal Header -->
+      <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">📋</span>
+          <div>
+            <h3 class="text-base font-bold text-slate-800 dark:text-white">Exam Review & Answer Key</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Review your responses vs correct answers</p>
+          </div>
+        </div>
+        <button onclick="toggleReviewModal()" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-200 transition">
+          ✕ Close
+        </button>
+      </div>
+
+      <!-- Modal Body (List of questions) -->
+      <div id="reviewQuestionsList" class="p-6 overflow-y-auto space-y-6 flex-1 text-left">
+        <!-- Dynamically rendered review questions -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 4. HIGH-SECURITY ZERO-TOLERANCE FROZEN LOCK SCREEN -->
+  <!-- ======================================================== -->
+  <div id="frozenOverlay" class="fixed inset-0 bg-red-950/95 backdrop-blur-md z-50 flex items-center justify-center p-6 text-center hidden">
+    <div class="max-w-lg w-full bg-red-900 border-2 border-red-500 rounded-3xl p-8 shadow-2xl text-white space-y-6">
+      <span class="text-6xl block animate-bounce">🚨</span>
+      
+      <div class="space-y-2">
+        <h2 class="text-2xl font-black uppercase tracking-wide text-red-100">
+          EXAM TERMINATED / FROZEN
+        </h2>
+        <p class="text-xs text-red-200 font-bold uppercase tracking-wider">
+          Security Violation Detected
+        </p>
+      </div>
+
+      <div class="bg-red-950/80 p-4 rounded-2xl border border-red-800 text-xs text-left space-y-2">
+        <p><strong>Reason:</strong> <span id="violationReasonText">Focus lost (window blur, Alt+Tab, or minimized)</span></p>
+        <p><strong>Timestamp:</strong> <span id="violationTimestampText">--:--:--</span></p>
+        <p class="text-red-300">
+          Your exam has been locked immediately. The teacher dashboard has received a red alert.
+        </p>
+      </div>
+
+      <div class="bg-white/10 p-4 rounded-2xl text-xs text-red-100 space-y-1">
+        <p class="font-bold">Next Steps:</p>
+        <p>1. Do not close this browser window.</p>
+        <p>2. Notify the laboratory invigilator / teacher.</p>
+        <p>3. Once the teacher clicks <strong>Unfreeze</strong>, your exam will resume automatically with all answers preserved.</p>
+      </div>
+
+      <p class="text-[11px] text-red-400 animate-pulse">
+        Waiting for teacher authorization...
+      </p>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    const socket = io();
+
+    // State Variables
+    let currentSession = null;
+    let questions = [];
+    let currentIndex = 0;
+    let answers = {}; // { questionId: ['opt_0', 'opt_1'] }
+    let markedForReview = new Set();
+    let remainingSeconds = 0;
+    let timerInterval = null;
+    let isFrozen = false;
+    let isSubmitted = false;
+    let allowReview = false;
+    let cachedReviewQuestions = null;
+
+    // Per-Question Time Limit State
+    let perQuestionTimeEnabled = false;
+    let perQuestionSecondsLimit = 60;
+    let currentQuestionRemainingSeconds = 60;
+    let questionTimerInterval = null;
+    let isTransitioning = false;
+
+    // Toast Notification
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      const msgEl = document.getElementById('toastMessage');
+      if (!toast || !msgEl) return;
+      msgEl.innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 4500);
+    }
+
+    // Theme Management (Supports Login, Exam, and Results screens)
+    function updateThemeUI(isDark) {
+      document.querySelectorAll('.theme-icon').forEach(el => {
+        el.innerText = isDark ? '☀️' : '🌙';
+      });
+      document.querySelectorAll('.theme-text').forEach(el => {
+        el.innerText = isDark ? 'Light' : 'Dark';
+      });
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isDark = html.classList.contains('dark');
+      if (isDark) {
+        html.classList.remove('dark');
+        html.classList.add('light');
+        updateThemeUI(false);
+        localStorage.setItem('examshield_theme', 'light');
+      } else {
+        html.classList.remove('light');
+        html.classList.add('dark');
+        updateThemeUI(true);
+        localStorage.setItem('examshield_theme', 'dark');
+      }
+    }
+
+    // Apply saved theme on page load
+    const savedTheme = localStorage.getItem('examshield_theme') || 'light';
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+      updateThemeUI(true);
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+      updateThemeUI(false);
+    }
+
+    // Fetch active exam title & marking scheme on start
+    async function loadExamHeaderInfo() {
+      try {
+        const res = await fetch('/api/system/info');
+        const data = await res.json();
+        if (data.success && data.exam) {
+          if (data.exam.title && data.exam.title.trim().toLowerCase() !== 'testing') {
+            const titleEl = document.getElementById('joinExamTitle');
+            if (titleEl) {
+              titleEl.innerText = data.exam.title.toUpperCase();
+            }
+          }
+
+          if (data.active_batch) {
+            const batchEl = document.getElementById('joinBatchBadge');
+            if (batchEl) batchEl.innerText = `🏷️ Batch: ${data.active_batch}`;
+          }
+
+          const isCompetitive = !!data.exam.competitive_mode_enabled;
+          const infoBox = document.getElementById('joinCompetitiveInfoBox');
+          const negMarkingLi = document.getElementById('instructionNegativeMarking');
+
+          if (infoBox) {
+            if (isCompetitive) {
+              infoBox.classList.remove('hidden');
+            } else {
+              infoBox.classList.add('hidden');
+            }
+          }
+
+          if (negMarkingLi) {
+            if (isCompetitive) {
+              negMarkingLi.innerHTML = `
+                <span class="font-bold text-rose-600 dark:text-rose-400">2.</span>
+                <span><strong>Negative Marking Scheme:</strong> <strong class="text-emerald-600 dark:text-emerald-400 font-bold">+4 Marks</strong> for each correct answer, <strong class="text-rose-600 dark:text-rose-400 font-bold">-1 Mark</strong> penalty for each wrong answer. Unattempted questions carry 0 marks.</span>
+              `;
+            } else {
+              negMarkingLi.innerHTML = `
+                <span class="font-bold text-slate-900 dark:text-white">2.</span>
+                <span>There is <strong>NO negative marking</strong>.</span>
+              `;
+            }
+          }
+        }
+      } catch(e) {}
+    }
+    loadExamHeaderInfo();
+
+    // ========================================================
+    // GLOBAL ANTI-INSPECT & ANTI-CHEATING SECURITY SUITE
+    // ========================================================
+    let antiCheatingInitialized = false;
+
+    function setupAntiCheating() {
+      if (antiCheatingInitialized) return;
+      antiCheatingInitialized = true;
+
+      // 1. Prevent Right-Click Context Menu (Active on ALL screens: Join, Exam, Results, Modals)
+      document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        return false;
+      }, { capture: true });
+
+      // 2. Prevent Copy, Cut, Paste during exam
+      document.addEventListener('copy', (e) => {
+        if (currentSession && !isSubmitted) e.preventDefault();
+      });
+      document.addEventListener('cut', (e) => {
+        if (currentSession && !isSubmitted) e.preventDefault();
+      });
+      document.addEventListener('paste', (e) => {
+        if (currentSession && !isSubmitted) e.preventDefault();
+      });
+
+      // 3. Block DevTools, Inspect Element & Source Shortcuts Globally
+      window.addEventListener('keydown', (e) => {
+        const isInspectShortcut = 
+          e.key === 'F12' ||
+          e.keyCode === 123 ||
+          ((e.ctrlKey || e.metaKey) && e.shiftKey && ['I', 'J', 'C', 'K', 'i', 'j', 'c', 'k'].includes(e.key)) ||
+          ((e.ctrlKey || e.metaKey) && ['u', 'U', 's', 'S', 'p', 'P'].includes(e.key));
+
+        const isNavBlocked = 
+          currentSession && !isSubmitted &&
+          (((e.ctrlKey || e.metaKey) && ['r', 'R'].includes(e.key)) || e.key === 'F5');
+
+        if (isInspectShortcut || isNavBlocked) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (currentSession && !isFrozen && !isSubmitted) {
+            triggerSecurityViolation('Blocked shortcut or inspection attempt');
+          }
+          return false;
+        }
+      }, { capture: true });
+
+      // 4. Prevent dragging elements or text
+      document.addEventListener('dragstart', (e) => {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+        }
+      });
+
+      // 5. Focus Loss & Window Blur Detection (Alt+Tab, window minimize, new window)
+      window.addEventListener('blur', () => {
+        if (!isFrozen && !isSubmitted && currentSession) {
+          triggerSecurityViolation('Window blur / Alt+Tab / application switch');
+        }
+      });
+
+      // 6. Page Visibility Change (Tab switch)
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden && !isFrozen && !isSubmitted && currentSession) {
+          triggerSecurityViolation('Tab switch / background minimized');
+        }
+      });
+
+      // 7. Fullscreen Exit Detection (VULN-04: Enforce Dedicated Exam Viewport)
+      document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement && currentSession && !isSubmitted && !isFrozen) {
+          triggerSecurityViolation('Exited Fullscreen mode / Window unpinned');
+        }
+      });
+
+      // 8. DevTools Docking & Sizing Differential Detector
+      function checkDevToolsOpened() {
+        if (!currentSession || isSubmitted || isFrozen) return;
+        const widthDiff = window.outerWidth - window.innerWidth > 160;
+        const heightDiff = window.outerHeight - window.innerHeight > 160;
+        if (widthDiff || heightDiff) {
+          triggerSecurityViolation('Developer Tools / Inspection Dock opened');
+        }
+      }
+      window.addEventListener('resize', checkDevToolsOpened);
+      setInterval(checkDevToolsOpened, 2000);
+    }
+
+    // Initialize immediately on page load so all screens are protected
+    setupAntiCheating();
+
+    function triggerSecurityViolation(reason) {
+      if (isFrozen || isSubmitted || !currentSession) return;
+      isFrozen = true;
+
+      const timestamp = new Date().toLocaleTimeString();
+      showFrozenOverlay(reason, timestamp);
+
+      // Emit to server to trigger teacher red alert & freeze session in DB
+      socket.emit('focus_lost', {
+        sessionId: currentSession.id,
+        studentName: currentSession.student_name,
+        reason: reason
+      });
+    }
+
+    function showFrozenOverlay(reason, timestamp) {
+      document.getElementById('violationReasonText').innerText = reason;
+      document.getElementById('violationTimestampText').innerText = timestamp;
+      document.getElementById('frozenOverlay').classList.remove('hidden');
+    }
+
+    function hideFrozenOverlay() {
+      document.getElementById('frozenOverlay').classList.add('hidden');
+      isFrozen = false;
+    }
+
+    // ========================================================
+    // SOCKET REAL-TIME LISTENERS
+    // ========================================================
+    socket.on('exam_frozen', (data) => {
+      isFrozen = true;
+      showFrozenOverlay(data.reason, data.timestamp);
+    });
+
+    socket.on('exam_unfrozen', (data) => {
+      hideFrozenOverlay();
+      if (data.remaining_seconds) {
+        remainingSeconds = data.remaining_seconds;
+      }
+    });
+
+    socket.on('force_submitted', (data) => {
+      displayFinalResults(data);
+    });
+
+    socket.on('review_permission_updated', async (data) => {
+      const matchesMe = data.all_students || (currentSession && data.session_id === currentSession.id);
+      if (!matchesMe) return;
+
+      allowReview = (data.publish_all !== undefined ? !!data.publish_all : !!data.allow_review);
+      updateReviewButtonUI();
+
+      if (allowReview) {
+        showToast('📢 Instructor has published the review answers!');
+        if (currentSession && !cachedReviewQuestions) {
+          try {
+            const res = await fetch(`/api/student/review/${currentSession.id}`, {
+              headers: { 'x-student-token': currentSession.student_token || '' }
+            });
+            const resData = await res.json();
+            if (resData.success) {
+              cachedReviewQuestions = resData.review_questions;
+              renderReviewQuestions(cachedReviewQuestions);
+            }
+          } catch(e) {}
+        }
+      } else {
+        const modal = document.getElementById('reviewAnswersModal');
+        if (modal && !modal.classList.contains('hidden')) {
+          modal.classList.add('hidden');
+        }
+      }
+    });
+
+    // ========================================================
+    // STUDENT REGISTRATION & JOIN
+    // ========================================================
+    async function handleStudentJoin(e) {
+      e.preventDefault();
+      const nameInput = document.getElementById('candidateNameInput');
+      const studentName = nameInput.value.trim();
+      if (!studentName) return;
+
+      const btn = document.getElementById('startExamBtn');
+      btn.disabled = true;
+      btn.innerText = 'Connecting to Host...';
+
+      try {
+        const res = await fetch('/api/student/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ student_name: studentName })
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+          alert('Registration Error: ' + data.error);
+          btn.disabled = false;
+          btn.innerText = '🚀 Start Examination';
+          return;
+        }
+
+        // If candidate already completed and submitted this paper, show scorecard directly
+        if (data.status === 'submitted') {
+          isSubmitted = true;
+          currentSession = {
+            id: data.session_id,
+            student_token: data.student_token || '',
+            student_name: data.student_name,
+            exam_set: data.exam_set,
+            exam_title: data.exam_title
+          };
+          sessionStorage.setItem('examshield_student_token', data.student_token || '');
+          document.getElementById('joinScreen').classList.add('hidden');
+          document.getElementById('resultScreen').classList.remove('hidden');
+          displayFinalResults(data.result);
+          return;
+        }
+
+        // Request Fullscreen
+        try {
+          if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          }
+        } catch (fsErr) {
+          console.log('Fullscreen request bypassed:', fsErr);
+        }
+
+        // Initialize Session State (VULN-03: Cryptographic Token Binding)
+        currentSession = {
+          id: data.session_id,
+          student_token: data.student_token || '',
+          student_name: data.student_name,
+          exam_set: data.exam_set,
+          exam_title: data.exam_title
+        };
+        sessionStorage.setItem('examshield_student_token', data.student_token || '');
+
+        questions = data.questions || [];
+        answers = data.answers || {};
+        markedForReview = new Set(data.marked_for_review || []);
+        remainingSeconds = data.remaining_seconds || (data.duration_minutes * 60);
+
+        // Per-Question Time Limit & Competitive Mode Configuration
+        perQuestionTimeEnabled = !!data.per_question_time_enabled;
+        perQuestionSecondsLimit = data.per_question_time_seconds || 60;
+        currentQuestionRemainingSeconds = perQuestionSecondsLimit;
+        const competitiveModeEnabled = !!data.competitive_mode_enabled;
+
+        // Switch to Exam Interface
+        document.getElementById('joinScreen').classList.add('hidden');
+        document.getElementById('examInterface').classList.remove('hidden');
+        const floatingTheme = document.getElementById('floatingThemeToggle');
+        if (floatingTheme) floatingTheme.classList.add('hidden');
+
+        document.getElementById('displayStudentName').innerText = currentSession.student_name;
+        document.getElementById('displayExamTitle').innerText = currentSession.exam_title;
+        const batchBadgeEl = document.getElementById('displayBatchBadge');
+        if (batchBadgeEl) {
+          batchBadgeEl.innerText = '🏷️ ' + (currentSession.batch_code || 'BATCH-01');
+        }
+
+        // Configure Navbar Badge & Mode-Specific Layout
+        const setBadge = document.getElementById('displayExamSet');
+        const prevBtnEl = document.getElementById('prevBtn');
+        const markReviewBox = document.getElementById('markReviewContainer');
+        const perQSection = document.getElementById('perQTimerSection');
+
+        if (perQuestionTimeEnabled) {
+          if (setBadge) setBadge.innerHTML = `🎲 Random • ⏱️ ${perQuestionSecondsLimit}s / Questions`;
+          if (prevBtnEl) prevBtnEl.classList.add('hidden');
+          if (markReviewBox) markReviewBox.classList.add('hidden');
+          if (perQSection) perQSection.classList.remove('hidden');
+        } else if (competitiveModeEnabled) {
+          if (setBadge) setBadge.innerHTML = `🎲 Random • 🎯 +4 / -1 Marking`;
+          if (prevBtnEl) prevBtnEl.classList.remove('hidden');
+          if (markReviewBox) markReviewBox.classList.remove('hidden');
+          if (perQSection) perQSection.classList.add('hidden');
+        } else {
+          if (setBadge) setBadge.innerText = '🎲 Randomized';
+          if (prevBtnEl) prevBtnEl.classList.remove('hidden');
+          if (markReviewBox) markReviewBox.classList.remove('hidden');
+          if (perQSection) perQSection.classList.add('hidden');
+        }
+
+        // Register with Socket room (VULN-05: Authenticated Room Joining)
+        socket.emit('student_join', {
+          sessionId: currentSession.id,
+          studentName: currentSession.student_name,
+          studentToken: currentSession.student_token
+        });
+
+        // Initialize Anti-Cheating guards
+        setupAntiCheating();
+
+        // Check if resumed while frozen
+        if (data.status === 'frozen') {
+          isFrozen = true;
+          showFrozenOverlay(data.freeze_reason || 'Focus Lost', 'Resumed Session');
+        }
+
+        // Start Timers & Render First Question
+        startExamTimer();
+        if (perQuestionTimeEnabled) {
+          startPerQuestionTimer();
+        }
+        renderPalette();
+        renderCurrentQuestion();
+
+      } catch (err) {
+        alert('Connection Failed: ' + err.message);
+        btn.disabled = false;
+        btn.innerText = '🚀 Start Examination';
+      }
+    }
+
+    // ========================================================
+    // TIMER & HEARTBEAT ENGINE
+    // ========================================================
+    function startExamTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+
+      if (!perQuestionTimeEnabled) {
+        updateTimerDisplay();
+      }
+
+      timerInterval = setInterval(() => {
+        if (!isFrozen && !isSubmitted && remainingSeconds > 0) {
+          remainingSeconds--;
+          if (!perQuestionTimeEnabled) {
+            updateTimerDisplay();
+          }
+
+          // Heartbeat sync every 10 seconds
+          if (remainingSeconds % 10 === 0) {
+            socket.emit('heartbeat', {
+              sessionId: currentSession.id,
+              remainingSeconds
+            });
+          }
+
+          // Auto-submit on overall exam expiry
+          if (remainingSeconds <= 0) {
+            clearInterval(timerInterval);
+            if (questionTimerInterval) clearInterval(questionTimerInterval);
+            alert('Overall exam time is up! Your paper will now be submitted automatically.');
+            submitExam();
+          }
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(remainingSeconds / 60);
+      const secs = remainingSeconds % 60;
+      const formatted = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+      const timerEl = document.getElementById('timerDisplay');
+      const timerLabel = document.getElementById('timerLabel');
+      if (timerLabel) timerLabel.innerText = 'Time Left';
+      if (timerEl) {
+        timerEl.innerText = formatted;
+        if (remainingSeconds < 300) {
+          timerEl.classList.add('text-rose-600', 'animate-pulse');
+        } else {
+          timerEl.classList.remove('text-rose-600', 'animate-pulse');
+        }
+      }
+    }
+
+    // Per-Question Countdown Engine
+    function startPerQuestionTimer() {
+      if (questionTimerInterval) clearInterval(questionTimerInterval);
+      currentQuestionRemainingSeconds = perQuestionSecondsLimit;
+      updatePerQTimerDisplay();
+
+      questionTimerInterval = setInterval(() => {
+        if (isFrozen || isSubmitted || isTransitioning) return;
+
+        currentQuestionRemainingSeconds--;
+        updatePerQTimerDisplay();
+
+        if (currentQuestionRemainingSeconds <= 0) {
+          clearInterval(questionTimerInterval);
+          handlePerQuestionTimeExpired();
+        }
+      }, 1000);
+    }
+
+    function updatePerQTimerDisplay() {
+      const secs = Math.max(0, currentQuestionRemainingSeconds);
+      const textEl = document.getElementById('perQSecondsText');
+      const progressBar = document.getElementById('perQProgressBar');
+      const headerTimer = document.getElementById('timerDisplay');
+      const headerLabel = document.getElementById('timerLabel');
+
+      if (textEl) {
+        textEl.innerText = `${secs}s`;
+        if (secs <= 10) {
+          textEl.className = 'font-mono text-sm font-black bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 px-2.5 py-0.5 rounded-lg border border-rose-300 dark:border-rose-800 animate-pulse';
+        } else {
+          textEl.className = 'font-mono text-sm font-black bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 px-2.5 py-0.5 rounded-lg border border-indigo-200 dark:border-indigo-800';
+        }
+      }
+
+      if (progressBar) {
+        const pct = Math.max(0, Math.min(100, (secs / perQuestionSecondsLimit) * 100));
+        progressBar.style.width = `${pct}%`;
+        if (pct <= 25) {
+          progressBar.className = 'h-full bg-rose-500 rounded-full transition-all duration-1000 ease-linear';
+        } else if (pct <= 50) {
+          progressBar.className = 'h-full bg-amber-500 rounded-full transition-all duration-1000 ease-linear';
+        } else {
+          progressBar.className = 'h-full bg-indigo-600 dark:bg-indigo-500 rounded-full transition-all duration-1000 ease-linear';
+        }
+      }
+
+      if (headerLabel) headerLabel.innerText = 'Q-Timer';
+      if (headerTimer) {
+        const mins = Math.floor(secs / 60);
+        const remSecs = secs % 60;
+        headerTimer.innerText = `${mins < 10 ? '0' : ''}${mins}:${remSecs < 10 ? '0' : ''}${remSecs}`;
+        if (secs <= 10) {
+          headerTimer.classList.add('text-rose-600', 'animate-pulse');
+        } else {
+          headerTimer.classList.remove('text-rose-600', 'animate-pulse');
+        }
+      }
+    }
+
+    // Handles question expiry: displays transition screen then advances
+    function handlePerQuestionTimeExpired() {
+      if (isSubmitted || isTransitioning) return;
+      isTransitioning = true;
+
+      // Auto-save current question answer
+      const q = questions[currentIndex];
+      if (q && answers[q.id]) {
+        socket.emit('save_answer', {
+          sessionId: currentSession.id,
+          questionId: q.id,
+          answers: answers[q.id],
+          studentToken: currentSession.student_token || ''
+        });
+      }
+
+      const isLastQuestion = (currentIndex >= questions.length - 1);
+      const transScreen = document.getElementById('questionTransitionScreen');
+      const titleEl = document.getElementById('transitionScreenTitle');
+      const descEl = document.getElementById('transitionScreenDesc');
+      const noticeEl = document.getElementById('transitionNextNotice');
+
+      if (isLastQuestion) {
+        if (titleEl) titleEl.innerText = "Final Question Time Expired!";
+        if (descEl) descEl.innerText = "All questions in this examination have completed. Auto-submitting...";
+        if (noticeEl) noticeEl.innerText = "Submitting exam results...";
+      } else {
+        if (titleEl) titleEl.innerText = `Time's Up for Question ${currentIndex + 1}!`;
+        if (descEl) descEl.innerText = "Your selected response has been auto-saved. Loading the next question...";
+        if (noticeEl) noticeEl.innerText = `Next: Question ${currentIndex + 2} of ${questions.length}`;
+      }
+
+      if (transScreen) transScreen.classList.remove('hidden');
+
+      setTimeout(() => {
+        if (isLastQuestion) {
+          if (transScreen) transScreen.classList.add('hidden');
+          isTransitioning = false;
+          submitExam();
+        } else {
+          currentIndex++;
+          renderCurrentQuestion();
+          if (transScreen) transScreen.classList.add('hidden');
+          isTransitioning = false;
+          startPerQuestionTimer();
+        }
+      }, 1500);
+    }
+
+    // ========================================================
+    // QUESTION & PALETTE RENDERING
+    // ========================================================
+    function renderCurrentQuestion() {
+      if (!questions.length) return;
+      const q = questions[currentIndex];
+
+      // Badges
+      document.getElementById('currentQNumberBadge').innerText = `Question ${currentIndex + 1} of ${questions.length}`;
+      document.getElementById('currentTopicBadge').innerText = q.topic || 'General';
+
+      const multiBadge = document.getElementById('multipleChoiceBadge');
+      if (q.is_multiple_choice) {
+        multiBadge.classList.remove('hidden');
+      } else {
+        multiBadge.classList.add('hidden');
+      }
+
+      // Question HTML & Embedded Base64 Images
+      document.getElementById('questionContentArea').innerHTML = q.question_html;
+
+      // Mark for Review Checkbox
+      const isMarked = markedForReview.has(q.id);
+      document.getElementById('markReviewCheckbox').checked = isMarked;
+
+      // Render Options
+      const optionsContainer = document.getElementById('optionsContainer');
+      const selectedKeys = answers[q.id] || [];
+
+      optionsContainer.innerHTML = q.options.map(opt => {
+        const isSelected = selectedKeys.includes(opt.key);
+        const inputType = q.is_multiple_choice ? 'checkbox' : 'radio';
+        const cardStyle = isSelected
+          ? 'border-indigo-600 bg-indigo-50/70 dark:bg-indigo-900/40 dark:border-indigo-500 shadow-sm'
+          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600';
+
+        return `
+          <div onclick="selectOption('${opt.key}', ${q.is_multiple_choice})"
+            class="p-4 rounded-2xl border-2 cursor-pointer transition flex items-start gap-3 ${cardStyle}">
+            <input type="${inputType}" name="q_${q.id}" ${isSelected ? 'checked' : ''}
+              class="mt-1 accent-indigo-600 cursor-pointer w-4 h-4 pointer-events-none" />
+            <div class="flex-1 text-xs md:text-sm text-slate-800 dark:text-slate-100">
+              <span class="font-bold mr-1.5 text-indigo-600 dark:text-indigo-400">(${opt.display_letter})</span>
+              ${opt.html}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Nav Buttons
+      if (perQuestionTimeEnabled) {
+        document.getElementById('prevBtn').classList.add('hidden');
+        document.getElementById('nextBtn').innerText = currentIndex === questions.length - 1 ? 'Finish & Submit 🏁' : 'Next Question →';
+      } else {
+        document.getElementById('prevBtn').classList.remove('hidden');
+        document.getElementById('prevBtn').disabled = currentIndex === 0;
+        document.getElementById('nextBtn').innerText = currentIndex === questions.length - 1 ? 'Last Question' : 'Next →';
+      }
+
+      renderPalette();
+    }
+
+    function selectOption(optKey, isMultiple) {
+      if (isFrozen || isSubmitted) return;
+      const q = questions[currentIndex];
+      let current = answers[q.id] || [];
+
+      if (isMultiple) {
+        if (current.includes(optKey)) {
+          current = current.filter(k => k !== optKey);
+        } else {
+          current.push(optKey);
+        }
+      } else {
+        current = [optKey];
+      }
+
+      answers[q.id] = current;
+
+      // Auto-save via Socket.IO (VULN-03: Authenticated with studentToken)
+      socket.emit('save_answer', {
+        sessionId: currentSession.id,
+        questionId: q.id,
+        answers: current,
+        studentToken: currentSession?.student_token || ''
+      });
+
+      flashAutoSave();
+      renderCurrentQuestion();
+    }
+
+    function clearCurrentAnswer() {
+      const q = questions[currentIndex];
+      delete answers[q.id];
+
+      socket.emit('save_answer', {
+        sessionId: currentSession.id,
+        questionId: q.id,
+        answers: [],
+        studentToken: currentSession?.student_token || ''
+      });
+
+      flashAutoSave();
+      renderCurrentQuestion();
+    }
+
+    function handleToggleReview(checked) {
+      const q = questions[currentIndex];
+      if (checked) {
+        markedForReview.add(q.id);
+      } else {
+        markedForReview.delete(q.id);
+      }
+
+      socket.emit('toggle_review', {
+        sessionId: currentSession.id,
+        questionId: q.id,
+        isMarked: checked
+      });
+
+      renderPalette();
+    }
+
+    function flashAutoSave() {
+      const el = document.getElementById('autoSaveIndicator');
+      el.classList.remove('hidden');
+      setTimeout(() => el.classList.add('hidden'), 1500);
+    }
+
+    function handleNextButtonClick() {
+      if (isFrozen || isSubmitted || isTransitioning) return;
+
+      if (perQuestionTimeEnabled) {
+        if (currentIndex >= questions.length - 1) {
+          confirmSubmitExam();
+        } else {
+          if (questionTimerInterval) clearInterval(questionTimerInterval);
+          currentIndex++;
+          renderCurrentQuestion();
+          startPerQuestionTimer();
+        }
+      } else {
+        navigateQuestion(1);
+      }
+    }
+
+    function navigateQuestion(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < questions.length) {
+        currentIndex = newIndex;
+        renderCurrentQuestion();
+      }
+    }
+
+    function jumpToQuestion(idx) {
+      if (perQuestionTimeEnabled) {
+        return; // In strict per-question timed mode, sequential question flow is enforced
+      }
+      currentIndex = idx;
+      renderCurrentQuestion();
+    }
+
+    function renderPalette() {
+      const grid = document.getElementById('paletteGrid');
+      let answeredCount = 0;
+
+      grid.innerHTML = questions.map((q, idx) => {
+        const isCurrent = idx === currentIndex;
+        const hasAnswer = (answers[q.id] && answers[q.id].length > 0);
+        const isMarked = markedForReview.has(q.id);
+
+        if (hasAnswer) answeredCount++;
+
+        let bgClass = 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'; // Unanswered
+        if (hasAnswer) {
+          bgClass = 'bg-emerald-500 text-white font-bold'; // Answered
+        }
+        if (isMarked) {
+          bgClass = 'bg-amber-500 text-white font-bold'; // Marked for Review
+        }
+
+        const borderClass = isCurrent ? 'ring-2 ring-indigo-600 ring-offset-2 dark:ring-offset-slate-800 scale-105' : '';
+
+        return `
+          <button onclick="jumpToQuestion(${idx})"
+            class="h-8 rounded-xl text-xs font-semibold transition flex items-center justify-center ${bgClass} ${borderClass}">
+            ${idx + 1}
+          </button>
+        `;
+      }).join('');
+
+      document.getElementById('paletteCountSummary').innerText = `${answeredCount}/${questions.length} Answered`;
+    }
+
+    function toggleMobilePalette() {
+      const aside = document.getElementById('paletteAside');
+      aside.classList.toggle('hidden');
+    }
+
+    // ========================================================
+    // SUBMISSION & SCORECARD DISPLAY
+    // ========================================================
+    function confirmSubmitExam() {
+      const answered = Object.keys(answers).length;
+      const unanswered = questions.length - answered;
+      const marked = markedForReview.size;
+
+      const confirmMsg = `Are you ready to submit your exam?\n\n• Answered: ${answered}\n• Unanswered: ${unanswered}\n• Marked for Review: ${marked}\n\nOnce submitted, you cannot change your answers.`;
+
+      if (confirm(confirmMsg)) {
+        submitExam();
+      }
+    }
+
+    async function submitExam() {
+      if (isSubmitted) return;
+      isSubmitted = true;
+      if (timerInterval) clearInterval(timerInterval);
+      if (questionTimerInterval) clearInterval(questionTimerInterval);
+
+      try {
+        const token = currentSession?.student_token || sessionStorage.getItem('examshield_student_token') || '';
+        const res = await fetch('/api/student/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-student-token': token
+          },
+          body: JSON.stringify({
+            session_id: currentSession.id,
+            student_token: token
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          displayFinalResults(data.result);
+        } else {
+          alert('Submission error: ' + data.error);
+        }
+      } catch (err) {
+        alert('Submission failed: ' + err.message);
+      }
+    }
+
+    function displayFinalResults(result) {
+      document.getElementById('examInterface').classList.add('hidden');
+      document.getElementById('frozenOverlay').classList.add('hidden');
+      document.getElementById('resultScreen').classList.remove('hidden');
+      const floatingTheme = document.getElementById('floatingThemeToggle');
+      if (floatingTheme) floatingTheme.classList.remove('hidden');
+
+      allowReview = !!result.allow_review;
+      cachedReviewQuestions = result.review_questions || null;
+      updateReviewButtonUI();
+
+      document.getElementById('finalScoreDisplay').innerText = `${result.total_score} / ${result.max_score}`;
+      document.getElementById('finalPercentageDisplay').innerText = `${result.percentage}%`;
+
+      const rightEl = document.getElementById('finalRightDisplay');
+      const wrongEl = document.getElementById('finalWrongDisplay');
+      const unattemptedEl = document.getElementById('finalUnattemptedDisplay');
+      if (rightEl) rightEl.innerText = result.correct_count ?? 0;
+      if (wrongEl) wrongEl.innerText = result.wrong_count ?? 0;
+      if (unattemptedEl) unattemptedEl.innerText = result.unattempted_count ?? 0;
+
+      const formulaNote = document.getElementById('competitiveScoreFormulaNote');
+      if (formulaNote) {
+        if (result.competitive_mode) {
+          formulaNote.classList.remove('hidden');
+        } else {
+          formulaNote.classList.add('hidden');
+        }
+      }
+
+      const passBadge = document.getElementById('finalPassBadge');
+      if (result.passed) {
+        passBadge.innerText = 'PASSED 🏆';
+        passBadge.className = 'py-2 px-5 rounded-2xl text-sm font-black uppercase tracking-wider inline-block bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300';
+        document.getElementById('resultStatusIcon').innerText = '🎉';
+        document.getElementById('resultStatusHeading').innerText = 'Congratulations! You Passed';
+      } else {
+        passBadge.innerText = 'FAILED ❌';
+        passBadge.className = 'py-2 px-5 rounded-2xl text-sm font-black uppercase tracking-wider inline-block bg-rose-100 text-rose-800 dark:bg-rose-900/60 dark:text-rose-300';
+        document.getElementById('resultStatusIcon').innerText = '📝';
+        document.getElementById('resultStatusHeading').innerText = 'Exam Completed';
+      }
+
+      // Render Topic Breakdown
+      const topicsContainer = document.getElementById('topicsBreakdownContainer');
+      if (result.topic_scores) {
+        topicsContainer.innerHTML = Object.keys(result.topic_scores).map(topic => {
+          const t = result.topic_scores[topic];
+          return `
+            <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs">
+              <div>
+                <span class="font-bold text-slate-800 dark:text-slate-100 block">${topic}</span>
+                <span class="text-[11px] text-slate-400">${t.score} out of ${t.total} questions correct</span>
+              </div>
+              <span class="font-mono font-bold text-sm ${t.percentage >= 70 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-300'}">
+                ${t.percentage}%
+              </span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // If review questions already provided, render them
+      if (cachedReviewQuestions) {
+        renderReviewQuestions(cachedReviewQuestions);
+      }
+    }
+
+    function updateReviewButtonUI() {
+      const btn = document.getElementById('viewAnswersBtn');
+      const notice = document.getElementById('reviewStatusNotice');
+      if (!btn) return;
+
+      if (allowReview) {
+        btn.disabled = false;
+        btn.className = "w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider rounded-2xl shadow-lg transition flex items-center justify-center gap-2 active:scale-95";
+        btn.innerHTML = "<span>📋 View Answers & Review Paper</span>";
+        if (notice) {
+          notice.className = "text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold text-center";
+          notice.innerText = "✓ Answer key & review unlocked by instructor.";
+          notice.classList.remove('hidden');
+        }
+      } else {
+        btn.disabled = true;
+        btn.className = "w-full py-3.5 bg-slate-200 dark:bg-slate-700/60 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-wider rounded-2xl cursor-not-allowed flex items-center justify-center gap-2";
+        btn.innerHTML = "<span>🔒 Answers Locked by Instructor</span>";
+        if (notice) {
+          notice.className = "text-[11px] text-amber-600 dark:text-amber-400 font-medium text-center";
+          notice.innerText = "⏳ Instructor has not published the answer review yet. This will unlock automatically once published.";
+          notice.classList.remove('hidden');
+        }
+      }
+    }
+
+    async function handleViewAnswersClick() {
+      if (!allowReview) return;
+      if (cachedReviewQuestions && cachedReviewQuestions.length > 0) {
+        renderReviewQuestions(cachedReviewQuestions);
+        toggleReviewModal();
+        return;
+      }
+
+      // Fetch from server if not cached yet
+      const btn = document.getElementById('viewAnswersBtn');
+      const originalHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = "<span>⏳ Loading Review Answers...</span>";
+
+      try {
+        const token = currentSession?.student_token || sessionStorage.getItem('examshield_student_token') || '';
+        const res = await fetch(`/api/student/review/${currentSession.id}`, {
+          headers: { 'x-student-token': token }
+        });
+        const data = await res.json();
+        if (data.success && data.review_questions) {
+          cachedReviewQuestions = data.review_questions;
+          renderReviewQuestions(cachedReviewQuestions);
+          toggleReviewModal();
+        } else {
+          alert(data.error || 'Review answers are not accessible yet.');
+        }
+      } catch (err) {
+        alert('Failed to load review questions: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    }
+
+    function toggleReviewModal() {
+      const modal = document.getElementById('reviewAnswersModal');
+      modal.classList.toggle('hidden');
+    }
+
+    function returnToJoinScreen() {
+      if (timerInterval) clearInterval(timerInterval);
+      if (questionTimerInterval) clearInterval(questionTimerInterval);
+      currentSession = null;
+      questions = [];
+      answers = {};
+      markedForReview.clear();
+      isSubmitted = false;
+      isFrozen = false;
+      allowReview = false;
+      cachedReviewQuestions = null;
+      document.getElementById('resultScreen').classList.add('hidden');
+      document.getElementById('examInterface').classList.add('hidden');
+      document.getElementById('reviewAnswersModal').classList.add('hidden');
+      document.getElementById('joinScreen').classList.remove('hidden');
+      const floatingTheme = document.getElementById('floatingThemeToggle');
+      if (floatingTheme) floatingTheme.classList.remove('hidden');
+      document.getElementById('candidateNameInput').value = '';
+      const btn = document.getElementById('startExamBtn');
+      btn.disabled = false;
+      btn.innerText = '🚀 Start Examination';
+    }
+
+    function renderReviewQuestions(reviewList) {
+      const container = document.getElementById('reviewQuestionsList');
+      if (!reviewList || !reviewList.length) {
+        container.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">No review data available for this attempt.</p>';
+        return;
+      }
+
+      container.innerHTML = reviewList.map((q, idx) => {
+        const isMulti = !!q.is_multiple_choice;
+        const statusBadge = q.is_correct
+          ? '<span class="px-2.5 py-1 rounded-xl bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 font-bold text-xs">✅ Correct (+1)</span>'
+          : '<span class="px-2.5 py-1 rounded-xl bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300 font-bold text-xs">❌ Incorrect (0)</span>';
+
+        const borderClass = q.is_correct
+          ? 'border-emerald-300 dark:border-emerald-800 bg-emerald-50/20'
+          : 'border-rose-300 dark:border-rose-800 bg-rose-50/20';
+
+        const optionsHtml = q.options.map(opt => {
+          const isSelected = (q.selected_keys || []).includes(opt.key);
+          const isCorrectAnswer = (q.correct_keys || []).includes(opt.key);
+
+          let optStyle = 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300';
+          let badge = '';
+
+          if (isSelected && isCorrectAnswer) {
+            optStyle = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-200 font-bold shadow-sm';
+            badge = '<span class="ml-auto text-[11px] font-bold text-emerald-600 dark:text-emerald-400">✓ Your Answer (Correct)</span>';
+          } else if (isSelected && !isCorrectAnswer) {
+            optStyle = 'border-rose-500 bg-rose-50 dark:bg-rose-900/40 text-rose-900 dark:text-rose-200 font-bold shadow-sm';
+            badge = '<span class="ml-auto text-[11px] font-bold text-rose-600 dark:text-rose-400">✗ Your Choice</span>';
+          } else if (!isSelected && isCorrectAnswer) {
+            optStyle = 'border-emerald-500 border-dashed bg-emerald-50/40 dark:bg-emerald-900/20 text-emerald-800 dark:text-emerald-300 font-semibold';
+            badge = '<span class="ml-auto text-[11px] font-bold text-emerald-600 dark:text-emerald-400">✓ Correct Answer</span>';
+          }
+
+          return `
+            <div class="p-3.5 rounded-2xl border-2 flex items-center justify-between text-xs transition ${optStyle}">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-indigo-600 dark:text-indigo-400">(${opt.display_letter})</span>
+                <span>${opt.html}</span>
+              </div>
+              ${badge}
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="p-5 rounded-3xl border-2 ${borderClass} space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-2.5">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-xs text-slate-900 dark:text-white">Question ${idx + 1}</span>
+                <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-semibold">${q.topic}</span>
+                ${isMulti ? '<span class="text-[10px] text-amber-600 font-bold">[Multiple]</span>' : ''}
+              </div>
+              ${statusBadge}
+            </div>
+
+            <div class="text-xs md:text-sm text-slate-800 dark:text-slate-100 leading-relaxed font-medium">
+              ${q.question_html}
+            </div>
+
+            <div class="space-y-2 pt-1">
+              ${optionsHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html>

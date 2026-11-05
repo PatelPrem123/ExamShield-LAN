@@ -1,0 +1,49 @@
+{
+  "name": "teacher-server-app",
+  "version": "2.5.0",
+  "description": "ExamShield LAN - Offline Classroom & Campus Examination System",
+  "main": "main.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node unitTests.js",
+    "test:tdd": "node tddTests.js",
+    "test:integration": "node integrationTests.js",
+    "test:system": "node systemTests.js",
+    "test:acceptance": "node acceptanceTests.js",
+    "test:security": "node securityTests.js",
+    "test:batch": "node batchTests.js",
+    "test:all": "node unitTests.js && node tddTests.js && node integrationTests.js && node systemTests.js && node acceptanceTests.js && node securityTests.js && node batchTests.js",
+    "electron:teacher": "electron main.js",
+    "build:exe": "electron-builder --win portable"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "cors": "^2.8.6",
+    "docx": "^9.9.0",
+    "exceljs": "^4.4.0",
+    "express": "^5.3.0",
+    "mammoth": "^1.13.0",
+    "multer": "^2.4.0",
+    "socket.io": "^4.8.4",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.examshield.teacher",
+    "productName": "ExamShield-Teacher",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "portable"
+    },
+    "asar": false
+  }
+}
