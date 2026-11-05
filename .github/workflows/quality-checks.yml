@@ -13,6 +13,10 @@ jobs:
   quality-audit:
     name: Run Automated Test Suites & Security Hardening Checks
     runs-on: windows-latest
+    env:
+      Platform: x64
+      npm_config_arch: x64
+      npm_config_target_arch: x64
 
     steps:
       - name: Checkout Source Code
@@ -21,7 +25,8 @@ jobs:
       - name: Set up Node.js Runtime
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+          architecture: x64
           cache: npm
           cache-dependency-path: teacher-server-app/package-lock.json
 
