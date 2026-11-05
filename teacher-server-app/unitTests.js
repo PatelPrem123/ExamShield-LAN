@@ -581,6 +581,9 @@ async function runAllUnitTests() {
 
   await suite('Defensive Reliability & Boundary Conditions', async () => {
     await test('BUG-C01 Regression: saveAnswer handles undefined, null, and non-array safely without TypeError', () => {
+      if (typeof dbModule.initDb === 'function') {
+        dbModule.initDb();
+      }
       const exam = dbModule.getActiveExam();
       const examId = exam ? exam.id : 1;
       const sId = 'sess_defensive_' + Date.now();
@@ -612,6 +615,11 @@ async function runAllUnitTests() {
       // Calling with undefined/empty deletes key safely
       const cleared = dbModule.saveAnswer(sId, 101, undefined);
       assert.strictEqual(cleared['101'], undefined);
+
+      // Clean up test session
+      try {
+        dbModule.db.prepare('DELETE FROM student_sessions WHERE id = ?').run(sId);
+      } catch (e) {}
     });
 
     await test('BUG-M02 Regression: arraysEqualAsSets rejects asymmetric sets and duplicate answers', () => {

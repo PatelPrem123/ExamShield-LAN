@@ -282,6 +282,7 @@ async function runSecurityTests() {
     process.exit(1);
   } else {
     console.log(`${colors.green}${colors.bold}🛡️ 100% SECURITY HARDENING AUDIT VERIFIED AND PASSED!${colors.reset}\n`);
+    process.exit(0);
   }
 }
 

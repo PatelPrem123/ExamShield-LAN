@@ -692,6 +692,9 @@ function restoreDatabase(sourcePath) {
   return true;
 }
 
+// Ensure database schema and default tables are initialized on module load
+initDb();
+
 module.exports = {
   db,
   initDb,

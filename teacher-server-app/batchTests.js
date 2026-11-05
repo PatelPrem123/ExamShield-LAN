@@ -256,7 +256,9 @@ async function runBatchTests() {
   }
 }
 
-runBatchTests().catch(err => {
+runBatchTests().then(() => {
+  process.exit(0);
+}).catch(err => {
   console.error('Test Suite Failed:', err);
   process.exit(1);
 });
