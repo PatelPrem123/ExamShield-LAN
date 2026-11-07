@@ -85,7 +85,9 @@ Navigate to the "Exam Settings" tab in the Teacher Control Center:
 7. ANSWER KEY REVIEW & POST-EXAM RESULTS
 --------------------------------------------------------------------------------
 - Safe Scorecards: After submitting, students immediately see their Net Score,
-  Right Answers, Wrong Answers, and Skipped Questions.
+  Right Answers, Wrong Answers, Skipped Questions, accurate Time Spent, and Violations.
+- Instant Celebration: Celebratory confetti triggers automatically as soon as the
+  score countup finishes, regardless of pass or fail score.
 - Answer Key Lockdown: By default, detailed question-by-question answer keys
   are LOCKED to prevent candidates from leaking answers to adjacent students.
 - Publishing Answer Keys:
@@ -147,6 +149,18 @@ A: ExamShield features Safe Auto-Reconnection. The student simply re-enters thei
 Q: Can candidates inspect source code to find correct answers?
 A: No. ExamShield LAN runs 100% server-side validation. Correct answers are completely
    stripped from student network payloads before transmission.
+
+
+12. DUAL-CHANNEL ANSWER PERSISTENCE & FAULT TOLERANCE
+--------------------------------------------------------------------------------
+- Dual Sync: Every option selection by a student is saved simultaneously via
+  WebSocket and non-blocking HTTP REST API (POST /api/student/answer).
+- Micro-disconnect Protection: Even if a candidate's Wi-Fi connection drops
+  momentarily, choices are saved via HTTP background fallback and synchronized
+  upon re-connection.
+- Final Submit Safeguard: On clicking "Finish & Submit Exam", the candidate's
+  complete answer dictionary is transmitted and verified against the server,
+  guaranteeing zero answer loss.
 
 ================================================================================
   ExamShield LAN 🛡️ — Developed for Rock-Solid Offline Educational Integrity

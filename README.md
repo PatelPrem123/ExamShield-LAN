@@ -63,6 +63,22 @@ Unlike cloud-based assessment software that demands continuous high-speed intern
 * **1-Click Hot-Swap Restore:** Upload any snapshot `.db` file onto any computer running ExamShield. The engine validates table schemas and hot-swaps active database connections in under 50ms!
 * **Home Grading Workflow:** Teachers take the backup on a USB pen drive to grade papers, review solutions, or export reports from home without staying late in the school lab.
 
+### 8. ⚡ Dual-Channel Answer Persistence (WebSocket + HTTP REST Fallback)
+* **Zero-Drop Resilience:** Every option selection broadcasts simultaneously over WebSocket (`submit_answer`) and HTTP REST (`POST /api/student/answer`) in the background.
+* **Network Jitter Immunity:** If a school Wi-Fi router drops a packet or experiences micro-disconnections, the HTTP REST fallback guarantees immediate persistence to SQLite WAL storage.
+* **Submission Merging Fail-Safe:** Final exam submission automatically validates and merges the full client-side answer dictionary on the server, guaranteeing zero answer loss.
+* **Seamless Session Recovery:** If a device battery dies or browser crashes, re-entering the candidate's name instantly restores the exact paper, saved choices, and elapsed timer.
+
+### 9. 📊 Interactive Candidate Scorecard & Celebration Engine
+* **Animated Radial Progress Meter:** Circular score ring with ease-out countup animation from 0% to the target percentage.
+* **Automatic Celebration Confetti:** Full-screen physics confetti particle cannon triggers automatically as soon as the score animation completes.
+* **Proportional 4-Stat Metric Grid:** Balanced, uniform cards for *Total Score*, *Correct*, *Time Spent*, and *Violations* with clean baseline alignment and dynamic alerts.
+* **Instructor Answer Key Review Lock:** Detailed question-by-question explanations remain securely locked until the instructor enables review globally or individually.
+
+### 10. 📱 Multi-Platform Navigation & Responsive Touch Controls
+* **Smooth Horizontal Tab Navigation:** Touch-drag, mouse-wheel swipe, and navigation arrows with boundary snapping and scroll-padding for tablets and mobile devices.
+* **Ambient Lighting Themes:** Dynamic Dark and Light modes with subtle glowing accents and zero UI clipping.
+
 ---
 
 ## 🛠️ Technology Stack
@@ -100,7 +116,9 @@ Unlike cloud-based assessment software that demands continuous high-speed intern
 ```
 ExamShield-LAN/
 ├── scripts/
-│   └── build-distribution.ps1        # Automated build & packaging pipeline
+│   ├── build-distribution.ps1        # Automated build & packaging pipeline
+│   ├── Installer.cs                  # C# Native Windows Setup installer source
+│   └── Uninstaller.cs                # C# Native GUI uninstaller source
 ├── sample-papers/                    # Ready-to-import sample DOCX exams
 │   ├── Hardware.docx
 │   ├── Networking.docx
