@@ -233,11 +233,11 @@
 <body class="min-h-screen flex flex-col font-sans transition-colors duration-200" style="background-color: var(--bg-primary); color: var(--text-main);">
   <canvas id="confetti-canvas"></canvas>
 
-  <!-- FLOATING CONTROLS (Visible on Login & Result Screens) -->
+  <!-- FLOATING CONTROLS (Visible on Login, Waiting Room & Result Screens) -->
   <div id="floatingThemeToggle" class="fixed top-4 right-4 z-40 flex items-center gap-2">
     <!-- Clean SVG Speaker Audio Toggle -->
     <button onclick="toggleAudio()" id="soundToggleBtn" title="Toggle Sound Effects"
-      class="action-pill-btn py-2 px-3.5 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-2 backdrop-blur-md border border-slate-200 dark:border-slate-700 shadow-md hover:border-indigo-500 active:scale-95 cursor-pointer">
+      class="action-pill-btn py-2 px-3.5 rounded-full bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 text-xs font-bold transition flex items-center gap-2 backdrop-blur-md border border-slate-300 dark:border-slate-700 shadow-md hover:border-indigo-500 active:scale-95 cursor-pointer">
       <svg id="soundIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
       </svg>
@@ -245,11 +245,11 @@
     </button>
     <!-- Clean SVG Theme Toggle -->
     <button onclick="toggleTheme()" id="themeToggleBtnTop" title="Toggle Dark / Light Mode"
-      class="action-pill-btn py-2 px-3.5 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-2 backdrop-blur-md border border-slate-200 dark:border-slate-700 shadow-md hover:border-indigo-500 active:scale-95 cursor-pointer">
+      class="action-pill-btn py-2 px-3.5 rounded-full bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 text-xs font-bold transition flex items-center gap-2 backdrop-blur-md border border-slate-300 dark:border-slate-700 shadow-md hover:border-indigo-500 active:scale-95 cursor-pointer">
       <svg id="themeIconTop" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
       </svg>
-      <span id="themeTextTop" class="text-xs font-semibold">Dark</span>
+      <span id="themeTextTop" class="text-xs font-semibold">Light</span>
     </button>
   </div>
 
@@ -265,18 +265,22 @@
     <div class="glass-panel max-w-2xl w-full p-6 sm:p-8 space-y-6">
       
       <!-- Top Bar: Logo/App on Left & 'PLEASE TURN OFF YOUR PHONE' Warning Sign on Right -->
-      <div class="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 border-b border-slate-200 dark:border-slate-700/50 pb-5">
-        <div class="flex items-center space-x-3.5 text-center sm:text-left">
-          <!-- Real ExamShield App Logo (Image 2 Style) -->
-          <img src="/logo.png" alt="ExamShield LAN" class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl shadow-lg border border-slate-300 dark:border-slate-700 object-contain shrink-0 hover:scale-105 transition duration-300 bg-slate-900" />
-          <div>
-            <h1 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">ExamShield LAN</h1>
-            <p class="text-xs text-slate-600 dark:text-slate-400 font-medium">Offline Certification Examination Simulator</p>
-            <p class="text-xs font-bold text-amber-600 dark:text-amber-400 mt-0.5">Made by Prem</p>
-            <span class="inline-flex items-center gap-1.5 mt-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              Secure LAN Test Environment
-            </span>
+      <div class="flex flex-col sm:flex-row items-center sm:items-stretch justify-between gap-4 border-b border-slate-200 dark:border-slate-700/50 pb-5">
+        <div class="flex items-stretch space-x-4 text-left">
+          <!-- Real ExamShield App Logo (Image 1 / Image 7 Height Parity) -->
+          <img src="/logo.png" alt="ExamShield LAN" class="w-24 h-24 sm:w-26 sm:h-26 rounded-2xl shadow-xl border border-slate-300 dark:border-slate-700 object-cover shrink-0 hover:scale-105 transition duration-300 bg-slate-900" />
+          <div class="flex flex-col justify-between py-0.5">
+            <div>
+              <h1 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">ExamShield LAN</h1>
+              <p class="text-xs text-slate-600 dark:text-slate-400 font-medium">Offline Certification Examination Simulator</p>
+              <p class="text-xs font-bold text-amber-600 dark:text-amber-400 mt-0.5">Made by Prem</p>
+            </div>
+            <div>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Secure LAN Test Environment
+              </span>
+            </div>
           </div>
         </div>
 
@@ -420,6 +424,85 @@
       <p class="text-center text-[11px] text-slate-400 dark:text-slate-500 font-medium pt-2">
         ExamShield LAN • Next-Gen Cyber Proctor Node • Made by Prem
       </p>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 2. MERGED WAITING ROOM SCREEN (MATCHING IMAGE 9 / DEMO) -->
+  <!-- ======================================================== -->
+  <div id="waitingScreen" class="flex-1 flex items-center justify-center p-4 py-8 hidden">
+    <div class="glass-panel max-w-xl w-full p-8 text-center space-y-6">
+      
+      <!-- Live Sonar/Radar Animation (Concentric Rings with Radio Pulse Core) -->
+      <div class="radar-wrapper">
+        <div class="radar-ring"></div>
+        <div class="radar-ring"></div>
+        <div class="radar-ring"></div>
+        <div class="radar-core">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/>
+            <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/>
+            <circle cx="12" cy="12" r="2" fill="currentColor"/>
+            <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/>
+            <path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Live Waiting Badge -->
+      <div class="flex justify-center">
+        <div class="live-badge">
+          <span class="ping-dot"></span>
+          <span>WAITING ROOM: TEACHER MUST START EXAM</span>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Terminal Verified &amp; Ready</h2>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-2 leading-relaxed">
+          Your workstation has been logged by the Proctor Console. When the proctor starts the test, your exam will unlock automatically with the countdown timer.
+        </p>
+      </div>
+
+      <!-- Candidate Parameters Card (3 Columns from Image 9) -->
+      <div class="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 text-left">
+        <div>
+          <div class="text-[11px] text-slate-400 uppercase font-bold tracking-wider">Candidate</div>
+          <div id="waitingCandidateDisplay" class="text-sm font-bold text-slate-900 dark:text-white mt-1 truncate">Candidate</div>
+        </div>
+        <div>
+          <div class="text-[11px] text-slate-400 uppercase font-bold tracking-wider">Duration</div>
+          <div id="waitingDurationDisplay" class="text-sm font-bold text-slate-900 dark:text-white mt-1">60 Minutes</div>
+        </div>
+        <div>
+          <div class="text-[11px] text-slate-400 uppercase font-bold tracking-wider">Subject</div>
+          <div id="waitingSubjectDisplay" class="text-sm font-bold text-slate-900 dark:text-white mt-1 truncate">Certification Exam</div>
+        </div>
+      </div>
+
+      <!-- Awaiting Broadcast Signal Pill -->
+      <div class="p-4 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center gap-3 text-xs font-semibold text-indigo-700 dark:text-indigo-300">
+        <span class="relative flex h-3 w-3">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+        </span>
+        <span id="waitingStatusBroadcastText">Awaiting Host Broadcast &bull; Screen Locked</span>
+      </div>
+
+      <p class="text-center text-[11px] text-slate-400 font-medium">
+        Terminal ID: <span id="waitingTerminalId" class="font-mono font-bold text-slate-600 dark:text-slate-300">--</span> &bull; Status: <span class="text-emerald-500 font-bold">Synchronized</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Countdown Overlay (3-2-1 START) -->
+  <div id="countdown-overlay" class="countdown-overlay">
+    <div style="font-size:14px;text-transform:uppercase;letter-spacing:3px;color:rgba(255,255,255,0.7);margin-bottom:12px;font-weight:800;">
+      Teacher Has Started The Examination
+    </div>
+    <div id="countdown-display" class="countdown-number">3</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:16px;">
+      Locking screen into secure fullscreen mode...
     </div>
   </div>
 
@@ -644,84 +727,76 @@
 
   <!-- ======================================================== -->
   <!-- 3. SCORECARD & RESULT SCREEN (EXPLANATIONS EXCLUDED) -->
+    <!-- ======================================================== -->
+  <!-- 4. MERGED SCORECARD SCREEN (MATCHING IMAGE 4 & 6) -->
   <!-- ======================================================== -->
   <div id="resultScreen" class="flex-1 flex items-center justify-center p-4 hidden">
-    <div class="glass-panel max-w-xl w-full p-8 space-y-6 text-center">
+    <div class="glass-panel max-w-xl w-full p-6 sm:p-8 space-y-6 text-center">
       
-      <!-- Top Distinction Shimmer Ribbon -->
+      <!-- Top Distinction Shimmer Badge (No Raw Emoji) -->
       <div class="flex justify-center mb-1">
-        <div class="gold-shimmer-badge">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+        <div id="resultDistinctionBadge" class="gold-shimmer-badge">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
           </svg>
-          <span>OFFICIAL EXAMINATION SCORECARD</span>
-        </div>
-      </div>
-      
-      <div class="flex flex-col items-center justify-center space-y-2">
-        <img src="/logo.png" alt="ExamShield" class="w-16 h-16 rounded-2xl shadow-lg border-2 border-indigo-500/30 object-cover" />
-        <div id="resultStatusIcon" class="flex items-center justify-center my-2">
-          <svg class="w-16 h-16 drop-shadow-xl" viewBox="0 0 48 48" fill="none">
-            <defs>
-              <linearGradient id="goldGradDefault" x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#fde047"/>
-                <stop offset="50%" stop-color="#eab308"/>
-                <stop offset="100%" stop-color="#ca8a04"/>
-              </linearGradient>
-            </defs>
-            <path d="M12 8H36V22C36 29 30 34 24 34C18 34 12 29 12 22V8Z" fill="url(#goldGradDefault)" />
-            <path d="M12 12H6C4.9 12 4 12.9 4 14V18C4 22.4 7.6 26 12 26V22H8V16H12V12Z" fill="#eab308"/>
-            <path d="M36 12H42C43.1 12 44 12.9 44 14V18C44 22.4 40.4 26 36 26V22H40V16H36V12Z" fill="#eab308"/>
-            <path d="M20 34H28V40H20V34Z" fill="#ca8a04"/>
-            <rect x="14" y="40" width="20" height="4" rx="2" fill="#a16207"/>
-            <circle cx="24" cy="18" r="4" fill="#ffffff" fill-opacity="0.4"/>
-          </svg>
+          <span id="resultRankText">DISTINCTION • RANK 1 (SCORE: 88%)</span>
         </div>
       </div>
 
       <div>
-        <h2 id="resultStatusHeading" class="text-2xl font-black text-slate-900 dark:text-white">Examination Completed</h2>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Your responses have been recorded and graded successfully.</p>
+        <h1 id="resultStatusHeading" class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Examination Submitted!</h1>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Official Response Audit &amp; Instant Result Card</p>
       </div>
 
-      <!-- Main Score Card -->
-      <div class="grid grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-700">
-        <div>
-          <span class="text-xs text-slate-400 uppercase tracking-wider block font-bold">Total Score</span>
-          <span id="finalScoreDisplay" class="text-3xl font-black text-indigo-600 dark:text-indigo-400">0 / 0</span>
+      <!-- Animated Radial Score Meter & Number Counter (Exact Match of Image 4 & 6) -->
+      <div class="score-circle-wrapper">
+        <svg class="score-svg" viewBox="0 0 200 200">
+          <circle class="score-track" cx="100" cy="100" r="90" />
+          <circle id="finalScoreFillRing" class="score-fill" cx="100" cy="100" r="90" />
+        </svg>
+        <div class="score-center-text">
+          <span id="finalPercentageDisplay" class="score-percentage">0%</span>
+          <span id="finalPassBadge" class="text-xs font-black tracking-widest text-emerald-500 uppercase mt-1">PASSED</span>
         </div>
-        <div>
-          <span class="text-xs text-slate-400 uppercase tracking-wider block font-bold">Percentage</span>
-          <span id="finalPercentageDisplay" class="text-3xl font-black text-slate-800 dark:text-white">0%</span>
+      </div>
+
+      <!-- Breakdown 3 Stats Grid (Correct Answers, Time Spent, Violations) -->
+      <div class="grid grid-cols-3 gap-3 text-left">
+        <div class="p-3 sm:p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Correct Answers</div>
+          <div id="finalCorrectDisplay" class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">0 / 0</div>
+        </div>
+        <div class="p-3 sm:p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Time Spent</div>
+          <div id="finalTimeDisplay" class="text-xl sm:text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1">--</div>
+        </div>
+        <div class="p-3 sm:p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Violations</div>
+          <div id="finalViolationsDisplay" class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">0 (Clean)</div>
         </div>
       </div>
 
       <!-- Detailed Breakdown: Right, Wrong, Skipped -->
       <div class="grid grid-cols-3 gap-3">
-        <div class="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-center">
-          <span class="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider block">✓ Right</span>
-          <span id="finalRightDisplay" class="text-2xl font-black text-emerald-600 dark:text-emerald-400">0</span>
+        <div class="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-center">
+          <span class="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider block">✓ Right</span>
+          <span id="finalRightDisplay" class="text-lg font-black text-emerald-600 dark:text-emerald-400">0</span>
         </div>
-        <div class="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-center">
-          <span class="text-[11px] font-bold text-rose-700 dark:text-rose-300 uppercase tracking-wider block">✗ Wrong</span>
-          <span id="finalWrongDisplay" class="text-2xl font-black text-rose-600 dark:text-rose-400">0</span>
+        <div class="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-center">
+          <span class="text-[10px] font-bold text-rose-700 dark:text-rose-300 uppercase tracking-wider block">✗ Wrong</span>
+          <span id="finalWrongDisplay" class="text-lg font-black text-rose-600 dark:text-rose-400">0</span>
         </div>
-        <div class="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
-          <span class="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider block">⚪ Skipped</span>
-          <span id="finalUnattemptedDisplay" class="text-2xl font-black text-slate-700 dark:text-slate-300">0</span>
+        <div class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
+          <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider block">⚪ Skipped</span>
+          <span id="finalUnattemptedDisplay" class="text-lg font-black text-slate-700 dark:text-slate-300">0</span>
         </div>
       </div>
 
       <!-- Competitive Mode Formula Note (Shown when competitive mode is active) -->
       <div id="competitiveScoreFormulaNote" class="hidden p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/80 text-xs text-amber-900 dark:text-amber-200 font-medium text-center">
-        <svg class="w-4 h-4 text-amber-400 inline-block align-middle mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <svg class="w-4 h-4 text-amber-500 inline-block align-middle mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
         </svg><strong>Competitive Marking:</strong> Total Score = <code>(Right &times; 4) &minus; (Wrong &times; 1)</code>
-      </div>
-
-      <!-- Result Badge -->
-      <div id="finalPassBadge" class="py-2 px-4 rounded-xl text-sm font-black uppercase tracking-wider inline-block">
-        PASSED
       </div>
 
       <!-- Topic-wise Score Breakdown Table -->
@@ -732,13 +807,19 @@
         </div>
       </div>
 
-      <!-- View Answers / Review Paper Button & Return Button -->
+      <!-- Action Buttons (Replay Confetti & Score Counter, View Answers, Return) -->
       <div class="pt-2 space-y-2.5">
-        <button id="viewAnswersBtn" onclick="handleViewAnswersClick()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider rounded-2xl shadow-lg transition flex items-center justify-center gap-2 active:scale-95">
-          <span>📋 View Answers & Review Paper</span>
-        </button>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button onclick="replayConfettiAndScoreAnim()" class="btn-shimmer flex-1 w-full sm:w-auto py-3 px-5 rounded-xl bg-indigo-600 text-white font-bold text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>Replay Confetti &amp; Score Counter</span>
+          </button>
+          <button id="viewAnswersBtn" onclick="handleViewAnswersClick()" class="flex-1 w-full sm:w-auto py-3 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
+            <span>📋 View Answers &amp; Review</span>
+          </button>
+        </div>
         <p id="reviewStatusNotice" class="text-[11px] font-medium hidden text-center"></p>
-        <button onclick="returnToJoinScreen()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-2xl transition flex items-center justify-center gap-1.5 active:scale-95">
+        <button onclick="returnToJoinScreen()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer">
           <span>↩ Return to Candidate Login</span>
         </button>
       </div>
@@ -1201,54 +1282,57 @@
       });
 
       // Populate waiting card
-      const cName = document.getElementById('waitingCandidateName');
+      const cName = document.getElementById('waitingCandidateDisplay');
       if (cName) cName.innerText = data.student_name || 'Candidate';
-      const cBatch = document.getElementById('waitingCandidateBatch');
-      if (cBatch) cBatch.innerText = data.batch_code || 'BATCH-01';
-      const cTitle = document.getElementById('waitingExamTitle');
-      if (cTitle) cTitle.innerText = data.exam_title || 'Examination';
-      const cCount = document.getElementById('waitingQuestionCount');
-      if (cCount) cCount.innerText = (data.questions ? data.questions.length : '--') + ' Questions';
+      const cDuration = document.getElementById('waitingDurationDisplay');
+      if (cDuration) cDuration.innerText = (data.duration_minutes || 60) + ' Minutes';
+      const cSubject = document.getElementById('waitingSubjectDisplay');
+      if (cSubject) cSubject.innerText = data.exam_title || 'Certification Exam';
+      const cTerminal = document.getElementById('waitingTerminalId');
+      if (cTerminal) cTerminal.innerText = 'WS-' + String(data.session_id || '').slice(-6).toUpperCase();
 
       // Switch screens
       document.getElementById('joinScreen').classList.add('hidden');
-      document.getElementById('waitingScreen').classList.remove('hidden');
-      showToast('⏳ Joined Waiting Lounge. Stand by for instructor launch.');
+      const ws = document.getElementById('waitingScreen');
+      if (ws) ws.classList.remove('hidden');
+      showToast('⏳ Terminal Verified. Awaiting instructor start signal.');
     }
 
     function startCountdownAndLaunchExam() {
       if (!pendingExamData) return;
-      const overlay = document.getElementById('countdownOverlay');
-      const digits = document.getElementById('countdownDigits');
-      if (!overlay || !digits) {
+      const overlay = document.getElementById('countdown-overlay');
+      const countEl = document.getElementById('countdown-display');
+      if (!overlay || !countEl) {
         launchExamFromWaiting();
         return;
       }
 
-      overlay.classList.remove('hidden');
+      overlay.classList.add('active');
       let count = 3;
-      digits.innerText = count;
+      countEl.textContent = count;
+      countEl.style.color = '#ffffff';
 
-      if (typeof AudioFX !== 'undefined' && AudioFX.playClick) {
+      if (typeof AudioFX !== 'undefined' && AudioFX.play) {
+        AudioFX.play(600, 0.08);
+      } else if (typeof AudioFX !== 'undefined' && AudioFX.playClick) {
         AudioFX.playClick();
       }
 
       const iv = setInterval(() => {
         count--;
         if (count > 0) {
-          digits.innerText = count;
-          digits.classList.remove('scale-125');
-          void digits.offsetWidth; // re-trigger animation
-          digits.classList.add('scale-125');
-          if (typeof AudioFX !== 'undefined' && AudioFX.playClick) AudioFX.playClick();
+          countEl.textContent = count;
+          countEl.style.animation = 'none';
+          void countEl.offsetWidth; // re-trigger animation
+          countEl.style.animation = 'countdown-pop 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+          if (typeof AudioFX !== 'undefined' && AudioFX.play) AudioFX.play(600, 0.08);
         } else if (count === 0) {
-          digits.innerText = 'GO!';
-          digits.classList.remove('text-white');
-          digits.classList.add('text-emerald-400');
+          countEl.textContent = 'START!';
+          countEl.style.color = '#10b981';
           if (typeof AudioFX !== 'undefined' && AudioFX.playSuccess) AudioFX.playSuccess();
         } else {
           clearInterval(iv);
-          overlay.classList.add('hidden');
+          overlay.classList.remove('active');
           launchExamFromWaiting();
         }
       }, 1000);
@@ -1355,12 +1439,21 @@
             student_token: data.student_token || '',
             student_name: data.student_name,
             exam_set: data.exam_set,
-            exam_title: data.exam_title
+            exam_title: data.exam_title,
+            batch_code: data.batch_code || 'BATCH-01'
           };
           sessionStorage.setItem('examshield_student_token', data.student_token || '');
           document.getElementById('joinScreen').classList.add('hidden');
           document.getElementById('resultScreen').classList.remove('hidden');
           displayFinalResults(data.result);
+          return;
+        }
+
+        // CRITICAL GUARD: If batch is in Waiting Room mode, candidate MUST wait in waiting lounge
+        if (data.is_waiting || data.status === 'waiting' || data.exam_status === 'not_started') {
+          btn.disabled = false;
+          btn.innerHTML = `<svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none"><path d="M12 2C7 2 4 8 4 13C4 16 6 18 8 19L12 17L16 19C18 18 20 16 20 13C20 8 17 2 12 2Z" fill="#3b82f6"/><circle cx="12" cy="9" r="2.5" fill="#e0f2fe"/><path d="M9 19L12 23L15 19L12 17L9 19Z" fill="#ef4444"/><path d="M4 13L2 16L5 17L4 13Z" fill="#93c5fd"/><path d="M20 13L22 16L19 17L20 13Z" fill="#93c5fd"/></svg><span>Start Examination</span><span>&rarr;</span>`;
+          enterWaitingRoom(data);
           return;
         }
 
@@ -1953,13 +2046,24 @@
       }
     }
 
+    function replayConfettiAndScoreAnim() {
+      if (!lastResultData) return;
+      if (typeof ConfettiMgr !== 'undefined' && ConfettiMgr.fire) {
+        ConfettiMgr.fire(180);
+      }
+      if (typeof AudioFX !== 'undefined' && AudioFX.playSuccess) {
+        AudioFX.playSuccess();
+      }
+      animateRadialScorecard(lastResultData);
+    }
+
     function animateRadialScorecard(result) {
       const targetPct = Math.round(result.percentage || 0);
       const isPassed = !!result.passed;
       const scoreRing = document.getElementById('finalScoreFillRing');
       const scoreText = document.getElementById('finalPercentageDisplay');
       const passBadge = document.getElementById('finalPassBadge');
-      const distinctionText = document.getElementById('scorecardDistinctionText');
+      const distinctionText = document.getElementById('scorecardDistinctionText') || document.getElementById('resultRankText');
 
       if (scoreRing) {
         scoreRing.style.strokeDashoffset = '565';

@@ -159,12 +159,15 @@ router.post('/student/register', asyncHandler(async (req, res) => {
     }
 
     // Student is reconnecting or recovering an in-progress exam
+    const isWaiting = (batchExamStatus === 'not_started') || (existing.is_waiting === 1);
     const sanitizedQuestions = sanitizeQuestionsForClient(existing.assigned_questions);
     db.addAuditLog(cleanName, 'RECONNECTION', `Student reconnected to session ${existing.id} in batch ${existing.batch_code}`);
 
     return res.json({
       success: true,
       is_reconnect: true,
+      is_waiting: isWaiting,
+      exam_status: batchExamStatus,
       session_id: existing.id,
       student_token: existing.auth_token,
       auth_token: existing.auth_token,
@@ -177,7 +180,7 @@ router.post('/student/register', asyncHandler(async (req, res) => {
       per_question_time_enabled: !!exam.per_question_time_enabled,
       per_question_time_seconds: exam.per_question_time_seconds || 60,
       competitive_mode_enabled: !!exam.competitive_mode_enabled,
-      status: existing.status,
+      status: isWaiting ? 'waiting' : existing.status,
       freeze_reason: existing.freeze_reason,
       answers: existing.answers,
       marked_for_review: existing.marked_for_review,
