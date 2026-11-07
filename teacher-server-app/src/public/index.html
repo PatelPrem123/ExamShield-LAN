@@ -121,48 +121,9 @@
     .btn-shimmer:hover::before {
       left: 150%;
     }
-    .tooltip-wrapper {
-      position: relative;
-      display: inline-block;
-      width: 100%;
-    }
     #paletteGrid {
       overflow-x: hidden !important;
       scrollbar-width: thin;
-    }
-    .vengeance-tooltip {
-      position: absolute;
-      bottom: calc(100% + 8px);
-      left: 50%;
-      transform: translateX(-50%) translateY(6px) scale(0.92);
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(8px);
-      color: #ffffff;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.5);
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-      z-index: 50;
-    }
-    .vengeance-tooltip::after {
-      content: "";
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      border-width: 4px;
-      border-style: solid;
-      border-color: rgba(15, 23, 42, 0.95) transparent transparent transparent;
-    }
-    .tooltip-wrapper:hover .vengeance-tooltip {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0) scale(1);
     }
     .slide-left-in {
       animation: slide-in-from-right 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -885,7 +846,7 @@
           </div>
 
           <!-- Question Grid Numbers (1 to N) -->
-          <div id="paletteGrid" class="grid grid-cols-5 gap-2 overflow-y-auto overflow-x-hidden pr-0.5 no-scrollbar" style="max-height: 260px; overflow-x: hidden !important;">
+          <div id="paletteGrid" class="grid grid-cols-5 gap-2 overflow-y-auto overflow-x-hidden p-1.5 no-scrollbar" style="max-height: 260px; overflow-x: hidden !important;">
             <!-- Dynamically populated buttons -->
           </div>
 
@@ -2202,13 +2163,10 @@
           const currentBadge = isCurrent ? ' (Viewing)' : '';
 
           return `
-            <div class="tooltip-wrapper">
-              <button onclick="jumpToQuestion(${idx})"
-                class="w-full h-9 rounded-xl text-xs font-bold transition flex items-center justify-center cursor-pointer active:scale-95 ${bgClass} ${borderClass}">
-                ${idx + 1}
-              </button>
-              <div class="vengeance-tooltip">Q${idx + 1}: ${tooltipStatus}${currentBadge}</div>
-            </div>
+            <button onclick="jumpToQuestion(${idx})" title="Question ${idx + 1}: ${tooltipStatus}${currentBadge}"
+              class="w-full h-9 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center cursor-pointer active:scale-95 ${bgClass} ${borderClass}">
+              ${idx + 1}
+            </button>
           `;
         }).join('');
 

@@ -372,49 +372,6 @@ html:not(.dark) .action-pill-btn:hover {
    3. VENGEANCE UI: SPRING TOOLTIPS ON QUESTION PALETTE
    ========================================================================== */
 
-.tooltip-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-}
-
-.vengeance-tooltip {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%) translateY(6px) scale(0.92);
-  background: rgba(15, 23, 42, 0.96);
-  backdrop-filter: blur(8px);
-  color: #ffffff;
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-size: 11px;
-  font-weight: 700;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.5);
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  z-index: 50;
-}
-
-.vengeance-tooltip::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 4px;
-  border-style: solid;
-  border-color: rgba(15, 23, 42, 0.96) transparent transparent transparent;
-}
-
-.tooltip-wrapper:hover .vengeance-tooltip {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0) scale(1);
-}
-
 /* ==========================================================================
    4. LIVE QUESTION OPTIONS 2.0 (HOVER LIFT & SELECTION GLOW)
    ========================================================================== */
