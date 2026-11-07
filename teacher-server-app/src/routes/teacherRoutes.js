@@ -765,7 +765,12 @@ router.post('/teacher/exam/stop', requireAdminAuth, asyncHandler(async (req, res
   let autoSubmitted = 0;
   for (const session of activeSessions) {
     try {
-      const scoreData = gradeSession(session, session.answers, exam);
+      const scoreData = gradeSession(
+        session.assigned_questions,
+        session.answers,
+        exam ? exam.passing_percentage : 70,
+        exam ? !!exam.competitive_mode_enabled : false
+      );
       db.submitStudentSession(session.id, scoreData);
       logSessionToHistory(session, scoreData, exam);
       autoSubmitted++;
