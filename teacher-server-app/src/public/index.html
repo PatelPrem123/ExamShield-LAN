@@ -19,7 +19,16 @@
   <link rel="icon" type="image/png" href="/logo.png">
   <script src="/socket.io/socket.io.js"></script>
   <link rel="stylesheet" href="/styles.css">
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS CDN (with clean console filter) -->
+  <script>
+    (function(){
+      const _origWarn = console.warn;
+      console.warn = function(...args) {
+        if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+        _origWarn.apply(console, args);
+      };
+    })();
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -2474,7 +2483,7 @@
         btn.innerHTML = "<svg class=\"w-4 h-4 inline mr-1.5\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><polyline points=\"14 2 14 8 20 8\"/></svg><span>View Answers & Review Paper</span>";
         if (notice) {
           notice.className = "text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold text-center";
-          notice.innerHTML = "<svg class=\"w-4 h-4 text-emerald-500 inline mr-1\" viewBox=\"0 0 24 24" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"><polyline points=\"20 6 9 17 4 12\"/></svg>Answer key & review unlocked by instructor.";
+          notice.innerHTML = "<svg class=\"w-4 h-4 text-emerald-500 inline mr-1\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"><polyline points=\"20 6 9 17 4 12\"/></svg>Answer key & review unlocked by instructor.";
           notice.classList.remove('hidden');
         }
       } else {
@@ -2483,7 +2492,7 @@
         btn.innerHTML = "<svg class=\"w-4 h-4 inline mr-1.5\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><rect x=\"3\" y=\"11\" width=\"18\" height=\"11\" rx=\"2\" ry=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg><span>Answers Locked by Instructor</span>";
         if (notice) {
           notice.className = "text-[11px] text-amber-600 dark:text-amber-400 font-medium text-center";
-          notice.innerText = "⏳ Instructor has not published the answer review yet. This will unlock automatically once published.";
+          notice.innerHTML = "<svg class=\"w-4 h-4 text-amber-500 inline mr-1 animate-pulse\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><polyline points=\"12 6 12 12 16 14\"/></svg>Instructor has not published the answer review yet. This will unlock automatically once published.";
           notice.classList.remove('hidden');
         }
       }

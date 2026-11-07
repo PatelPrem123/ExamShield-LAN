@@ -7,7 +7,16 @@
   <link rel="icon" type="image/png" href="/admin/logo.png">
   <script src="/socket.io/socket.io.js"></script>
   <link rel="stylesheet" href="/admin/styles.css">
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS CDN (with clean console filter) -->
+  <script>
+    (function(){
+      const _origWarn = console.warn;
+      console.warn = function(...args) {
+        if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+        _origWarn.apply(console, args);
+      };
+    })();
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -48,21 +57,67 @@
       animation: breathing-emerald 2.5s infinite ease-in-out;
     }
 
-    /* Dropdown Options Theming (Image 1 Parity) */
+    /* Dropdown Options Theming (Image 1 & 8 Parity) */
     select {
       color-scheme: light dark;
     }
     select option {
       background-color: #ffffff;
       color: #0f172a;
-      padding: 6px 12px;
+      padding: 8px 12px;
       font-weight: 600;
+      font-size: 13px;
     }
     html.dark select option {
-      background-color: #1e293b;
+      background-color: #0f172a;
       color: #f8fafc;
-      padding: 6px 12px;
+      padding: 8px 12px;
       font-weight: 600;
+      font-size: 13px;
+    }
+
+    /* Light Theme Glowing Effects (Modern Luminescent Polish) */
+    html:not(.dark) .tab-btn[class*="bg-indigo-50"],
+    html:not(.dark) .tab-btn.active {
+      box-shadow: 0 4px 16px -2px rgba(99, 102, 241, 0.35), 0 0 14px rgba(99, 102, 241, 0.2) !important;
+    }
+    html:not(.dark) #examLifecycleControlCard {
+      box-shadow: 0 10px 30px -4px rgba(99, 102, 241, 0.12), 0 0 20px rgba(99, 102, 241, 0.06) !important;
+      border-color: rgba(199, 210, 254, 0.8) !important;
+    }
+    html:not(.dark) .btn-shimmer,
+    html:not(.dark) #btnStartExamLifecycle {
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.42), 0 0 14px rgba(16, 185, 129, 0.25) !important;
+    }
+    html:not(.dark) #btnStartExamLifecycle:hover {
+      box-shadow: 0 6px 24px rgba(16, 185, 129, 0.55), 0 0 18px rgba(16, 185, 129, 0.35) !important;
+      transform: translateY(-1px);
+    }
+    html:not(.dark) #btnStopExamLifecycle {
+      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35) !important;
+    }
+    html:not(.dark) #btnWaitingExamLifecycle {
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35) !important;
+    }
+    html:not(.dark) main .bg-white {
+      box-shadow: 0 6px 24px -2px rgba(99, 102, 241, 0.08), 0 0 16px rgba(99, 102, 241, 0.04);
+      border-color: rgba(224, 231, 255, 0.85);
+    }
+    /* Export buttons luminous hover (Image 9) */
+    .action-export-btn,
+    button[onclick*="downloadMasterExcel"],
+    button[onclick*="openHistoryModal"],
+    button[onclick*="backupExamDatabase"],
+    button[onclick*="dbRestoreInput"] {
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .action-export-btn:hover,
+    button[onclick*="downloadMasterExcel"]:hover,
+    button[onclick*="openHistoryModal"]:hover,
+    button[onclick*="backupExamDatabase"]:hover,
+    button[onclick*="dbRestoreInput"]:hover {
+      transform: translateY(-1.5px);
+      box-shadow: 0 6px 20px -2px rgba(99, 102, 241, 0.35);
     }
 
     html {
@@ -498,27 +553,42 @@ Loading history...
       </div>
     </div>
 
-    <!-- TABS BAR WITH MODERN SVG ICONS & THEME ADAPTATION -->
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 border-t border-slate-200 dark:border-slate-800 flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar py-1.5 text-xs sm:text-sm">
-      <button onclick="switchTab('monitor')" id="tabBtn-monitor" class="tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-indigo-600 dark:border-emerald-400 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-white font-bold flex items-center gap-2 whitespace-nowrap shadow-xs shrink-0 cursor-pointer">
-        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        <span>Live Monitor</span>
+    <!-- TABS BAR WITH DRAG-TO-SCROLL, WHEEL SCROLL & TOUCH MOMENTUM (REACH RESULTS & REPORTS EASILY) -->
+    <div class="relative max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 border-t border-slate-200 dark:border-slate-800 flex items-center">
+      <!-- Left Scroll Arrow -->
+      <button type="button" id="tabsScrollLeftBtn" onclick="scrollTabsNav(-200)" aria-label="Scroll tabs left"
+        class="shrink-0 w-7 h-7 rounded-lg hidden sm:flex items-center justify-center bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 shadow-xs border border-slate-200 dark:border-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 hover:scale-105 active:scale-95 transition z-10 cursor-pointer mr-1" title="Scroll left">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <button onclick="switchTab('questions')" id="tabBtn-questions" class="tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 flex items-center gap-2 whitespace-nowrap transition shrink-0 cursor-pointer">
-        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        <span>Question Bank</span>
-      </button>
-      <button onclick="switchTab('settings')" id="tabBtn-settings" class="tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 flex items-center gap-2 whitespace-nowrap transition shrink-0 cursor-pointer">
-        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <span>Exam Settings</span>
-      </button>
-      <button onclick="switchTab('batches')" id="tabBtn-batches" class="tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 flex items-center gap-2 whitespace-nowrap transition shrink-0 cursor-pointer">
-        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-        <span>Batch Manager</span>
-      </button>
-      <button onclick="switchTab('results')" id="tabBtn-results" class="tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 flex items-center gap-2 whitespace-nowrap transition shrink-0 cursor-pointer">
-        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        <span>Results & Reports</span>
+
+      <!-- Scrollable Tabs Track -->
+      <div id="teacherTabsNav" class="flex-1 flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar py-1.5 text-xs sm:text-sm select-none cursor-grab active:cursor-grabbing scroll-smooth" style="-webkit-overflow-scrolling: touch; touch-action: pan-x; scroll-behavior: smooth;">
+        <button onclick="switchTab('monitor')" id="tabBtn-monitor" class="tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-indigo-600 dark:border-emerald-400 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-white font-bold flex items-center gap-2 whitespace-nowrap shadow-xs shrink-0 cursor-pointer transition">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <span>Live Monitor</span>
+        </button>
+        <button onclick="switchTab('questions')" id="tabBtn-questions" class="tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 flex items-center gap-2 whitespace-nowrap transition shrink-0 cursor-pointer">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span>Question Bank</span>
+        </button>
+        <button onclick="switchTab('settings')" id="tabBtn-settings" class="tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 flex items-center gap-2 whitespace-nowrap transition shrink-0 cursor-pointer">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Exam Settings</span>
+        </button>
+        <button onclick="switchTab('batches')" id="tabBtn-batches" class="tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 flex items-center gap-2 whitespace-nowrap transition shrink-0 cursor-pointer">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          <span>Batch Manager</span>
+        </button>
+        <button onclick="switchTab('results')" id="tabBtn-results" class="tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 flex items-center gap-2 whitespace-nowrap transition shrink-0 cursor-pointer">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Results & Reports</span>
+        </button>
+      </div>
+
+      <!-- Right Scroll Arrow -->
+      <button type="button" id="tabsScrollRightBtn" onclick="scrollTabsNav(200)" aria-label="Scroll tabs right"
+        class="shrink-0 w-7 h-7 rounded-lg hidden sm:flex items-center justify-center bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 shadow-xs border border-slate-200 dark:border-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 hover:scale-105 active:scale-95 transition z-10 cursor-pointer ml-1" title="Scroll right">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
     </div>
   </header>
@@ -1342,10 +1412,74 @@ Loading history...
       updateTeacherThemeUI(isDark);
     }
 
+    function scrollTabsNav(offset) {
+      const nav = document.getElementById('teacherTabsNav');
+      if (nav) {
+        nav.scrollBy({ left: offset, behavior: 'smooth' });
+      }
+    }
+
+    function initTabsDragScroll() {
+      const nav = document.getElementById('teacherTabsNav');
+      if (!nav) return;
+      let isDown = false;
+      let startX = 0;
+      let scrollLeft = 0;
+      let hasDragged = false;
+
+      nav.addEventListener('mousedown', (e) => {
+        isDown = true;
+        hasDragged = false;
+        nav.classList.add('cursor-grabbing');
+        startX = e.pageX - nav.offsetLeft;
+        scrollLeft = nav.scrollLeft;
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDown) {
+          isDown = false;
+          nav.classList.remove('cursor-grabbing');
+        }
+      });
+
+      nav.addEventListener('mouseleave', () => {
+        if (isDown) {
+          isDown = false;
+          nav.classList.remove('cursor-grabbing');
+        }
+      });
+
+      nav.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - nav.offsetLeft;
+        const walk = (x - startX) * 1.6;
+        if (Math.abs(walk) > 4) hasDragged = true;
+        nav.scrollLeft = scrollLeft - walk;
+      });
+
+      nav.addEventListener('click', (e) => {
+        if (hasDragged) {
+          e.preventDefault();
+          e.stopPropagation();
+          hasDragged = false;
+        }
+      }, true);
+
+      // Support horizontal scrolling with mouse wheel (tilt or vertical wheel)
+      nav.addEventListener('wheel', (e) => {
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+          e.preventDefault();
+          nav.scrollLeft += e.deltaY;
+        }
+      }, { passive: false });
+    }
+
     // Sync initial theme toggle UI on load
     document.addEventListener('DOMContentLoaded', () => {
       const isDark = document.documentElement.classList.contains('dark');
       updateTeacherThemeUI(isDark);
+      initTabsDragScroll();
     });
 
     // Helper: Stored Admin Token
@@ -1676,6 +1810,11 @@ Loading history...
       if (tabId === 'results') refreshStudentList();
       if (tabId === 'batches') loadBatches();
       if (tabId === 'questions') loadQuestionsPreview();
+
+      const activeBtn = document.getElementById(`tabBtn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
     }
 
     function togglePerQInput(enabled) {
