@@ -92,6 +92,11 @@ function initDb() {
   safeAddColumn('student_sessions', "auth_token TEXT");
   safeAddColumn('exams', "active_batch_code TEXT DEFAULT 'BATCH-01'");
   safeAddColumn('student_sessions', "batch_code TEXT DEFAULT 'BATCH-01'");
+  safeAddColumn('student_sessions', "is_waiting INTEGER DEFAULT 0");
+  safeAddColumn('exams', "exam_status TEXT DEFAULT 'not_started'");
+  safeAddColumn('batches', "exam_status TEXT DEFAULT 'not_started'");
+  safeAddColumn('batches', "started_at DATETIME");
+  safeAddColumn('batches', "ended_at DATETIME");
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS batches (
@@ -332,6 +337,67 @@ function createBatch(batchCode, batchName, setActive = false) {
   }
 
   return db.prepare('SELECT * FROM batches WHERE batch_code = ?').get(cleanCode);
+}
+
+function getBatchExamStatus(batchCode) {
+  if (!batchCode) {
+    const activeExam = getActiveExam();
+    batchCode = getActiveBatchCode(activeExam ? activeExam.id : null);
+  }
+  const cleanCode = batchCode.trim().toUpperCase();
+  const row = db.prepare('SELECT exam_status FROM batches WHERE batch_code = ?').get(cleanCode);
+  return (row && row.exam_status) ? row.exam_status : 'not_started';
+}
+
+function setBatchExamStatus(batchCode, status) {
+  const cleanCode = (batchCode || 'BATCH-01').trim().toUpperCase();
+  const validStatus = ['not_started', 'active', 'ended'].includes(status) ? status : 'not_started';
+  const now = new Date().toISOString();
+
+  let query = 'UPDATE batches SET exam_status = ?';
+  const params = [validStatus];
+
+  if (validStatus === 'active') {
+    query += ', started_at = COALESCE(started_at, ?)';
+    params.push(now);
+  } else if (validStatus === 'ended') {
+    query += ', ended_at = ?';
+    params.push(now);
+  }
+  query += ' WHERE batch_code = ?';
+  params.push(cleanCode);
+
+  db.prepare(query).run(...params);
+
+  // If exam starts, release waiting students to in_progress
+  if (validStatus === 'active') {
+    db.prepare(`
+      UPDATE student_sessions
+      SET is_waiting = 0, status = 'in_progress', start_time = ?
+      WHERE batch_code = ? AND (is_waiting = 1 OR status = 'waiting')
+    `).run(now, cleanCode);
+  }
+
+  return { batch_code: cleanCode, exam_status: validStatus };
+}
+
+function getWaitingStudents(batchCode) {
+  const cleanCode = (batchCode || 'BATCH-01').trim().toUpperCase();
+  return db.prepare(`
+    SELECT id, student_name, batch_code, exam_set, start_time, last_heartbeat
+    FROM student_sessions
+    WHERE batch_code = ? AND (is_waiting = 1 OR status = 'waiting')
+    ORDER BY start_time ASC
+  `).all(cleanCode);
+}
+
+function getWaitingStudentsCount(batchCode) {
+  const cleanCode = (batchCode || 'BATCH-01').trim().toUpperCase();
+  const row = db.prepare(`
+    SELECT COUNT(*) as count FROM student_sessions
+    WHERE batch_code = ? AND (is_waiting = 1 OR status = 'waiting')
+  `).get(cleanCode);
+  return (row && row.count) || 0;
 }
 
 function getBatchByCode(batchCode) {
@@ -601,6 +667,7 @@ function parseSessionRecord(row) {
     passed: !!row.passed,
     allow_review: !!row.allow_review,
     auth_token: row.auth_token || '',
+    is_waiting: !!row.is_waiting,
     correct_count: correctCount ?? 0,
     wrong_count: wrongCount ?? 0,
     unattempted_count: unattemptedCount ?? 0
@@ -726,6 +793,10 @@ module.exports = {
   setActiveBatch,
   getActiveBatchCode,
   deleteBatch,
+  getBatchExamStatus,
+  setBatchExamStatus,
+  getWaitingStudents,
+  getWaitingStudentsCount,
   updateAdminPin,
   verifyAdminPin,
   setPublishReviewAll,

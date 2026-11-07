@@ -41,6 +41,8 @@ router.get('/system/info', asyncHandler(async (req, res) => {
   const topics = db.getTopicsSummary(exam.id);
   const totalQuestions = topics.reduce((acc, t) => acc + t.count, 0);
   const activeBatch = db.getActiveBatchCode(exam.id);
+  const batchStatus = db.getBatchExamStatus ? db.getBatchExamStatus(activeBatch) : 'not_started';
+  const waitingCount = db.getWaitingStudentsCount ? db.getWaitingStudentsCount(activeBatch) : 0;
   const port = (req.socket && req.socket.localPort) || Number(process.env.PORT) || 3000;
 
   res.json({
@@ -50,9 +52,13 @@ router.get('/system/info', asyncHandler(async (req, res) => {
     admin_url: `http://${localIp}:${port}/admin`,
     student_url: `http://${localIp}:${port}`,
     active_batch: activeBatch,
+    exam_status: batchStatus,
+    waiting_count: waitingCount,
     exam: {
       ...exam,
       active_batch_code: activeBatch,
+      exam_status: batchStatus,
+      waiting_count: waitingCount,
       admin_pin: undefined,
       total_questions_in_pool: totalQuestions,
       topics
@@ -90,7 +96,16 @@ router.post('/student/register', asyncHandler(async (req, res) => {
     return res.status(404).json({ success: false, error: 'No active exam configured.' });
   }
 
-  const activeBatch = db.getActiveBatchCode(exam ? exam.id : null);
+  const activeBatch = req.body.batch_code ? req.body.batch_code.trim().toUpperCase() : db.getActiveBatchCode(exam ? exam.id : null);
+  const batchExamStatus = db.getBatchExamStatus ? db.getBatchExamStatus(activeBatch) : 'active';
+
+  if (batchExamStatus === 'ended') {
+    return res.status(403).json({
+      success: false,
+      error: 'The examination has already concluded for this batch. New registrations are closed.',
+      exam_status: 'ended'
+    });
+  }
 
   // Check if session already exists for this student in the active batch
   const existing = db.findActiveSessionByName(exam.id, cleanName, activeBatch);
@@ -126,9 +141,11 @@ router.post('/student/register', asyncHandler(async (req, res) => {
       };
 
       return res.json({
-        success: true,
-        is_reconnect: true,
-        session_id: existing.id,
+      success: true,
+      is_reconnect: true,
+      is_waiting: !!existing.is_waiting,
+      exam_status: batchExamStatus,
+      session_id: existing.id,
         student_token: existing.auth_token,
         auth_token: existing.auth_token,
         batch_code: existing.batch_code || activeBatch,
@@ -201,7 +218,8 @@ router.post('/student/register', asyncHandler(async (req, res) => {
     assigned_questions: assignedQuestions,
     answers: {},
     marked_for_review: [],
-    status: 'in_progress',
+    status: (batchExamStatus === 'not_started') ? 'waiting' : 'in_progress',
+    is_waiting: (batchExamStatus === 'not_started') ? 1 : 0,
     remaining_seconds: durationSeconds,
     auth_token: authToken
   });
@@ -216,6 +234,7 @@ router.post('/student/register', asyncHandler(async (req, res) => {
       batch_code: newSession.batch_code || activeBatch,
       exam_set: newSession.exam_set,
       status: newSession.status,
+      is_waiting: !!newSession.is_waiting,
       remaining_seconds: newSession.remaining_seconds,
       total_questions: assignedQuestions.length,
       answered_count: 0
@@ -226,6 +245,8 @@ router.post('/student/register', asyncHandler(async (req, res) => {
   res.json({
     success: true,
     is_reconnect: false,
+    is_waiting: !!newSession.is_waiting,
+    exam_status: batchExamStatus,
     session_id: newSession.id,
     student_token: authToken,
     auth_token: authToken,

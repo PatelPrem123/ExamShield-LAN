@@ -703,4 +703,123 @@ router.post('/teacher/database/restore', requireAdminAuth, upload.single('backup
   });
 }));
 
+// ----------------------------------------------------------------------------
+// EXAM LIFECYCLE MANAGEMENT (START / STOP / WAITING ROOM)
+// ----------------------------------------------------------------------------
+router.get('/teacher/exam-status', requireAdminAuth, asyncHandler(async (req, res) => {
+  const exam = db.getActiveExam();
+  const batchCode = req.query.batch || db.getActiveBatchCode(exam ? exam.id : null);
+  const status = db.getBatchExamStatus(batchCode);
+  const waitingStudents = db.getWaitingStudents(batchCode);
+  const waitingCount = db.getWaitingStudentsCount(batchCode);
+
+  res.json({
+    success: true,
+    batch_code: batchCode,
+    exam_status: status,
+    waiting_count: waitingCount,
+    waiting_students: waitingStudents
+  });
+}));
+
+router.post('/teacher/exam/start', requireAdminAuth, asyncHandler(async (req, res) => {
+  const { batch_code } = req.body;
+  const exam = db.getActiveExam();
+  const targetBatch = batch_code || db.getActiveBatchCode(exam ? exam.id : null);
+
+  const result = db.setBatchExamStatus(targetBatch, 'active');
+  db.addAuditLog('Teacher', 'EXAM_STARTED', `Live exam launched for batch ${targetBatch}`);
+
+  const io = req.app.get('io');
+  if (io) {
+    io.emit('exam_status_changed', { batch_code: targetBatch, exam_status: 'active' });
+    io.to('batch_' + targetBatch).emit('exam_started', {
+      batch_code: targetBatch,
+      exam_status: 'active',
+      started_at: new Date().toISOString()
+    });
+    io.emit('exam_started', {
+      batch_code: targetBatch,
+      exam_status: 'active',
+      started_at: new Date().toISOString()
+    });
+  }
+
+  res.json({
+    success: true,
+    message: `Exam successfully started for ${targetBatch}! Waiting room candidates launched.`,
+    batch_code: targetBatch,
+    exam_status: 'active'
+  });
+}));
+
+router.post('/teacher/exam/stop', requireAdminAuth, asyncHandler(async (req, res) => {
+  const { batch_code } = req.body;
+  const exam = db.getActiveExam();
+  const targetBatch = batch_code || db.getActiveBatchCode(exam ? exam.id : null);
+
+  // Auto-submit all students in progress for this batch
+  const activeSessions = db.getAllStudentSessions(exam.id, targetBatch)
+    .filter(s => s.status === 'in_progress');
+
+  let autoSubmitted = 0;
+  for (const session of activeSessions) {
+    try {
+      const scoreData = gradeSession(session, session.answers, exam);
+      db.submitStudentSession(session.id, scoreData);
+      logSessionToHistory(session, scoreData, exam);
+      autoSubmitted++;
+    } catch (err) {
+      console.error('[StopExam] Auto-submit failed for session:', session.id, err);
+    }
+  }
+
+  db.setBatchExamStatus(targetBatch, 'ended');
+  db.addAuditLog('Teacher', 'EXAM_STOPPED', `Exam concluded for batch ${targetBatch}. Auto-submitted ${autoSubmitted} candidate(s).`);
+
+  const io = req.app.get('io');
+  if (io) {
+    io.emit('exam_status_changed', { batch_code: targetBatch, exam_status: 'ended' });
+    io.to('batch_' + targetBatch).emit('exam_ended', {
+      batch_code: targetBatch,
+      exam_status: 'ended',
+      message: 'The examination has been concluded by the instructor.'
+    });
+    io.emit('exam_ended', {
+      batch_code: targetBatch,
+      exam_status: 'ended',
+      message: 'The examination has been concluded by the instructor.'
+    });
+  }
+
+  res.json({
+    success: true,
+    message: `Exam stopped for ${targetBatch}. ${autoSubmitted} papers automatically collected & graded.`,
+    batch_code: targetBatch,
+    exam_status: 'ended',
+    auto_submitted_count: autoSubmitted
+  });
+}));
+
+router.post('/teacher/exam/set-waiting', requireAdminAuth, asyncHandler(async (req, res) => {
+  const { batch_code } = req.body;
+  const exam = db.getActiveExam();
+  const targetBatch = batch_code || db.getActiveBatchCode(exam ? exam.id : null);
+
+  db.setBatchExamStatus(targetBatch, 'not_started');
+  db.addAuditLog('Teacher', 'EXAM_WAITING_SET', `Waiting room mode activated for batch ${targetBatch}`);
+
+  const io = req.app.get('io');
+  if (io) {
+    io.emit('exam_status_changed', { batch_code: targetBatch, exam_status: 'not_started' });
+  }
+
+  res.json({
+    success: true,
+    message: `Batch ${targetBatch} is now in Waiting Room mode. Candidates can join and wait.`,
+    batch_code: targetBatch,
+    exam_status: 'not_started'
+  });
+}));
+
 module.exports = router;

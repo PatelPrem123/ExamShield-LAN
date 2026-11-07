@@ -507,6 +507,61 @@ Loading history...
 
     <!-- TAB 1: LIVE EXAM MONITOR -->
     <section id="tabContent-monitor" class="space-y-6">
+      <!-- MASTER EXAM LIFECYCLE COMMAND CENTER -->
+      <div id="examLifecycleControlCard" class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-5 rounded-2xl shadow-xl border border-indigo-700/50 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-indigo-300 uppercase tracking-wider">Cohort Lifecycle Command Bar</span>
+              <span id="lifecycleBatchBadge" class="text-xs px-2 py-0.5 rounded-md font-mono bg-indigo-500/30 text-indigo-200 border border-indigo-400/40">BATCH-01</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <h3 class="text-lg font-black text-white">Exam State:</h3>
+              <div id="lifecycleStatusBadge" class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                <span>WAITING ROOM MODE</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Master Action Buttons -->
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <button onclick="triggerStartExam()" id="btnStartExamLifecycle" class="btn-shimmer px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider shadow-lg flex items-center gap-2 transition active:scale-95">
+              <span>🚀</span>
+              <span>Start Exam (Launch Waiting Room)</span>
+            </button>
+            <button onclick="triggerStopExam()" id="btnStopExamLifecycle" class="px-4 py-2.5 bg-rose-600/90 hover:bg-rose-600 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider shadow-md flex items-center gap-2 transition active:scale-95 border border-rose-500/40">
+              <span>🛑</span>
+              <span>Stop Exam & Collect All</span>
+            </button>
+            <button onclick="triggerSetWaitingMode()" id="btnWaitingExamLifecycle" class="px-3.5 py-2.5 bg-amber-600/80 hover:bg-amber-600 text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-sm flex items-center gap-1.5 transition active:scale-95 border border-amber-500/40">
+              <span>⏳</span>
+              <span>Open Waiting Room</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Metric Badges Row -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-indigo-800/40 text-xs">
+          <div class="p-2.5 rounded-xl bg-slate-800/70 border border-slate-700/60 flex items-center justify-between">
+            <span class="text-slate-400 font-semibold">Waiting in Lounge:</span>
+            <span id="lifecycleWaitingCount" class="font-black text-amber-400 text-sm px-2 py-0.5 rounded-md bg-amber-950/60 border border-amber-800">0</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-slate-800/70 border border-slate-700/60 flex items-center justify-between">
+            <span class="text-slate-400 font-semibold">Active in Exam:</span>
+            <span id="lifecycleActiveCount" class="font-black text-emerald-400 text-sm px-2 py-0.5 rounded-md bg-emerald-950/60 border border-emerald-800">0</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-slate-800/70 border border-slate-700/60 flex items-center justify-between">
+            <span class="text-slate-400 font-semibold">Submitted Papers:</span>
+            <span id="lifecycleSubmittedCount" class="font-black text-indigo-300 text-sm px-2 py-0.5 rounded-md bg-indigo-950/60 border border-indigo-800">0</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-slate-800/70 border border-slate-700/60 flex items-center justify-between">
+            <span class="text-slate-400 font-semibold">Total Enrolled:</span>
+            <span id="lifecycleTotalCount" class="font-black text-white text-sm px-2 py-0.5 rounded-md bg-slate-700/80 border border-slate-600">0</span>
+          </div>
+        </div>
+      </div>
+
       <div class="flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
         <div>
           <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
@@ -1404,8 +1459,133 @@ Loading history...
       refreshStudentList();
     });
 
-    socket.on('student_online', () => refreshStudentList());
-    socket.on('student_registered', () => refreshStudentList());
+
+    async function refreshExamLifecycleStatus() {
+      const token = localStorage.getItem('examshield_admin_token');
+      if (!token) return;
+      const batchCode = (currentBatchFilter && currentBatchFilter !== 'all') ? currentBatchFilter : (currentExam?.active_batch_code || 'BATCH-01');
+
+      try {
+        const res = await fetch(`/api/teacher/exam-status?batch=${encodeURIComponent(batchCode)}`, {
+          headers: { 'x-admin-token': token }
+        });
+        const data = await res.json();
+        if (data.success) {
+          updateLifecycleUI(data.batch_code, data.exam_status, data.waiting_count);
+        }
+      } catch(e) {
+        console.error('Failed to fetch lifecycle status:', e);
+      }
+    }
+
+    function updateLifecycleUI(batchCode, status, waitingCount) {
+      const badgeEl = document.getElementById('lifecycleStatusBadge');
+      const batchBadge = document.getElementById('lifecycleBatchBadge');
+      const waitingCountEl = document.getElementById('lifecycleWaitingCount');
+      const startBtn = document.getElementById('btnStartExamLifecycle');
+      const stopBtn = document.getElementById('btnStopExamLifecycle');
+
+      if (batchBadge) batchBadge.innerText = batchCode || 'BATCH-01';
+      if (waitingCountEl) waitingCountEl.innerText = waitingCount ?? 0;
+
+      if (status === 'active') {
+        if (badgeEl) {
+          badgeEl.className = 'inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-sm';
+          badgeEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span>EXAM IN PROGRESS (LIVE)</span>';
+        }
+        if (startBtn) startBtn.classList.add('opacity-50');
+        if (stopBtn) stopBtn.classList.remove('opacity-50');
+      } else if (status === 'ended') {
+        if (badgeEl) {
+          badgeEl.className = 'inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-rose-500/20 text-rose-400 border border-rose-500/40 shadow-sm';
+          badgeEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-rose-400"></span><span>EXAM STOPPED (CONCLUDED)</span>';
+        }
+        if (startBtn) startBtn.classList.remove('opacity-50');
+        if (stopBtn) stopBtn.classList.add('opacity-50');
+      } else {
+        if (badgeEl) {
+          badgeEl.className = 'inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm';
+          badgeEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span><span>WAITING ROOM MODE</span>';
+        }
+        if (startBtn) startBtn.classList.remove('opacity-50');
+        if (stopBtn) stopBtn.classList.remove('opacity-50');
+      }
+    }
+
+    async function triggerStartExam() {
+      const token = localStorage.getItem('examshield_admin_token');
+      const batchCode = (currentBatchFilter && currentBatchFilter !== 'all') ? currentBatchFilter : (currentExam?.active_batch_code || 'BATCH-01');
+      if (!confirm(`🚀 Launch Live Exam for ${batchCode}?\n\nThis will trigger the 3-2-1 countdown on all waiting student screens and begin the examination immediately.`)) return;
+
+      try {
+        const res = await fetch('/api/teacher/exam/start', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+          body: JSON.stringify({ batch_code: batchCode })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`🚀 Exam launched for ${batchCode}! Waiting students released.`);
+          refreshExamLifecycleStatus();
+          refreshStudentList();
+        } else {
+          alert('Error: ' + data.error);
+        }
+      } catch(e) {
+        alert('Failed to start exam: ' + e.message);
+      }
+    }
+
+    async function triggerStopExam() {
+      const token = localStorage.getItem('examshield_admin_token');
+      const batchCode = (currentBatchFilter && currentBatchFilter !== 'all') ? currentBatchFilter : (currentExam?.active_batch_code || 'BATCH-01');
+      if (!confirm(`🛑 STOP EXAMINATION for ${batchCode}?\n\nAll active student papers will be instantly submitted, calculated, and locked. New candidate registrations will be blocked.`)) return;
+
+      try {
+        const res = await fetch('/api/teacher/exam/stop', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+          body: JSON.stringify({ batch_code: batchCode })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`🛑 Exam stopped for ${batchCode}. ${data.auto_submitted_count || 0} papers submitted.`);
+          refreshExamLifecycleStatus();
+          refreshStudentList();
+        } else {
+          alert('Error: ' + data.error);
+        }
+      } catch(e) {
+        alert('Failed to stop exam: ' + e.message);
+      }
+    }
+
+    async function triggerSetWaitingMode() {
+      const token = localStorage.getItem('examshield_admin_token');
+      const batchCode = (currentBatchFilter && currentBatchFilter !== 'all') ? currentBatchFilter : (currentExam?.active_batch_code || 'BATCH-01');
+
+      try {
+        const res = await fetch('/api/teacher/exam/set-waiting', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+          body: JSON.stringify({ batch_code: batchCode })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`⏳ Batch ${batchCode} set to Waiting Room mode.`);
+          refreshExamLifecycleStatus();
+          refreshStudentList();
+        } else {
+          alert('Error: ' + data.error);
+        }
+      } catch(e) {
+        alert('Failed to set waiting mode: ' + e.message);
+      }
+    }
+
+    socket.on('student_online', () => { refreshStudentList(); refreshExamLifecycleStatus(); });
+    socket.on('student_registered', () => { refreshStudentList(); refreshExamLifecycleStatus(); });
+    socket.on('exam_status_changed', () => { refreshStudentList(); refreshExamLifecycleStatus(); });
     socket.on('student_progress_update', (d) => updateStudentProgress(d));
     socket.on('student_heartbeat_update', (d) => updateStudentTimer(d));
     socket.on('student_submitted', () => refreshStudentList());

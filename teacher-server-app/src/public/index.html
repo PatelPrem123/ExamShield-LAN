@@ -317,7 +317,13 @@
       <div class="text-left space-y-1">
         <div class="flex items-center justify-between gap-2 flex-wrap">
           <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">Class Examination Paper</span>
-          <span id="joinBatchBadge" class="text-xs px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-bold border border-indigo-200 dark:border-indigo-800 font-mono">🏷️ Batch: BATCH-01</span>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span id="joinBatchBadge" class="text-xs px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-bold border border-indigo-200 dark:border-indigo-800 font-mono">🏷️ Batch: BATCH-01</span>
+            <span id="joinExamStatusBadge" class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-bold border border-amber-500/30 flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+              <span id="joinExamStatusText">Waiting Room Standby</span>
+            </span>
+          </div>
         </div>
         <h2 id="joinExamTitle" class="text-2xl sm:text-3xl font-black text-red-600 dark:text-red-500 uppercase tracking-tight leading-tight">
           NETWORK ESSENTIAL CLASSTEST
@@ -1183,6 +1189,152 @@
     // ========================================================
     // STUDENT REGISTRATION & JOIN
     // ========================================================
+
+    let isInWaitingRoom = false;
+    let pendingExamData = null;
+
+    function enterWaitingRoom(data) {
+      isInWaitingRoom = true;
+      pendingExamData = data;
+
+      currentSession = {
+        id: data.session_id,
+        student_token: data.student_token || '',
+        student_name: data.student_name,
+        exam_set: data.exam_set,
+        exam_title: data.exam_title,
+        batch_code: data.batch_code || 'BATCH-01'
+      };
+      sessionStorage.setItem('examshield_student_token', data.student_token || '');
+
+      // Connect socket & register to batch room
+      socket.emit('student_join', {
+        sessionId: data.session_id,
+        studentName: data.student_name,
+        studentToken: data.student_token
+      });
+
+      // Populate waiting card
+      const cName = document.getElementById('waitingCandidateName');
+      if (cName) cName.innerText = data.student_name || 'Candidate';
+      const cBatch = document.getElementById('waitingCandidateBatch');
+      if (cBatch) cBatch.innerText = data.batch_code || 'BATCH-01';
+      const cTitle = document.getElementById('waitingExamTitle');
+      if (cTitle) cTitle.innerText = data.exam_title || 'Examination';
+      const cCount = document.getElementById('waitingQuestionCount');
+      if (cCount) cCount.innerText = (data.questions ? data.questions.length : '--') + ' Questions';
+
+      // Switch screens
+      document.getElementById('joinScreen').classList.add('hidden');
+      document.getElementById('waitingScreen').classList.remove('hidden');
+      showToast('⏳ Joined Waiting Lounge. Stand by for instructor launch.');
+    }
+
+    function startCountdownAndLaunchExam() {
+      if (!pendingExamData) return;
+      const overlay = document.getElementById('countdownOverlay');
+      const digits = document.getElementById('countdownDigits');
+      if (!overlay || !digits) {
+        launchExamFromWaiting();
+        return;
+      }
+
+      overlay.classList.remove('hidden');
+      let count = 3;
+      digits.innerText = count;
+
+      if (typeof AudioFX !== 'undefined' && AudioFX.playClick) {
+        AudioFX.playClick();
+      }
+
+      const iv = setInterval(() => {
+        count--;
+        if (count > 0) {
+          digits.innerText = count;
+          digits.classList.remove('scale-125');
+          void digits.offsetWidth; // re-trigger animation
+          digits.classList.add('scale-125');
+          if (typeof AudioFX !== 'undefined' && AudioFX.playClick) AudioFX.playClick();
+        } else if (count === 0) {
+          digits.innerText = 'GO!';
+          digits.classList.remove('text-white');
+          digits.classList.add('text-emerald-400');
+          if (typeof AudioFX !== 'undefined' && AudioFX.playSuccess) AudioFX.playSuccess();
+        } else {
+          clearInterval(iv);
+          overlay.classList.add('hidden');
+          launchExamFromWaiting();
+        }
+      }, 1000);
+    }
+
+    function launchExamFromWaiting() {
+      if (!pendingExamData) return;
+      isInWaitingRoom = false;
+      const data = pendingExamData;
+      pendingExamData = null;
+
+      // Request fullscreen
+      try {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        }
+      } catch (e) {}
+
+      questions = data.questions || [];
+      answers = data.answers || {};
+      markedForReview = new Set(data.marked_for_review || []);
+      remainingSeconds = data.remaining_seconds || (data.duration_minutes * 60);
+
+      perQuestionTimeEnabled = !!data.per_question_time_enabled;
+      perQuestionSecondsLimit = data.per_question_time_seconds || 60;
+      currentQuestionRemainingSeconds = perQuestionSecondsLimit;
+      const competitiveModeEnabled = !!data.competitive_mode_enabled;
+
+      document.getElementById('waitingScreen').classList.add('hidden');
+      document.getElementById('examInterface').classList.remove('hidden');
+      const floatingTheme = document.getElementById('floatingThemeToggle');
+      if (floatingTheme) floatingTheme.classList.add('hidden');
+
+      document.getElementById('displayStudentName').innerText = currentSession.student_name;
+      const nameParts = (currentSession.student_name || 'Candidate').trim().split(/\s+/);
+      const initials = nameParts.map(p => p[0]).filter(Boolean).slice(0, 2).join('').toUpperCase() || 'EX';
+      const avEl = document.getElementById('studentAvatar');
+      if (avEl) avEl.innerText = initials;
+      document.getElementById('displayExamTitle').innerText = currentSession.exam_title;
+      const batchBadgeEl = document.getElementById('displayBatchBadge');
+      if (batchBadgeEl) {
+        batchBadgeEl.innerText = '🏷️ ' + (currentSession.batch_code || 'BATCH-01');
+      }
+
+      const setBadge = document.getElementById('displayExamSet');
+      const prevBtnEl = document.getElementById('prevBtn');
+      const markReviewBox = document.getElementById('markReviewContainer');
+      const perQSection = document.getElementById('perQTimerSection');
+
+      if (perQuestionTimeEnabled) {
+        if (setBadge) setBadge.innerHTML = `🎲 Random • ⏱️ ${perQuestionSecondsLimit}s / Questions`;
+        if (prevBtnEl) prevBtnEl.classList.add('hidden');
+        if (markReviewBox) markReviewBox.classList.add('hidden');
+        if (perQSection) perQSection.classList.remove('hidden');
+      } else if (competitiveModeEnabled) {
+        if (setBadge) setBadge.innerHTML = `🎲 Random • 🎯 +4 / -1 Marking`;
+        if (prevBtnEl) prevBtnEl.classList.remove('hidden');
+        if (markReviewBox) markReviewBox.classList.remove('hidden');
+        if (perQSection) perQSection.classList.add('hidden');
+      } else {
+        if (setBadge) setBadge.innerHTML = `🎲 Random • Set ${currentSession.exam_set}`;
+        if (prevBtnEl) prevBtnEl.classList.remove('hidden');
+        if (markReviewBox) markReviewBox.classList.remove('hidden');
+        if (perQSection) perQSection.classList.add('hidden');
+      }
+
+      renderQuestion(0);
+      buildQuestionPalette();
+      startTimer();
+      showToast('🚀 Examination has begun! Best of luck.');
+    }
+
     async function handleStudentJoin(e) {
       e.preventDefault();
       const nameInput = document.getElementById('candidateNameInput');

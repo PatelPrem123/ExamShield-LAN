@@ -34,11 +34,20 @@ function setupProctoringSocket(io) {
       }
 
       socket.join(`student_${sessionId}`);
+      if (session.batch_code) {
+        socket.join(`batch_${session.batch_code}`);
+      }
       socket.sessionId = sessionId;
       socket.studentName = studentName;
+      socket.batchCode = session.batch_code;
       socket.studentToken = studentToken || session.auth_token;
 
-      io.to('teacher').emit('student_online', { sessionId, studentName });
+      io.to('teacher').emit('student_online', {
+        sessionId,
+        studentName,
+        batch_code: session.batch_code,
+        is_waiting: !!session.is_waiting
+      });
     });
 
     // Real-time answer auto-save with cross-session hijack protection
