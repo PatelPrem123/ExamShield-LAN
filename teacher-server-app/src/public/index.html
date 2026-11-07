@@ -3,6 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function() {
+      const saved = localStorage.getItem('examshield_theme') || 'dark';
+      if (saved === 'light') {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light', 'light-theme');
+      } else {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light', 'light-theme');
+      }
+    })();
+  </script>
   <title>ExamShield LAN 🛡️ - Student Examination Portal</title>
   <link rel="icon" type="image/png" href="/logo.png">
   <script src="/socket.io/socket.io.js"></script>
@@ -255,7 +267,22 @@
       <!-- Top Bar: Logo/App on Left & 'PLEASE TURN OFF YOUR PHONE' Warning Sign on Right -->
       <div class="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 border-b border-slate-700/50 pb-5">
         <div class="flex items-center space-x-3.5 text-center sm:text-left">
-          <img src="/logo.png" alt="ExamShield LAN" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl shadow-md border-2 border-indigo-500/30 object-cover hover:scale-105 transition duration-300 shrink-0" />
+          <svg class="w-12 h-12 shrink-0 drop-shadow-lg hover:scale-105 transition duration-300" viewBox="0 0 64 64" fill="none">
+            <defs>
+              <linearGradient id="shieldGrad" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#6366f1"/>
+                <stop offset="50%" stop-color="#4f46e5"/>
+                <stop offset="100%" stop-color="#06b6d4"/>
+              </linearGradient>
+              <linearGradient id="shieldGlow" x1="16" y1="12" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#a5b4fc" stop-opacity="0.9"/>
+                <stop offset="100%" stop-color="#818cf8" stop-opacity="0.2"/>
+              </linearGradient>
+            </defs>
+            <path d="M32 4L10 14V30C10 44 20 54 32 60C44 54 54 44 54 30V14L32 4Z" fill="url(#shieldGrad)" />
+            <path d="M32 9L15 17V30C15 41 23 49 32 54C41 49 49 41 49 30V17L32 9Z" fill="#0f172a" fill-opacity="0.85" stroke="url(#shieldGlow)" stroke-width="1.8" />
+            <path d="M26 31L30.5 35.5L38.5 25.5" stroke="#38bdf8" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
           <div>
             <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white">ExamShield LAN</h1>
             <p class="text-xs text-slate-400">Offline Certification Examination Simulator</p>
@@ -270,17 +297,13 @@
         <!-- Official Signboard: 'PLEASE TURN OFF YOUR PHONE' -->
         <div class="border-2 border-red-600 rounded-xl bg-white p-2 text-center w-28 sm:w-32 shadow-sm flex flex-col items-center shrink-0">
           <!-- Prohibition Phone SVG Icon -->
-          <div class="relative w-10 h-10 flex items-center justify-center my-0.5">
-            <!-- Red Prohibition Circle & Line -->
-            <svg class="w-10 h-10 text-red-600" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2.2" fill="none" />
-              <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="currentColor" stroke-width="2.2" />
-            </svg>
-            <!-- Mobile Phone Outline Inside -->
-            <svg class="w-5 h-5 text-slate-900 absolute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <rect x="7" y="4" width="10" height="16" rx="2" />
-              <line x1="11" y1="17" x2="13" y2="17" stroke-linecap="round"/>
-              <circle cx="12" cy="7" r="0.5" fill="currentColor"/>
+          <div class="relative w-12 h-12 flex items-center justify-center my-0.5">
+            <svg class="w-12 h-12 text-rose-500 drop-shadow-md" viewBox="0 0 36 36" fill="none">
+              <circle cx="18" cy="18" r="15" stroke="currentColor" stroke-width="2.8" fill="#ffffff" />
+              <line x1="7.5" y1="7.5" x2="28.5" y2="28.5" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+              <rect x="13.5" y="9.5" width="9" height="17" rx="2" fill="#0f172a" />
+              <rect x="14.5" y="11.5" width="7" height="11" rx="0.5" fill="#38bdf8" />
+              <circle cx="18" cy="24" r="0.8" fill="#ffffff" />
             </svg>
           </div>
           <!-- Red Alert Label -->
@@ -379,13 +402,31 @@
 
           <button type="submit" id="startExamBtn"
             class="btn-shimmer w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none">
+              <defs>
+                <linearGradient id="rocketBody" x1="4" y1="2" x2="22" y2="20" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#93c5fd"/>
+                  <stop offset="50%" stop-color="#3b82f6"/>
+                  <stop offset="100%" stop-color="#1d4ed8"/>
+                </linearGradient>
+                <linearGradient id="rocketFlame" x1="4" y1="16" x2="10" y2="22" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#fbbf24"/>
+                  <stop offset="100%" stop-color="#ef4444"/>
+                </linearGradient>
+              </defs>
+              <path d="M12 2C7 2 4 8 4 13C4 16 6 18 8 19L12 17L16 19C18 18 20 16 20 13C20 8 17 2 12 2Z" fill="url(#rocketBody)"/>
+              <circle cx="12" cy="9" r="2.5" fill="#e0f2fe"/>
+              <path d="M9 19L12 23L15 19L12 17L9 19Z" fill="url(#rocketFlame)"/>
+              <path d="M4 13L2 16L5 17L4 13Z" fill="#93c5fd"/>
+              <path d="M20 13L22 16L19 17L20 13Z" fill="#93c5fd"/>
+            </svg>
             <span>Start Examination</span>
             <span>&rarr;</span>
           </button>
         </div>
       </form>
       <p class="text-center text-[11px] text-slate-400 dark:text-slate-500 font-medium pt-2">
-        ExamShield LAN 🛡️ • Made by Prem
+        ExamShield LAN • Next-Gen Cyber Proctor Node • Made by Prem
       </p>
     </div>
   </div>
@@ -481,12 +522,17 @@
             <div id="perQTimerSection" class="hidden pb-2 border-b border-slate-100 dark:border-slate-700 space-y-2">
               <div class="flex items-center justify-between text-xs font-bold">
                 <span class="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
-                  <span class="text-sm">⏱️</span>
+                  <svg class="w-4 h-4 text-indigo-400 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <circle cx="12" cy="12" r="9"/>
+                    <polyline points="12 7 12 12 15 15"/>
+                  </svg>
                   <span>Time Left For This Question:</span>
                   <span id="perQSecondsText" class="font-mono text-sm font-black bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 px-2.5 py-0.5 rounded-lg border border-indigo-200 dark:border-indigo-800">60s</span>
                 </span>
                 <span class="text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 font-extrabold flex items-center gap-1">
-                  <span>⚡</span> Auto-Advance Mode
+                  <svg class="w-3.5 h-3.5 text-amber-400 inline-block" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                  </svg> Auto-Advance Mode
                 </span>
               </div>
               <div class="w-full bg-slate-100 dark:bg-slate-700/80 h-2.5 rounded-full overflow-hidden border border-slate-200 dark:border-slate-600">
@@ -528,7 +574,10 @@
               <div id="markReviewContainer">
                 <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-3 py-2 rounded-xl border border-amber-200 dark:border-amber-700 hover:bg-amber-100 transition">
                   <input type="checkbox" id="markReviewCheckbox" onchange="handleToggleReview(this.checked)" class="accent-amber-500 w-4 h-4 rounded cursor-pointer" />
-                  <span>🏳️ Mark for Review</span>
+                  <svg class="w-3.5 h-3.5 text-amber-400 inline-block" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                  </svg>
+                  <span>Mark for Review</span>
                 </label>
               </div>
 
@@ -590,7 +639,10 @@
         <div class="pt-4 border-t border-slate-100 dark:border-slate-700">
           <button onclick="confirmSubmitExam()"
             class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-1.5 active:scale-95">
-            <span>🏁 Finish & Submit Exam</span>
+            <svg class="w-4 h-4 text-white inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <span>Finish & Submit Exam</span>
           </button>
         </div>
       </aside>
@@ -616,7 +668,23 @@
       
       <div class="flex flex-col items-center justify-center space-y-2">
         <img src="/logo.png" alt="ExamShield" class="w-16 h-16 rounded-2xl shadow-lg border-2 border-indigo-500/30 object-cover" />
-        <div id="resultStatusIcon" class="text-4xl">🏆</div>
+        <div id="resultStatusIcon" class="flex items-center justify-center my-2">
+          <svg class="w-16 h-16 drop-shadow-xl" viewBox="0 0 48 48" fill="none">
+            <defs>
+              <linearGradient id="goldGradDefault" x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#fde047"/>
+                <stop offset="50%" stop-color="#eab308"/>
+                <stop offset="100%" stop-color="#ca8a04"/>
+              </linearGradient>
+            </defs>
+            <path d="M12 8H36V22C36 29 30 34 24 34C18 34 12 29 12 22V8Z" fill="url(#goldGradDefault)" />
+            <path d="M12 12H6C4.9 12 4 12.9 4 14V18C4 22.4 7.6 26 12 26V22H8V16H12V12Z" fill="#eab308"/>
+            <path d="M36 12H42C43.1 12 44 12.9 44 14V18C44 22.4 40.4 26 36 26V22H40V16H36V12Z" fill="#eab308"/>
+            <path d="M20 34H28V40H20V34Z" fill="#ca8a04"/>
+            <rect x="14" y="40" width="20" height="4" rx="2" fill="#a16207"/>
+            <circle cx="24" cy="18" r="4" fill="#ffffff" fill-opacity="0.4"/>
+          </svg>
+        </div>
       </div>
 
       <div>
@@ -654,7 +722,9 @@
 
       <!-- Competitive Mode Formula Note (Shown when competitive mode is active) -->
       <div id="competitiveScoreFormulaNote" class="hidden p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/80 text-xs text-amber-900 dark:text-amber-200 font-medium text-center">
-        🎯 <strong>Competitive Marking:</strong> Total Score = <code>(Right &times; 4) &minus; (Wrong &times; 1)</code>
+        <svg class="w-4 h-4 text-amber-400 inline-block align-middle mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+        </svg><strong>Competitive Marking:</strong> Total Score = <code>(Right &times; 4) &minus; (Wrong &times; 1)</code>
       </div>
 
       <!-- Result Badge -->
@@ -724,7 +794,7 @@
   <!-- REVIEW ANSWERS & QUESTIONS MODAL -->
   <!-- ======================================================== -->
   <div id="reviewAnswersModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="max-w-3xl w-full max-h-[90vh] bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden">
+    <div class="glass-panel max-w-3xl w-full max-h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden">
       
       <!-- Modal Header -->
       <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
@@ -752,7 +822,13 @@
   <!-- ======================================================== -->
   <div id="frozenOverlay" class="fixed inset-0 bg-red-950/95 backdrop-blur-md z-50 flex items-center justify-center p-6 text-center hidden">
     <div class="max-w-lg w-full bg-red-900 border-2 border-red-500 rounded-3xl p-8 shadow-2xl text-white space-y-6">
-      <span class="text-6xl block animate-bounce">🚨</span>
+      <div class="w-20 h-20 mx-auto rounded-3xl bg-rose-500/20 border-2 border-rose-500/40 flex items-center justify-center text-rose-400 shadow-lg animate-bounce">
+        <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2C8.13 2 5 5.13 5 9V15L3 17V18H21V17L19 15V9C19 5.13 15.87 2 12 2Z" fill="currentColor" fill-opacity="0.25"/>
+          <path d="M10 21C10 22.1 10.9 23 12 23C13.1 23 14 22.1 14 21"/>
+          <circle cx="12" cy="9" r="2.5" fill="currentColor"/>
+        </svg>
+      </div>
       
       <div class="space-y-2">
         <h2 class="text-2xl font-black uppercase tracking-wide text-red-100">
@@ -820,43 +896,74 @@
       }, 4500);
     }
 
-    // Theme Management (Supports Login, Exam, and Results screens)
+    
+    // ========================================================
+    // BULLETPROOF THEME ENGINE (DARK / LIGHT DUAL COMPATIBILITY)
+    // ========================================================
+    function applyTheme(theme) {
+      const html = document.documentElement;
+      const isDark = (theme === 'dark');
+      
+      if (isDark) {
+        html.classList.add('dark');
+        html.classList.remove('light', 'light-theme');
+        if (document.body) {
+          document.body.classList.remove('light-theme');
+          document.body.style.backgroundColor = 'var(--bg-primary)';
+          document.body.style.color = 'var(--text-main)';
+        }
+      } else {
+        html.classList.remove('dark');
+        html.classList.add('light', 'light-theme');
+        if (document.body) {
+          document.body.classList.add('light-theme');
+          document.body.style.backgroundColor = 'var(--bg-primary)';
+          document.body.style.color = 'var(--text-main)';
+        }
+      }
+      
+      localStorage.setItem('examshield_theme', theme);
+      updateThemeUI(isDark);
+    }
+
+    function toggleTheme() {
+      const isCurrentlyDark = document.documentElement.classList.contains('dark') && !document.documentElement.classList.contains('light-theme');
+      const newTheme = isCurrentlyDark ? 'light' : 'dark';
+      applyTheme(newTheme);
+      if (window.AudioFX) AudioFX.play(750, 0.05);
+    }
+
     function updateThemeUI(isDark) {
+      // Floating Top Theme Button
+      const topIcon = document.getElementById('themeIconTop');
+      const topText = document.getElementById('themeTextTop');
+      if (topText) topText.innerText = isDark ? 'Dark' : 'Light';
+      if (topIcon) {
+        topIcon.innerHTML = isDark
+          ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+          : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+      }
+
+      // Header Theme Button
+      const headerIcon = document.getElementById('themeIcon');
+      if (headerIcon) {
+        headerIcon.innerHTML = isDark
+          ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+          : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+      }
+
       document.querySelectorAll('.theme-icon').forEach(el => {
         el.innerText = isDark ? '☀️' : '🌙';
       });
       document.querySelectorAll('.theme-text').forEach(el => {
-        el.innerText = isDark ? 'Light' : 'Dark';
+        el.innerText = isDark ? 'Dark' : 'Light';
       });
     }
 
-    function toggleTheme() {
-      const html = document.documentElement;
-      const isDark = html.classList.contains('dark');
-      if (isDark) {
-        html.classList.remove('dark');
-        html.classList.add('light');
-        updateThemeUI(false);
-        localStorage.setItem('examshield_theme', 'light');
-      } else {
-        html.classList.remove('light');
-        html.classList.add('dark');
-        updateThemeUI(true);
-        localStorage.setItem('examshield_theme', 'dark');
-      }
-    }
+    // Apply saved theme immediately on script load
+    const activeSavedTheme = localStorage.getItem('examshield_theme') || 'dark';
+    applyTheme(activeSavedTheme);
 
-    // Apply saved theme on page load
-    const savedTheme = localStorage.getItem('examshield_theme') || 'light';
-    if (savedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-      document.documentElement.classList.remove('light');
-      updateThemeUI(true);
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.classList.add('light');
-      updateThemeUI(false);
-    }
 
     // Fetch active exam title & marking scheme on start
     async function loadExamHeaderInfo() {
@@ -1752,14 +1859,39 @@
 
       const passBadge = document.getElementById('finalPassBadge');
       if (result.passed) {
-        ConfettiMgr.fire(150); AudioFX.playSuccess(); passBadge.innerText = 'PASSED 🏆';
-        passBadge.className = 'py-2 px-5 rounded-2xl text-sm font-black uppercase tracking-wider inline-block bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300';
-        document.getElementById('resultStatusIcon').innerText = '🎉';
+        ConfettiMgr.fire(160);
+        AudioFX.playSuccess();
+        passBadge.innerText = 'PASSED';
+        passBadge.className = 'py-2 px-6 rounded-2xl text-sm font-black uppercase tracking-wider inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-lg';
+        document.getElementById('resultStatusIcon').innerHTML = `
+          <svg class="w-16 h-16 drop-shadow-xl" viewBox="0 0 48 48" fill="none">
+            <defs>
+              <linearGradient id="goldGradHero" x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#fde047"/>
+                <stop offset="50%" stop-color="#eab308"/>
+                <stop offset="100%" stop-color="#ca8a04"/>
+              </linearGradient>
+            </defs>
+            <path d="M12 8H36V22C36 29 30 34 24 34C18 34 12 29 12 22V8Z" fill="url(#goldGradHero)" />
+            <path d="M12 12H6C4.9 12 4 12.9 4 14V18C4 22.4 7.6 26 12 26V22H8V16H12V12Z" fill="#eab308"/>
+            <path d="M36 12H42C43.1 12 44 12.9 44 14V18C44 22.4 40.4 26 36 26V22H40V16H36V12Z" fill="#eab308"/>
+            <path d="M20 34H28V40H20V34Z" fill="#ca8a04"/>
+            <rect x="14" y="40" width="20" height="4" rx="2" fill="#a16207"/>
+            <circle cx="24" cy="18" r="4" fill="#ffffff" fill-opacity="0.4"/>
+          </svg>
+        `;
         document.getElementById('resultStatusHeading').innerText = 'Congratulations! You Passed';
       } else {
-        AudioFX.playAlert(); passBadge.innerText = 'FAILED ❌';
-        passBadge.className = 'py-2 px-5 rounded-2xl text-sm font-black uppercase tracking-wider inline-block bg-rose-100 text-rose-800 dark:bg-rose-900/60 dark:text-rose-300';
-        document.getElementById('resultStatusIcon').innerText = '📝';
+        AudioFX.playAlert();
+        passBadge.innerText = 'FAILED';
+        passBadge.className = 'py-2 px-6 rounded-2xl text-sm font-black uppercase tracking-wider inline-flex items-center gap-2 bg-rose-500/20 text-rose-400 border border-rose-500/40 shadow-lg';
+        document.getElementById('resultStatusIcon').innerHTML = `
+          <svg class="w-16 h-16 text-rose-400 drop-shadow-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        `;
         document.getElementById('resultStatusHeading').innerText = 'Exam Completed';
       }
 
