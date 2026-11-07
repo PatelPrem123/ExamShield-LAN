@@ -52,18 +52,29 @@ function setupProctoringSocket(io) {
 
     // Real-time answer auto-save with cross-session hijack protection
     socket.on('save_answer', ({ sessionId, questionId, answers, studentToken }) => {
+      if (!sessionId || questionId === undefined) return;
+
+      const session = db.getSessionById(sessionId);
+      if (!session || session.status === 'submitted') return;
+
       if (socket.sessionId && socket.sessionId !== sessionId) {
         console.warn(`[Security Alert] Blocked attempt to alter answers: socket ${socket.sessionId} != ${sessionId}`);
         return;
       }
 
-      const session = db.getSessionById(sessionId);
-      if (session && session.auth_token) {
+      if (session.auth_token) {
         const token = studentToken || socket.studentToken;
         if (token && token !== session.auth_token) {
           console.warn(`[Security Alert] Blocked save_answer with invalid token for session ${sessionId}`);
           return;
         }
+      }
+
+      // Auto-bind session on socket if reconnected
+      if (!socket.sessionId) {
+        socket.sessionId = sessionId;
+        socket.studentName = session.student_name;
+        socket.studentToken = session.auth_token;
       }
 
       const updatedAnswers = db.saveAnswer(sessionId, questionId, answers);
@@ -73,7 +84,7 @@ function setupProctoringSocket(io) {
           sessionId,
           answeredCount
         });
-        socket.emit('answer_saved_ack', { questionId, success: true });
+        socket.emit('answer_saved_ack', { questionId, success: true, answeredCount });
       }
     });
 

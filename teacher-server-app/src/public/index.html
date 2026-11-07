@@ -1155,6 +1155,25 @@
   <script>
     const socket = io();
 
+    // Auto-reconnect & session re-binding
+    socket.on('connect', () => {
+      console.log('[Student Socket] Connected:', socket.id);
+      const sId = currentSession?.id || sessionStorage.getItem('examshield_session_id');
+      const sName = currentSession?.student_name || sessionStorage.getItem('examshield_student_name');
+      const sToken = currentSession?.student_token || sessionStorage.getItem('examshield_student_token');
+      if (sId) {
+        socket.emit('student_join', {
+          sessionId: sId,
+          studentName: sName || 'Candidate',
+          studentToken: sToken || ''
+        });
+      }
+    });
+
+    socket.on('answer_saved_ack', (ack) => {
+      console.log('[Student Socket] Answer auto-saved:', ack);
+    });
+
     // State Variables
     let currentSession = null;
     let questions = [];
@@ -1526,6 +1545,8 @@
         batch_code: data.batch_code || 'BATCH-01'
       };
       sessionStorage.setItem('examshield_student_token', data.student_token || '');
+      sessionStorage.setItem('examshield_session_id', data.session_id || '');
+      sessionStorage.setItem('examshield_student_name', data.student_name || '');
 
       // Connect socket & register to batch room
       socket.emit('student_join', {
@@ -1781,6 +1802,8 @@
           exam_title: data.exam_title
         };
         sessionStorage.setItem('examshield_student_token', data.student_token || '');
+        sessionStorage.setItem('examshield_session_id', data.session_id || '');
+        sessionStorage.setItem('examshield_student_name', data.student_name || '');
 
         questions = data.questions || [];
         answers = data.answers || {};
@@ -2068,11 +2091,11 @@
           : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/90 hover:border-indigo-300 dark:hover:border-slate-600 hover:bg-slate-50/60 dark:hover:bg-slate-800 shadow-xs';
 
         return `
-          <div onclick="selectOption('${opt.key}', ${q.is_multiple_choice})"
+          <div onclick="selectOption('${opt.key}', ${!!q.is_multiple_choice})"
             class="merged-option-card option-card-modern p-3.5 sm:p-4 rounded-2xl border cursor-pointer transition flex items-center gap-3.5 ${cardStyle}">
             <input type="${inputType}" name="q_${q.id}" ${isSelected ? 'checked' : ''}
               class="accent-indigo-600 cursor-pointer w-4 h-4 shrink-0 pointer-events-none" />
-            <div class="flex-1 text-xs md:text-sm text-slate-800 dark:text-slate-100 font-medium">
+            <div class="flex-1 text-xs md:text-sm text-slate-800 dark:text-slate-100 font-medium select-none pointer-events-none">
               <span class="inline-flex items-center justify-center font-bold mr-2 text-indigo-600 dark:text-indigo-400">(${opt.display_letter})</span>
               ${opt.html}
             </div>
@@ -2094,12 +2117,18 @@
     }
 
     function selectOption(optKey, isMultiple) {
-      AudioFX.play(600, 0.08);
+      if (typeof AudioFX !== 'undefined' && AudioFX.play) {
+        AudioFX.play(600, 0.08);
+      }
       if (isFrozen || isSubmitted) return;
+      if (!questions || !questions.length || currentIndex < 0 || currentIndex >= questions.length) return;
       const q = questions[currentIndex];
-      let current = answers[q.id] || [];
+      if (!q) return;
 
-      if (isMultiple) {
+      let current = Array.isArray(answers[q.id]) ? [...answers[q.id]] : [];
+      const isMulti = (isMultiple === true || isMultiple === 1 || isMultiple === '1' || isMultiple === 'true' || q.is_multiple_choice === true || q.is_multiple_choice === 1);
+
+      if (isMulti) {
         if (current.includes(optKey)) {
           current = current.filter(k => k !== optKey);
         } else {
@@ -2111,28 +2140,70 @@
 
       answers[q.id] = current;
 
-      // Auto-save via Socket.IO (VULN-03: Authenticated with studentToken)
-      socket.emit('save_answer', {
-        sessionId: currentSession.id,
-        questionId: q.id,
-        answers: current,
-        studentToken: currentSession?.student_token || ''
-      });
+      const sId = currentSession?.id || sessionStorage.getItem('examshield_session_id') || '';
+      const sToken = currentSession?.student_token || sessionStorage.getItem('examshield_student_token') || '';
+
+      if (sId) {
+        // 1. Real-time WebSocket event
+        socket.emit('save_answer', {
+          sessionId: sId,
+          questionId: q.id,
+          answers: current,
+          studentToken: sToken
+        });
+
+        // 2. High-reliability HTTP REST Fallback (Dual Persistence)
+        fetch('/api/student/answer', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-student-token': sToken
+          },
+          body: JSON.stringify({
+            session_id: sId,
+            question_id: q.id,
+            answers: current,
+            student_token: sToken
+          })
+        }).catch(() => {});
+      }
 
       flashAutoSave();
       renderCurrentQuestion();
     }
 
     function clearCurrentAnswer() {
+      if (isFrozen || isSubmitted) return;
+      if (!questions || !questions.length || currentIndex < 0 || currentIndex >= questions.length) return;
       const q = questions[currentIndex];
+      if (!q) return;
       delete answers[q.id];
 
-      socket.emit('save_answer', {
-        sessionId: currentSession.id,
-        questionId: q.id,
-        answers: [],
-        studentToken: currentSession?.student_token || ''
-      });
+      const sId = currentSession?.id || sessionStorage.getItem('examshield_session_id') || '';
+      const sToken = currentSession?.student_token || sessionStorage.getItem('examshield_student_token') || '';
+
+      if (sId) {
+        socket.emit('save_answer', {
+          sessionId: sId,
+          questionId: q.id,
+          answers: [],
+          studentToken: sToken
+        });
+
+        fetch('/api/student/answer', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-student-token': sToken
+          },
+          body: JSON.stringify({
+            session_id: sId,
+            question_id: q.id,
+            answers: [],
+            student_token: sToken
+          })
+        }).catch(() => {});
+      }
 
       flashAutoSave();
       renderCurrentQuestion();
@@ -2279,6 +2350,7 @@
 
       try {
         const token = currentSession?.student_token || sessionStorage.getItem('examshield_student_token') || '';
+        const sId = currentSession?.id || sessionStorage.getItem('examshield_session_id') || '';
         const res = await fetch('/api/student/submit', {
           method: 'POST',
           headers: {
@@ -2286,8 +2358,9 @@
             'x-student-token': token
           },
           body: JSON.stringify({
-            session_id: currentSession.id,
-            student_token: token
+            session_id: sId,
+            student_token: token,
+            answers: answers
           })
         });
         const data = await res.json();

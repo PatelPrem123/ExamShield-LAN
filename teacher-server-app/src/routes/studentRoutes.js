@@ -24,7 +24,7 @@ const {
 const { computeCandidateAnalytics } = require('../analyticsEngine');
 const { getLocalIpAddress } = require('../utils/networkUtils');
 const historyLogger = require('../historyLogger');
-const { verifyStudentAuth, asyncHandler } = require('../middleware/auth');
+const { verifyStudentAuth, studentBodySizeGuard, asyncHandler } = require('../middleware/auth');
 
 /**
  * GET /api/system/info
@@ -298,6 +298,51 @@ router.post('/student/register', asyncHandler(async (req, res) => {
 }));
 
 /**
+ * POST /api/student/answer
+ * Direct HTTP fallback for persisting student answers in real-time.
+ * Guarantees persistence even if WebSocket encounters network drops.
+ */
+router.post('/student/answer', studentBodySizeGuard, asyncHandler(async (req, res) => {
+  const session_id = req.body.session_id || req.body.sessionId;
+  const question_id = req.body.question_id || req.body.questionId;
+  const answers = req.body.answers;
+
+  if (!session_id || question_id === undefined) {
+    return res.status(400).json({ success: false, error: 'session_id and question_id are required.' });
+  }
+
+  const session = db.getSessionById(session_id);
+  if (!session) {
+    return res.status(404).json({ success: false, error: 'Session not found.' });
+  }
+
+  if (!verifyStudentAuth(session, req)) {
+    return res.status(403).json({ success: false, error: 'Unauthorized: Invalid student session token.' });
+  }
+
+  if (session.status === 'submitted') {
+    return res.status(400).json({ success: false, error: 'Examination is already submitted.' });
+  }
+
+  const updatedAnswers = db.saveAnswer(session_id, question_id, answers);
+  const answeredCount = updatedAnswers ? Object.keys(updatedAnswers).length : 0;
+
+  const io = req.app.get('io');
+  if (io) {
+    io.to('teacher').emit('student_progress_update', {
+      sessionId: session_id,
+      answeredCount
+    });
+  }
+
+  res.json({
+    success: true,
+    answered_count: answeredCount,
+    question_id: question_id
+  });
+}));
+
+/**
  * GET /api/student/session/:id
  * Fetches current session progress. Requires student session token.
  */
@@ -424,7 +469,18 @@ router.post('/student/submit', asyncHandler(async (req, res) => {
     });
   }
 
-  const scoreData = gradeSession(session.assigned_questions, session.answers, passingPercent, isCompetitive);
+  // Fail-safe answer sync: Merge and persist all submitted answers before evaluation
+  let activeSession = session;
+  if (req.body.answers && typeof req.body.answers === 'object') {
+    for (const [qId, ansArr] of Object.entries(req.body.answers)) {
+      if (Array.isArray(ansArr)) {
+        db.saveAnswer(session_id, qId, ansArr);
+      }
+    }
+    activeSession = db.getSessionById(session_id) || session;
+  }
+
+  const scoreData = gradeSession(activeSession.assigned_questions, activeSession.answers, passingPercent, isCompetitive);
 
   db.submitStudentSession(session_id, scoreData);
   db.addAuditLog(session.student_name, 'SUBMISSION', `Completed exam with score ${scoreData.total_score}/${scoreData.max_score} (${scoreData.percentage}%)`);
