@@ -65,8 +65,14 @@ try {
     $tempZipPath = [System.IO.Path]::GetFullPath((Join-Path $buildTempDir "payload.zip"))
     $uninstallerExePath = [System.IO.Path]::GetFullPath((Join-Path $buildTempDir "Uninstall_ExamShield.exe"))
 
-    $installerCsPath = "C:\Users\Administrator\.gemini\antigravity\brain\c33364d0-00d1-47d1-96d3-e752037162c8\scratch\Installer.cs"
-    $uninstallerCsPath = "C:\Users\Administrator\.gemini\antigravity\brain\c33364d0-00d1-47d1-96d3-e752037162c8\scratch\Uninstaller.cs"
+    $installerCsPath = Join-Path $rootDir "scripts\Installer.cs"
+    if (!(Test-Path $installerCsPath)) {
+        $installerCsPath = "C:\Users\Administrator\.gemini\antigravity\brain\c33364d0-00d1-47d1-96d3-e752037162c8\scratch\Installer.cs"
+    }
+    $uninstallerCsPath = Join-Path $rootDir "scripts\Uninstaller.cs"
+    if (!(Test-Path $uninstallerCsPath)) {
+        $uninstallerCsPath = "C:\Users\Administrator\.gemini\antigravity\brain\c33364d0-00d1-47d1-96d3-e752037162c8\scratch\Uninstaller.cs"
+    }
 
     $cscPath = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
     $sevenZipPath = "C:\Program Files\7-Zip\7z.exe"
