@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ExamShield LAN 🛡️ - Student Examination Portal</title>
   <link rel="icon" type="image/png" href="/logo.png">
   <script src="/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="/styles.css">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -217,15 +218,26 @@
     }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
+<body class="min-h-screen flex flex-col font-sans transition-colors duration-200" style="background-color: var(--bg-primary); color: var(--text-main);">
   <canvas id="confetti-canvas"></canvas>
 
-  <!-- FLOATING THEME TOGGLE (Visible on Login & Result Screens) -->
-  <div id="floatingThemeToggle" class="fixed top-4 right-4 z-40">
-    <button onclick="toggleTheme()" title="Toggle Light / Dark Mode"
-      class="p-2.5 px-4 rounded-2xl bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 shadow-md border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-2 backdrop-blur-md active:scale-95">
-      <span class="theme-icon text-sm">🌙</span>
-      <span class="theme-text text-xs">Dark</span>
+  <!-- FLOATING CONTROLS (Visible on Login & Result Screens) -->
+  <div id="floatingThemeToggle" class="fixed top-4 right-4 z-40 flex items-center gap-2">
+    <!-- Clean SVG Speaker Audio Toggle -->
+    <button onclick="toggleAudio()" id="soundToggleBtn" title="Toggle Sound Effects"
+      class="action-pill-btn p-2.5 px-3.5 rounded-2xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 text-xs font-bold transition flex items-center gap-1.5 backdrop-blur-md border border-white/10 shadow-lg active:scale-95">
+      <svg id="soundIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+      </svg>
+      <span id="soundText" class="hidden sm:inline">Audio On</span>
+    </button>
+    <!-- Clean SVG Theme Toggle -->
+    <button onclick="toggleTheme()" id="themeToggleBtnTop" title="Toggle Dark / Light Mode"
+      class="action-pill-btn p-2.5 px-3.5 rounded-2xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 text-xs font-bold transition flex items-center gap-1.5 backdrop-blur-md border border-white/10 shadow-lg active:scale-95">
+      <svg id="themeIconTop" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <span id="themeTextTop" class="hidden sm:inline">Dark</span>
     </button>
   </div>
 
@@ -238,17 +250,17 @@
   <!-- 1. JOIN SCREEN (STUDENT ENTERS NAME ONLY) -->
   <!-- ======================================================== -->
   <div id="joinScreen" class="flex-1 flex items-center justify-center p-4 py-8">
-    <div class="max-w-2xl w-full bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 p-6 sm:p-8 space-y-6">
+    <div class="glass-panel max-w-2xl w-full p-6 sm:p-8 space-y-6">
       
       <!-- Top Bar: Logo/App on Left & 'PLEASE TURN OFF YOUR PHONE' Warning Sign on Right -->
-      <div class="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 border-b border-slate-100 dark:border-slate-700 pb-5">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 border-b border-slate-700/50 pb-5">
         <div class="flex items-center space-x-3.5 text-center sm:text-left">
           <img src="/logo.png" alt="ExamShield LAN" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl shadow-md border-2 border-indigo-500/30 object-cover hover:scale-105 transition duration-300 shrink-0" />
           <div>
-            <h1 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">ExamShield LAN</h1>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Offline Certification Examination Simulator</p>
-            <p class="text-xs font-bold text-amber-500 dark:text-amber-400 mt-0.5">Made by Prem</p>
-            <span class="inline-flex items-center gap-1.5 mt-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+            <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white">ExamShield LAN</h1>
+            <p class="text-xs text-slate-400">Offline Certification Examination Simulator</p>
+            <p class="text-xs font-bold text-amber-400 mt-0.5">Made by Prem</p>
+            <span class="inline-flex items-center gap-1.5 mt-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950/60 text-emerald-300 border border-emerald-800">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
               Secure LAN Test Environment
             </span>
@@ -290,7 +302,7 @@
       </div>
 
       <!-- Instructions Box (Exact Points from Classroom VCE Format) -->
-      <div class="bg-slate-50 dark:bg-slate-900/50 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs text-left space-y-3">
+      <div class="p-4 sm:p-5 rounded-2xl border text-xs text-left space-y-3" style="background: var(--bg-secondary); border-color: var(--card-border);">
         <p class="font-bold text-sm text-slate-800 dark:text-slate-200 border-b border-slate-200/60 dark:border-slate-700/60 pb-1.5 flex items-center justify-between">
           <span>📋 Instructions :</span>
           <span class="text-[11px] font-semibold text-slate-400">Read carefully before starting</span>
@@ -350,25 +362,25 @@
 
       <!-- Student Name Form & Start Button -->
       <form id="joinForm" onsubmit="handleStudentJoin(event)" class="space-y-4 text-left">
-        <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+        <div class="glow-input-container">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
             Candidate Full Name
           </label>
-          <input type="text" id="candidateNameInput" required placeholder="Enter your full name" autofocus class="glow-input w-full px-4 py-3 text-sm rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
-            class="w-full px-4 py-3 text-sm rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition" />
-          <p class="text-[11px] text-slate-400 mt-1">Roll number is not required. Enter only your name.</p>
+          <input type="text" id="candidateNameInput" required placeholder="Enter your full name" autofocus class="glow-input" />
+          <p class="text-[11px] text-slate-400 mt-1.5">Roll number is not required. Enter only your registered name.</p>
         </div>
 
-        <!-- Green Guide Arrow & Start Exam Button -->
+        <!-- Green Guide Arrow & Start Exam Button with Light-Sweep Sheen -->
         <div class="space-y-2 pt-1">
-          <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-            <span class="text-base">↴</span>
+          <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
+            <span class="text-base">&#8628;</span>
             <span>Click 'Start Examination' to begin test</span>
           </div>
 
           <button type="submit" id="startExamBtn"
-            class="btn-shimmer w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
-            <span>🚀 Start Examination</span>
+            class="btn-shimmer w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
+            <span>Start Examination</span>
+            <span>&rarr;</span>
           </button>
         </div>
       </form>
@@ -383,48 +395,60 @@
   <!-- ======================================================== -->
   <div id="examInterface" class="flex-1 flex flex-col hidden">
 
-    <!-- TOP NAVIGATION BAR -->
-    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-sm sticky top-0 z-40">
+    <!-- TOP NAVIGATION BAR (Contained Glass Card) -->
+    <header class="glass-panel border-b border-slate-700/50 shadow-sm sticky top-0 z-40 backdrop-blur-md" style="background: var(--glass-bg);">
       <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3 sm:gap-4 overflow-x-auto no-scrollbar">
         
-        <!-- Left: Logo & Student Details -->
+        <!-- Left: Student Initials Avatar + Details -->
         <div class="flex items-center space-x-3 shrink-0">
-          <img src="/logo.png" alt="ExamShield LAN" class="w-10 h-10 rounded-xl shadow-sm border border-indigo-500/30 object-cover shrink-0" />
+          <div id="studentAvatar" class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 font-extrabold text-sm flex items-center justify-center border border-emerald-500/30 shrink-0">
+            EX
+          </div>
           <div>
             <div class="flex items-center gap-2">
-              <span id="displayStudentName" class="font-bold text-sm text-slate-900 dark:text-white whitespace-nowrap">Candidate</span>
-              <span id="displayBatchBadge" class="px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 text-[10px] font-bold whitespace-nowrap font-mono">🏷️ BATCH-01</span>
-              <span id="displayExamSet" class="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold whitespace-nowrap">🎲 Randomized</span>
+              <span id="displayStudentName" class="font-bold text-sm text-white whitespace-nowrap">Candidate</span>
+              <span id="displayBatchBadge" class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[10px] font-bold whitespace-nowrap font-mono border border-indigo-500/30">BATCH-01</span>
+              <span id="displayExamSet" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold whitespace-nowrap border border-emerald-500/30">Randomized</span>
             </div>
-            <p id="displayExamTitle" class="text-xs text-slate-500 dark:text-slate-400 truncate max-w-xs sm:max-w-md whitespace-nowrap">Certification Exam</p>
+            <p id="displayExamTitle" class="text-xs text-slate-400 truncate max-w-xs sm:max-w-md whitespace-nowrap">Certification Exam</p>
           </div>
         </div>
 
-        <!-- Center: Countdown Timer -->
-        <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-700/60 px-3.5 sm:px-4 py-1.5 rounded-2xl border border-slate-200 dark:border-slate-600 shrink-0">
-          <span id="timerIcon" class="text-sm">⏳</span>
+        <!-- Center: Sleek Red Countdown Timer Badge with Clock SVG -->
+        <div class="flex items-center gap-2 bg-red-500/10 border border-red-500/30 px-3.5 sm:px-4 py-1.5 rounded-xl text-red-400 shrink-0">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
           <div>
-            <span id="timerLabel" class="text-[10px] text-slate-400 uppercase tracking-wider block font-bold whitespace-nowrap">Time Left</span>
-            <span id="timerDisplay" class="font-mono text-base font-black text-slate-800 dark:text-white whitespace-nowrap">00:00</span>
+            <span id="timerLabel" class="text-[9px] text-red-300/80 uppercase tracking-wider block font-bold whitespace-nowrap">Time Left</span>
+            <span id="timerDisplay" class="font-mono text-base font-black text-red-400 whitespace-nowrap">00:00</span>
           </div>
         </div>
 
-        <!-- Right: Auto-save status, Theme Toggle & Palette Toggle -->
+        <!-- Right: Auto-save status, Audio Toggle, Theme Toggle & Palette Toggle -->
         <div class="flex items-center gap-2 sm:gap-3 shrink-0">
           <!-- Auto-save indicator -->
-          <span id="autoSaveIndicator" class="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-            <span>✓</span> Auto-Saved
+          <span id="autoSaveIndicator" class="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            Auto-Saved
           </span>
 
-          <!-- Theme Switcher: Light / Dark -->
+          <!-- Audio Switcher -->
+          <button onclick="toggleAudio()" id="headerSoundBtn" title="Toggle Audio"
+            class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 text-xs font-bold transition flex items-center gap-1.5 border border-white/10">
+            <svg id="headerSoundIcon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+          </button>
+
+          <!-- Theme Switcher -->
           <button onclick="toggleTheme()" id="themeToggleBtn" title="Toggle Theme"
-            class="p-2 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1">
+            class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 text-xs font-bold transition flex items-center gap-1.5 border border-white/10">
             <span id="themeIcon">🌙</span>
-            <span class="hidden sm:inline text-[11px]" id="themeText">Dark</span>
           </button>
 
           <!-- Toggle Question Palette on Mobile -->
-          <button onclick="toggleMobilePalette()" class="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs">
+          <button onclick="toggleMobilePalette()" class="md:hidden p-2 rounded-xl bg-slate-800 text-slate-200 text-xs border border-white/10">
             📋 Palette
           </button>
         </div>
@@ -450,7 +474,7 @@
       <main class="md:col-span-3 flex flex-col space-y-6">
         
         <!-- Question Card -->
-        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200 dark:border-slate-700 flex-1 flex flex-col justify-between space-y-6">
+        <div class="glass-panel p-6 md:p-8 flex-1 flex flex-col justify-between space-y-6">
           
           <div class="space-y-4">
             <!-- Per-Question Animated Timer & Progress Bar (Active when per-question time limit is on) -->
@@ -529,7 +553,7 @@
       </main>
 
       <!-- RIGHT: VCE QUESTION PALETTE (1 col) -->
-      <aside id="paletteAside" class="md:col-span-1 bg-white dark:bg-slate-800 rounded-3xl p-5 shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col justify-between space-y-4">
+      <aside id="paletteAside" class="glass-panel md:col-span-1 p-5 flex flex-col justify-between space-y-4">
         <div>
           <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 flex items-center justify-between">
             <span>Question Palette</span>
@@ -578,7 +602,17 @@
   <!-- 3. SCORECARD & RESULT SCREEN (EXPLANATIONS EXCLUDED) -->
   <!-- ======================================================== -->
   <div id="resultScreen" class="flex-1 flex items-center justify-center p-4 hidden">
-    <div class="max-w-xl w-full bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 p-8 space-y-6 text-center">
+    <div class="glass-panel max-w-xl w-full p-8 space-y-6 text-center">
+      
+      <!-- Top Distinction Shimmer Ribbon -->
+      <div class="flex justify-center mb-1">
+        <div class="gold-shimmer-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          <span>OFFICIAL EXAMINATION SCORECARD</span>
+        </div>
+      </div>
       
       <div class="flex flex-col items-center justify-center space-y-2">
         <img src="/logo.png" alt="ExamShield" class="w-16 h-16 rounded-2xl shadow-lg border-2 border-indigo-500/30 object-cover" />
@@ -980,6 +1014,7 @@
     }
 
     function showFrozenOverlay(reason, timestamp) {
+      AudioFX.playAlert();
       document.getElementById('violationReasonText').innerText = reason;
       document.getElementById('violationTimestampText').innerText = timestamp;
       document.getElementById('frozenOverlay').classList.remove('hidden');
@@ -1120,6 +1155,10 @@
         if (floatingTheme) floatingTheme.classList.add('hidden');
 
         document.getElementById('displayStudentName').innerText = currentSession.student_name;
+        const nameParts = (currentSession.student_name || 'Candidate').trim().split(/\s+/);
+        const initials = nameParts.map(p => p[0]).filter(Boolean).slice(0, 2).join('').toUpperCase() || 'EX';
+        const avEl = document.getElementById('studentAvatar');
+        if (avEl) avEl.innerText = initials;
         document.getElementById('displayExamTitle').innerText = currentSession.exam_title;
         const batchBadgeEl = document.getElementById('displayBatchBadge');
         if (batchBadgeEl) {
@@ -1380,7 +1419,7 @@
 
         return `
           <div onclick="selectOption('${opt.key}', ${q.is_multiple_choice})"
-            class="option-card-modern p-4 rounded-2xl border-2 cursor-pointer transition flex items-start gap-3 ${cardStyle}">
+            class="merged-option-card option-card-modern p-4 rounded-2xl border cursor-pointer transition flex items-start gap-3 ${cardStyle}">
             <input type="${inputType}" name="q_${q.id}" ${isSelected ? 'checked' : ''}
               class="mt-1 accent-indigo-600 cursor-pointer w-4 h-4 pointer-events-none" />
             <div class="flex-1 text-xs md:text-sm text-slate-800 dark:text-slate-100">
@@ -1405,6 +1444,7 @@
     }
 
     function selectOption(optKey, isMultiple) {
+      AudioFX.play(600, 0.08);
       if (isFrozen || isSubmitted) return;
       const q = questions[currentIndex];
       let current = answers[q.id] || [];
@@ -1712,12 +1752,12 @@
 
       const passBadge = document.getElementById('finalPassBadge');
       if (result.passed) {
-        passBadge.innerText = 'PASSED 🏆';
+        ConfettiMgr.fire(150); AudioFX.playSuccess(); passBadge.innerText = 'PASSED 🏆';
         passBadge.className = 'py-2 px-5 rounded-2xl text-sm font-black uppercase tracking-wider inline-block bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300';
         document.getElementById('resultStatusIcon').innerText = '🎉';
         document.getElementById('resultStatusHeading').innerText = 'Congratulations! You Passed';
       } else {
-        passBadge.innerText = 'FAILED ❌';
+        AudioFX.playAlert(); passBadge.innerText = 'FAILED ❌';
         passBadge.className = 'py-2 px-5 rounded-2xl text-sm font-black uppercase tracking-wider inline-block bg-rose-100 text-rose-800 dark:bg-rose-900/60 dark:text-rose-300';
         document.getElementById('resultStatusIcon').innerText = '📝';
         document.getElementById('resultStatusHeading').innerText = 'Exam Completed';
@@ -1814,6 +1854,117 @@
       modal.classList.toggle('hidden');
     }
 
+    
+    // ========================================================
+    // LIGHTWEIGHT AUDIO SYNTHESIZER & CONFETTI ENGINE
+    // ========================================================
+    const AudioFX = {
+      ctx: null,
+      enabled: true,
+      init() {
+        if (!this.ctx) {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (Ctx) this.ctx = new Ctx();
+        }
+      },
+      play(freq = 600, duration = 0.12) {
+        if (!this.enabled) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e) {}
+      },
+      playSuccess() {
+        this.play(523, 0.1);
+        setTimeout(() => this.play(659, 0.12), 90);
+        setTimeout(() => this.play(784, 0.2), 180);
+      },
+      playAlert() {
+        this.play(440, 0.18);
+        setTimeout(() => this.play(330, 0.25), 140);
+      }
+    };
+
+    function toggleAudio() {
+      AudioFX.enabled = !AudioFX.enabled;
+      const label = document.getElementById('soundText');
+      const icon = document.getElementById('soundIcon');
+      const headerIcon = document.getElementById('headerSoundIcon');
+      if (label) label.textContent = AudioFX.enabled ? 'Audio On' : 'Audio Off';
+      const iconSvg = AudioFX.enabled
+        ? '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>'
+        : '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
+      if (icon) icon.innerHTML = iconSvg;
+      if (headerIcon) headerIcon.innerHTML = iconSvg;
+      if (AudioFX.enabled) AudioFX.play(800, 0.05);
+    }
+
+    const ConfettiMgr = {
+      canvas: null,
+      ctx: null,
+      particles: [],
+      animId: null,
+      fire(count = 140) {
+        if (!this.canvas) {
+          this.canvas = document.getElementById('confetti-canvas');
+          if (!this.canvas) return;
+          this.ctx = this.canvas.getContext('2d');
+          this.canvas.width = window.innerWidth;
+          this.canvas.height = window.innerHeight;
+        }
+        const colors = ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#3b82f6'];
+        for (let i = 0; i < count; i++) {
+          this.particles.push({
+            x: this.canvas.width / 2 + (Math.random() - 0.5) * 300,
+            y: this.canvas.height / 2 + (Math.random() - 0.5) * 100,
+            vx: (Math.random() - 0.5) * 16,
+            vy: -Math.random() * 15 - 5,
+            size: Math.random() * 8 + 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            opacity: 1
+          });
+        }
+        if (!this.animId) this.loop();
+      },
+      loop() {
+        if (!this.ctx) return;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+          const p = this.particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.45;
+          p.opacity -= 0.007;
+          if (p.opacity <= 0 || p.y > this.canvas.height) {
+            this.particles.splice(i, 1);
+            continue;
+          }
+          this.ctx.save();
+          this.ctx.translate(p.x, p.y);
+          this.ctx.globalAlpha = Math.max(0, p.opacity);
+          this.ctx.fillStyle = p.color;
+          this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.4);
+          this.ctx.restore();
+        }
+        if (this.particles.length > 0) {
+          this.animId = requestAnimationFrame(() => this.loop());
+        } else {
+          this.animId = null;
+        }
+      }
+    };
+  
     function returnToJoinScreen() {
       if (timerInterval) clearInterval(timerInterval);
       if (questionTimerInterval) clearInterval(questionTimerInterval);
