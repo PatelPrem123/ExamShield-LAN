@@ -481,11 +481,11 @@ function createStudentSession(sessionData) {
     INSERT INTO student_sessions (
       id, exam_id, student_name, exam_set, assigned_questions_json,
       answers_json, marked_for_review_json, status, remaining_seconds,
-      start_time, last_heartbeat, auth_token, batch_code
+      start_time, last_heartbeat, auth_token, batch_code, is_waiting
     ) VALUES (
       @id, @exam_id, @student_name, @exam_set, @assigned_questions_json,
       @answers_json, @marked_for_review_json, @status, @remaining_seconds,
-      @start_time, @last_heartbeat, @auth_token, @batch_code
+      @start_time, @last_heartbeat, @auth_token, @batch_code, @is_waiting
     )
   `).run({
     id: sessionData.id,
@@ -500,7 +500,8 @@ function createStudentSession(sessionData) {
     start_time: nowIso,
     last_heartbeat: nowIso,
     auth_token: authToken,
-    batch_code: batchCode
+    batch_code: batchCode,
+    is_waiting: (sessionData.is_waiting !== undefined) ? (sessionData.is_waiting ? 1 : 0) : ((sessionData.status === 'waiting') ? 1 : 0)
   });
 
   return getSessionById(sessionData.id);
@@ -667,7 +668,7 @@ function parseSessionRecord(row) {
     passed: !!row.passed,
     allow_review: !!row.allow_review,
     auth_token: row.auth_token || '',
-    is_waiting: !!row.is_waiting,
+    is_waiting: !!(row.is_waiting || row.status === 'waiting'),
     correct_count: correctCount ?? 0,
     wrong_count: wrongCount ?? 0,
     unattempted_count: unattemptedCount ?? 0
