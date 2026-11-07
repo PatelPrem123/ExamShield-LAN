@@ -47,6 +47,24 @@
     .animate-breathing-emerald {
       animation: breathing-emerald 2.5s infinite ease-in-out;
     }
+
+    /* Dropdown Options Theming (Image 1 Parity) */
+    select {
+      color-scheme: light dark;
+    }
+    select option {
+      background-color: #ffffff;
+      color: #0f172a;
+      padding: 6px 12px;
+      font-weight: 600;
+    }
+    html.dark select option {
+      background-color: #1e293b;
+      color: #f8fafc;
+      padding: 6px 12px;
+      font-weight: 600;
+    }
+
     html {
       scroll-behavior: smooth;
     }
@@ -525,8 +543,11 @@ Loading history...
             </div>
             <div class="flex items-center gap-3">
               <h3 class="text-lg font-black text-slate-900 dark:text-white">Exam State:</h3>
-              <div id="lifecycleStatusBadge" class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-500/40 shadow-xs">
-                <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+              <div id="lifecycleStatusBadge" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-amber-100 dark:bg-amber-950/70 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-700 shadow-xs">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-600 dark:bg-amber-400"></span>
+                </span>
                 <span>WAITING ROOM MODE</span>
               </div>
             </div>
@@ -534,16 +555,16 @@ Loading history...
 
           <!-- Master Action Buttons with Sleek SVGs -->
           <div class="flex items-center gap-2.5 flex-wrap">
-            <button onclick="triggerStartExam()" id="btnStartExamLifecycle" class="btn-shimmer px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider shadow-md flex items-center gap-2 transition active:scale-95 cursor-pointer">
-              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <button onclick="triggerStartExam()" id="btnStartExamLifecycle" class="btn-shimmer h-10 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider shadow-md flex items-center justify-center gap-2 transition active:scale-95 cursor-pointer">
+              <svg class="w-4 h-4 shrink-0 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               <span>Start Exam (Launch Waiting Room)</span>
             </button>
-            <button onclick="triggerStopExam()" id="btnStopExamLifecycle" class="px-4 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider shadow-sm flex items-center gap-2 transition active:scale-95 border border-rose-500/30 cursor-pointer">
-              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
+            <button onclick="triggerStopExam()" id="btnStopExamLifecycle" class="h-10 px-4 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 transition active:scale-95 border border-rose-500/30 cursor-pointer">
+              <svg class="w-4 h-4 shrink-0 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
               <span>Stop Exam &amp; Collect All</span>
             </button>
-            <button onclick="triggerSetWaitingMode()" id="btnWaitingExamLifecycle" class="px-3.5 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-xs flex items-center gap-1.5 transition active:scale-95 border border-amber-500/30 cursor-pointer">
-              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <button onclick="triggerSetWaitingMode()" id="btnWaitingExamLifecycle" class="h-10 px-4 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-xs flex items-center justify-center gap-1.5 transition active:scale-95 border border-amber-500/30 cursor-pointer">
+              <svg class="w-4 h-4 shrink-0 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               <span>Open Waiting Room</span>
             </button>
           </div>
@@ -584,19 +605,19 @@ Loading history...
         </div>
 
         <div class="flex items-center gap-2 flex-wrap">
-          <!-- Batch Selector Filter -->
-          <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-700/80 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600">
+          <!-- Batch Selector Filter (Standardized h-9) -->
+          <div class="h-9 flex items-center gap-1.5 bg-slate-100 dark:bg-slate-700/80 px-3 rounded-xl border border-slate-300 dark:border-slate-600">
             <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
             <span class="text-xs font-bold text-slate-500 dark:text-slate-400">Filter:</span>
             <select id="monitorBatchFilter" onchange="onBatchFilterChange(this.value)" class="bg-transparent text-xs font-bold text-slate-800 dark:text-white border-0 focus:ring-0 cursor-pointer outline-none">
               <option value="all">All Batches</option>
             </select>
           </div>
-          <button onclick="refreshStudentList()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-600 transition flex items-center gap-1.5 cursor-pointer">
+          <button onclick="refreshStudentList()" class="h-9 px-3.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-600 transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
             <span>Refresh</span>
           </button>
-          <button onclick="endExamForAll()" class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 text-xs font-semibold rounded-xl border border-rose-300 dark:border-rose-800 transition flex items-center gap-1.5 cursor-pointer">
+          <button onclick="endExamForAll()" class="h-9 px-3.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 text-xs font-bold rounded-xl border border-rose-300 dark:border-rose-800 transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
             <span>End Exam &amp; Collect All Papers</span>
           </button>
@@ -1093,43 +1114,43 @@ Loading history...
 
         <!-- Action Toolbar: Reports Export & Data Portability -->
         <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-700/60">
-          <!-- Left: Report Exports -->
+          <!-- Left: Report Exports (Standardized h-9 buttons with white SVGs) -->
           <div class="flex items-center gap-2 flex-wrap">
             <span class="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mr-1">Export:</span>
             <button onclick="downloadMasterExcel('normal', 'xlsx')"
-              title="Download formatted Excel workbook with banners, bold headers and colors (.xlsx)"
-              class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 active:scale-95 whitespace-nowrap">
-              <svg class="w-3.5 h-3.5 inline mr-1 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Excel [Normal]</span>
+              title="Download formatted Excel workbook (.xlsx)"
+              class="h-9 px-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap cursor-pointer">
+              <svg class="w-4 h-4 shrink-0 text-white/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Excel [Normal]</span>
             </button>
             <button onclick="downloadMasterExcel('rank', 'xlsx')"
-              title="Download formatted Excel workbook sorted by student rank with full design (.xlsx)"
-              class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 active:scale-95 whitespace-nowrap">
-              <svg class="w-3.5 h-3.5 inline mr-1 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg><span>Excel [Ranked]</span>
+              title="Download formatted Excel workbook sorted by rank (.xlsx)"
+              class="h-9 px-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap cursor-pointer">
+              <svg class="w-4 h-4 shrink-0 text-white/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg><span>Excel [Ranked]</span>
             </button>
             <button onclick="downloadMasterExcel('rank', 'csv')"
-              title="Download clean Comma-Separated Values (.csv)"
-              class="px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 active:scale-95 whitespace-nowrap">
-              <svg class="w-3.5 h-3.5 inline mr-1 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg><span>CSV</span>
+              title="Download clean CSV (.csv)"
+              class="h-9 px-3.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap cursor-pointer">
+              <svg class="w-4 h-4 shrink-0 text-white/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg><span>CSV</span>
             </button>
             <button onclick="openHistoryModal()"
               title="View complete exam history archive"
-              class="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 active:scale-95 whitespace-nowrap">
-              <svg class="w-3.5 h-3.5 inline mr-1 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>History</span>
+              class="h-9 px-3.5 bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap cursor-pointer">
+              <svg class="w-4 h-4 shrink-0 text-white/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>History</span>
             </button>
           </div>
 
-          <!-- Right: Data Transfer (School PC <-> Home Laptop) -->
+          <!-- Right: Data Transfer (Standardized h-9 buttons with white SVGs) -->
           <div class="flex items-center gap-2 flex-wrap">
             <span class="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mr-1">Data Transfer:</span>
             <button onclick="backupExamDatabase()"
-              title="Download full database snapshot (.db) to transfer to your home laptop via USB"
-              class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 active:scale-95 whitespace-nowrap">
-              <svg class="w-3.5 h-3.5 inline mr-1 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg><span>Backup DB</span>
+              title="Download full database snapshot (.db)"
+              class="h-9 px-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap cursor-pointer">
+              <svg class="w-4 h-4 shrink-0 text-white/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg><span>Backup DB</span>
             </button>
             <button onclick="document.getElementById('dbRestoreInput').click()"
-              title="Restore database backup from school PC (.db)"
-              class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 active:scale-95 whitespace-nowrap">
-              <svg class="w-3.5 h-3.5 inline mr-1 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span>Restore DB</span>
+              title="Restore database backup (.db)"
+              class="h-9 px-3.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap cursor-pointer">
+              <svg class="w-4 h-4 shrink-0 text-white/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span>Restore DB</span>
             </button>
             <input type="file" id="dbRestoreInput" accept=".db" class="hidden" onchange="restoreExamDatabase(this.files[0])" />
           </div>
@@ -1511,22 +1532,22 @@ Loading history...
 
       if (status === 'active') {
         if (badgeEl) {
-          badgeEl.className = 'inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-sm';
-          badgeEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span>EXAM IN PROGRESS (LIVE)</span>';
+          badgeEl.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/70 text-emerald-900 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 shadow-xs';
+          badgeEl.innerHTML = '<span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span><span>EXAM IN PROGRESS (LIVE)</span>';
         }
         if (startBtn) startBtn.classList.add('opacity-50');
         if (stopBtn) stopBtn.classList.remove('opacity-50');
       } else if (status === 'ended') {
         if (badgeEl) {
-          badgeEl.className = 'inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-rose-500/20 text-rose-400 border border-rose-500/40 shadow-sm';
-          badgeEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-rose-400"></span><span>EXAM STOPPED (CONCLUDED)</span>';
+          badgeEl.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-rose-100 dark:bg-rose-950/70 text-rose-900 dark:text-rose-300 border border-rose-300 dark:border-rose-700 shadow-xs';
+          badgeEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-rose-500"></span><span>EXAM STOPPED (CONCLUDED)</span>';
         }
         if (startBtn) startBtn.classList.remove('opacity-50');
         if (stopBtn) stopBtn.classList.add('opacity-50');
       } else {
         if (badgeEl) {
-          badgeEl.className = 'inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm';
-          badgeEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span><span>WAITING ROOM MODE</span>';
+          badgeEl.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-amber-100 dark:bg-amber-950/70 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-700 shadow-xs';
+          badgeEl.innerHTML = '<span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-amber-600 dark:bg-amber-400"></span></span><span>WAITING ROOM MODE</span>';
         }
         if (startBtn) startBtn.classList.remove('opacity-50');
         if (stopBtn) stopBtn.classList.remove('opacity-50');
@@ -2568,10 +2589,26 @@ Loading history...
       }
     }
 
-    function showAdminSuccessToast(msg) {
+    function showToast(msg, type = 'success') {
+      const existing = document.getElementById('adminToastPopup');
+      if (existing) existing.remove();
+
       const toast = document.createElement('div');
-      toast.className = 'fixed bottom-6 right-6 z-50 bg-emerald-600 text-white font-bold text-xs px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2 border border-emerald-400 transition transform duration-300 translate-y-4 opacity-0 pointer-events-none';
-      toast.innerHTML = `<span>${msg}</span>`;
+      toast.id = 'adminToastPopup';
+
+      let bgClasses = 'bg-slate-900/95 dark:bg-slate-800/95 border-emerald-500/50 text-white';
+      let iconSvg = '<svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+
+      if (type === 'error') {
+        bgClasses = 'bg-rose-900/95 border-rose-500 text-white';
+        iconSvg = '<svg class="w-4 h-4 text-rose-300 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+      } else if (type === 'warning') {
+        bgClasses = 'bg-amber-900/95 border-amber-500 text-white';
+        iconSvg = '<svg class="w-4 h-4 text-amber-300 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+      }
+
+      toast.className = `fixed bottom-6 right-6 z-50 ${bgClasses} backdrop-blur-md font-bold text-xs px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2.5 border transition-all transform duration-300 translate-y-4 opacity-0 pointer-events-none`;
+      toast.innerHTML = `${iconSvg}<span>${msg}</span>`;
       document.body.appendChild(toast);
       requestAnimationFrame(() => {
         toast.classList.remove('translate-y-4', 'opacity-0');
@@ -2581,6 +2618,13 @@ Loading history...
         setTimeout(() => toast.remove(), 400);
       }, 3500);
     }
+
+    function showAdminSuccessToast(msg) {
+      showToast(msg, 'success');
+    }
+
+    window.showToast = showToast;
+    window.showAdminSuccessToast = showToast;
 
     // DOCX Export Functions
     function exportTopicDocx(topic) {
@@ -3522,9 +3566,9 @@ Loading history...
       const resultsFilter = document.getElementById('resultsBatchFilter');
       
       const optionsHtml = `
-        <option value="all" ${currentBatchFilter === 'all' ? 'selected' : ''}>All Batches</option>
+        <option class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 py-1" value="all" ${currentBatchFilter === 'all' ? 'selected' : ''}>All Batches</option>
         ${batches.map(b => `
-          <option value="${b.batch_code}" ${currentBatchFilter === b.batch_code ? 'selected' : ''}>
+          <option class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 py-1" value="${b.batch_code}" ${currentBatchFilter === b.batch_code ? 'selected' : ''}>
             ${b.batch_code} ${b.batch_code === activeBatchCode ? '(Active)' : ''}
           </option>
         `).join('')}
