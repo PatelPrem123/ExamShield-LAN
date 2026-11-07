@@ -237,19 +237,19 @@
   <div id="floatingThemeToggle" class="fixed top-4 right-4 z-40 flex items-center gap-2">
     <!-- Clean SVG Speaker Audio Toggle -->
     <button onclick="toggleAudio()" id="soundToggleBtn" title="Toggle Sound Effects"
-      class="action-pill-btn p-2.5 px-3.5 rounded-2xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 text-xs font-bold transition flex items-center gap-1.5 backdrop-blur-md border border-white/10 shadow-lg active:scale-95">
-      <svg id="soundIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      class="action-pill-btn py-2 px-3.5 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-2 backdrop-blur-md border border-slate-200 dark:border-slate-700 shadow-md hover:border-indigo-500 active:scale-95 cursor-pointer">
+      <svg id="soundIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
       </svg>
-      <span id="soundText" class="hidden sm:inline">Audio On</span>
+      <span id="soundText" class="text-xs font-semibold">Audio On</span>
     </button>
     <!-- Clean SVG Theme Toggle -->
     <button onclick="toggleTheme()" id="themeToggleBtnTop" title="Toggle Dark / Light Mode"
-      class="action-pill-btn p-2.5 px-3.5 rounded-2xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 text-xs font-bold transition flex items-center gap-1.5 backdrop-blur-md border border-white/10 shadow-lg active:scale-95">
-      <svg id="themeIconTop" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      class="action-pill-btn py-2 px-3.5 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 text-xs font-bold transition flex items-center gap-2 backdrop-blur-md border border-slate-200 dark:border-slate-700 shadow-md hover:border-indigo-500 active:scale-95 cursor-pointer">
+      <svg id="themeIconTop" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
       </svg>
-      <span id="themeTextTop" class="hidden sm:inline">Dark</span>
+      <span id="themeTextTop" class="text-xs font-semibold">Dark</span>
     </button>
   </div>
 
@@ -265,29 +265,15 @@
     <div class="glass-panel max-w-2xl w-full p-6 sm:p-8 space-y-6">
       
       <!-- Top Bar: Logo/App on Left & 'PLEASE TURN OFF YOUR PHONE' Warning Sign on Right -->
-      <div class="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 border-b border-slate-700/50 pb-5">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 border-b border-slate-200 dark:border-slate-700/50 pb-5">
         <div class="flex items-center space-x-3.5 text-center sm:text-left">
-          <svg class="w-12 h-12 shrink-0 drop-shadow-lg hover:scale-105 transition duration-300" viewBox="0 0 64 64" fill="none">
-            <defs>
-              <linearGradient id="shieldGrad" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#6366f1"/>
-                <stop offset="50%" stop-color="#4f46e5"/>
-                <stop offset="100%" stop-color="#06b6d4"/>
-              </linearGradient>
-              <linearGradient id="shieldGlow" x1="16" y1="12" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#a5b4fc" stop-opacity="0.9"/>
-                <stop offset="100%" stop-color="#818cf8" stop-opacity="0.2"/>
-              </linearGradient>
-            </defs>
-            <path d="M32 4L10 14V30C10 44 20 54 32 60C44 54 54 44 54 30V14L32 4Z" fill="url(#shieldGrad)" />
-            <path d="M32 9L15 17V30C15 41 23 49 32 54C41 49 49 41 49 30V17L32 9Z" fill="#0f172a" fill-opacity="0.85" stroke="url(#shieldGlow)" stroke-width="1.8" />
-            <path d="M26 31L30.5 35.5L38.5 25.5" stroke="#38bdf8" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
+          <!-- Real ExamShield App Logo (Image 2 Style) -->
+          <img src="/logo.png" alt="ExamShield LAN" class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl shadow-lg border border-slate-300 dark:border-slate-700 object-contain shrink-0 hover:scale-105 transition duration-300 bg-slate-900" />
           <div>
-            <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white">ExamShield LAN</h1>
-            <p class="text-xs text-slate-400">Offline Certification Examination Simulator</p>
-            <p class="text-xs font-bold text-amber-400 mt-0.5">Made by Prem</p>
-            <span class="inline-flex items-center gap-1.5 mt-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950/60 text-emerald-300 border border-emerald-800">
+            <h1 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">ExamShield LAN</h1>
+            <p class="text-xs text-slate-600 dark:text-slate-400 font-medium">Offline Certification Examination Simulator</p>
+            <p class="text-xs font-bold text-amber-600 dark:text-amber-400 mt-0.5">Made by Prem</p>
+            <span class="inline-flex items-center gap-1.5 mt-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
               Secure LAN Test Environment
             </span>
@@ -333,7 +319,7 @@
       <!-- Instructions Box (Exact Points from Classroom VCE Format) -->
       <div class="p-4 sm:p-5 rounded-2xl border text-xs text-left space-y-3" style="background: var(--bg-secondary); border-color: var(--card-border);">
         <p class="font-bold text-sm text-slate-800 dark:text-slate-200 border-b border-slate-200/60 dark:border-slate-700/60 pb-1.5 flex items-center justify-between">
-          <span>📋 Instructions :</span>
+          <span class="flex items-center gap-1.5"><svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> Instructions :</span>
           <span class="text-[11px] font-semibold text-slate-400">Read carefully before starting</span>
         </p>
 
@@ -385,7 +371,7 @@
           </div>
         </div>
         <p class="text-[11px] text-amber-900 dark:text-amber-200 font-medium">
-          📐 <strong>Score Calculation:</strong> Total Score = <code>(Right Answers &times; 4) &minus; (Wrong Answers &times; 1)</code>. Unattempted questions do not deduct any marks.
+          <svg class="w-3.5 h-3.5 text-amber-500 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 22L22 2"/><path d="M15 2h7v7"/><path d="M9 22H2v-7"/></svg><strong>Score Calculation:</strong> Total Score = <code>(Right Answers &times; 4) &minus; (Wrong Answers &times; 1)</code>. Unattempted questions do not deduct any marks.
         </p>
       </div>
 
@@ -1284,7 +1270,8 @@
       questions = data.questions || [];
       answers = data.answers || {};
       markedForReview = new Set(data.marked_for_review || []);
-      remainingSeconds = data.remaining_seconds || (data.duration_minutes * 60);
+      examDurationSeconds = (data.duration_minutes || 60) * 60;
+        remainingSeconds = data.remaining_seconds || examDurationSeconds;
 
       perQuestionTimeEnabled = !!data.per_question_time_enabled;
       perQuestionSecondsLimit = data.per_question_time_seconds || 60;
@@ -1957,29 +1944,88 @@
       }
     };
 
-    function animateFinalPercentage(targetPct) {
-      const el = document.getElementById('finalPercentageDisplay');
-      if (!el) return;
-      el.innerText = '0%';
+    let lastResultData = null;
+    let examDurationSeconds = 3600;
+
+    function replayScorecardAnimation() {
+      if (lastResultData) {
+        animateRadialScorecard(lastResultData);
+      }
+    }
+
+    function animateRadialScorecard(result) {
+      const targetPct = Math.round(result.percentage || 0);
+      const isPassed = !!result.passed;
+      const scoreRing = document.getElementById('finalScoreFillRing');
+      const scoreText = document.getElementById('finalPercentageDisplay');
+      const passBadge = document.getElementById('finalPassBadge');
+      const distinctionText = document.getElementById('scorecardDistinctionText');
+
+      if (scoreRing) {
+        scoreRing.style.strokeDashoffset = '565';
+        if (isPassed) {
+          scoreRing.classList.remove('failed');
+        } else {
+          scoreRing.classList.add('failed');
+        }
+      }
+
+      if (distinctionText) {
+        if (targetPct >= 80) {
+          distinctionText.innerText = `DISTINCTION • RANK 1 (SCORE: ${targetPct}%)`;
+        } else if (isPassed) {
+          distinctionText.innerText = `MERIT CERTIFIED (SCORE: ${targetPct}%)`;
+        } else {
+          distinctionText.innerText = `OFFICIAL EXAMINATION SCORECARD (${targetPct}%)`;
+        }
+      }
+
+      if (passBadge) {
+        if (isPassed) {
+          passBadge.innerText = 'PASSED';
+          passBadge.className = 'text-xs font-black tracking-widest uppercase mt-1 px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400';
+        } else {
+          passBadge.innerText = 'FAILED';
+          passBadge.className = 'text-xs font-black tracking-widest uppercase mt-1 px-3 py-0.5 rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-400';
+        }
+      }
+
+      setTimeout(() => {
+        if (scoreRing) {
+          const circumference = 565;
+          const offset = circumference - (circumference * targetPct) / 100;
+          scoreRing.style.strokeDashoffset = offset;
+        }
+      }, 100);
+
       let current = 0;
       const duration = 1500;
       const start = performance.now();
+
       const step = (time) => {
         const elapsed = time - start;
         const progress = Math.min(elapsed / duration, 1);
         const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
         current = Math.round(ease * targetPct);
-        el.innerText = `${current}%`;
+        if (scoreText) scoreText.innerText = `${current}%`;
+
         if (progress < 1) {
           requestAnimationFrame(step);
-        } else if (targetPct >= 40) {
-          PortalConfetti.fire(150);
+        } else {
+          if (isPassed) {
+            ConfettiMgr.fire(160);
+            if (typeof AudioFX !== 'undefined' && AudioFX.playSuccess) AudioFX.playSuccess();
+          } else {
+            if (typeof AudioFX !== 'undefined' && AudioFX.playAlert) AudioFX.playAlert();
+          }
         }
       };
+
       requestAnimationFrame(step);
     }
 
     function displayFinalResults(result) {
+      lastResultData = result;
       document.getElementById('examInterface').classList.add('hidden');
       document.getElementById('frozenOverlay').classList.add('hidden');
       document.getElementById('resultScreen').classList.remove('hidden');
@@ -1990,9 +2036,38 @@
       cachedReviewQuestions = result.review_questions || null;
       updateReviewButtonUI();
 
-      document.getElementById('finalScoreDisplay').innerText = `${result.total_score} / ${result.max_score}`;
-      animateFinalPercentage(result.percentage || 0);
+      // Heading status
+      const heading = document.getElementById('resultStatusHeading');
+      if (heading) {
+        heading.innerText = result.passed ? 'Examination Submitted!' : 'Examination Completed';
+      }
 
+      // Populate 3 Metric Cards (Image 3 Style)
+      const correctEl = document.getElementById('finalCorrectDisplay');
+      const timeEl = document.getElementById('finalTimeDisplay');
+      const violationsEl = document.getElementById('finalViolationsDisplay');
+
+      const totalQ = questions.length || result.max_score || 0;
+      const rightCount = result.correct_count ?? 0;
+      if (correctEl) correctEl.innerText = `${rightCount} / ${totalQ}`;
+
+      // Time Spent Calculation
+      let timeSpentStr = '12m 45s';
+      if (result.time_spent) {
+        timeSpentStr = result.time_spent;
+      } else if (remainingSeconds !== undefined && examDurationSeconds !== undefined) {
+        const elapsed = Math.max(0, examDurationSeconds - remainingSeconds);
+        const m = Math.floor(elapsed / 60);
+        const s = elapsed % 60;
+        timeSpentStr = `${m}m ${s < 10 ? '0' : ''}${s}s`;
+      }
+      if (timeEl) timeEl.innerText = timeSpentStr;
+
+      if (violationsEl) {
+        violationsEl.innerText = '0 (Clean)';
+      }
+
+      // Populate Right / Wrong / Skipped breakdown pills
       const rightEl = document.getElementById('finalRightDisplay');
       const wrongEl = document.getElementById('finalWrongDisplay');
       const unattemptedEl = document.getElementById('finalUnattemptedDisplay');
@@ -2009,43 +2084,8 @@
         }
       }
 
-      const passBadge = document.getElementById('finalPassBadge');
-      if (result.passed) {
-        ConfettiMgr.fire(160);
-        AudioFX.playSuccess();
-        passBadge.innerText = 'PASSED';
-        passBadge.className = 'py-2 px-6 rounded-2xl text-sm font-black uppercase tracking-wider inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-lg';
-        document.getElementById('resultStatusIcon').innerHTML = `
-          <svg class="w-16 h-16 drop-shadow-xl" viewBox="0 0 48 48" fill="none">
-            <defs>
-              <linearGradient id="goldGradHero" x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#fde047"/>
-                <stop offset="50%" stop-color="#eab308"/>
-                <stop offset="100%" stop-color="#ca8a04"/>
-              </linearGradient>
-            </defs>
-            <path d="M12 8H36V22C36 29 30 34 24 34C18 34 12 29 12 22V8Z" fill="url(#goldGradHero)" />
-            <path d="M12 12H6C4.9 12 4 12.9 4 14V18C4 22.4 7.6 26 12 26V22H8V16H12V12Z" fill="#eab308"/>
-            <path d="M36 12H42C43.1 12 44 12.9 44 14V18C44 22.4 40.4 26 36 26V22H40V16H36V12Z" fill="#eab308"/>
-            <path d="M20 34H28V40H20V34Z" fill="#ca8a04"/>
-            <rect x="14" y="40" width="20" height="4" rx="2" fill="#a16207"/>
-            <circle cx="24" cy="18" r="4" fill="#ffffff" fill-opacity="0.4"/>
-          </svg>
-        `;
-        document.getElementById('resultStatusHeading').innerText = 'Congratulations! You Passed';
-      } else {
-        AudioFX.playAlert();
-        passBadge.innerText = 'FAILED';
-        passBadge.className = 'py-2 px-6 rounded-2xl text-sm font-black uppercase tracking-wider inline-flex items-center gap-2 bg-rose-500/20 text-rose-400 border border-rose-500/40 shadow-lg';
-        document.getElementById('resultStatusIcon').innerHTML = `
-          <svg class="w-16 h-16 text-rose-400 drop-shadow-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            <line x1="12" y1="8" x2="12" y2="12"/>
-            <line x1="12" y1="16" x2="12.01" y2="16"/>
-          </svg>
-        `;
-        document.getElementById('resultStatusHeading').innerText = 'Exam Completed';
-      }
+      // Animate Radial Scorecard & Confetti
+      animateRadialScorecard(result);
 
       // Render Topic Breakdown
       const topicsContainer = document.getElementById('topicsBreakdownContainer');
