@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ExamShield LAN 🛡️ - Teacher Control Center</title>
+  <title>ExamShield LAN - Teacher Control Center</title>
   <link rel="icon" type="image/png" href="/admin/logo.png">
   <script src="/socket.io/socket.io.js"></script>
   <link rel="stylesheet" href="/admin/styles.css">
@@ -226,7 +226,7 @@
       </div>
 
       <div class="bg-indigo-50 dark:bg-indigo-950/60 p-4 rounded-2xl text-xs text-indigo-900 dark:text-indigo-200 border border-indigo-100 dark:border-indigo-800/60 text-left space-y-1">
-        <p class="font-bold">🛡️ Protected Host Terminal:</p>
+        <p class="font-bold inline-flex items-center gap-1.5"><svg class="w-4 h-4 text-indigo-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Protected Host Terminal:</span></p>
         <p>Students on the LAN cannot access or tamper with the examination without the instructor's master PIN.</p>
       </div>
 
@@ -242,7 +242,7 @@
 
         <button type="submit" id="adminLoginBtn"
           class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
-          <span>🔓 Unlock Control Center</span>
+          <svg class="w-4 h-4 inline mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg><span>Unlock Control Center</span>
         </button>
       </form>
     </div>
@@ -255,21 +255,21 @@
     <div class="max-w-4xl w-full bg-white dark:bg-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-5 max-h-[90vh] flex flex-col">
       <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-4">
         <div class="flex items-center gap-3">
-          <span class="text-2xl">📜</span>
+          <svg class="w-6 h-6 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           <div>
             <h3 class="text-lg font-black text-slate-900 dark:text-white">Examination History Archive</h3>
             <p class="text-xs text-slate-500 dark:text-slate-400">Stored in <code>history.bat</code>, <code>history.txt</code>, and <code>history.csv</code></p>
           </div>
         </div>
         <button onclick="closeHistoryModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-700 transition">
-          ✕
+          &times;
         </button>
       </div>
 
       <div class="bg-indigo-50/70 dark:bg-indigo-950/50 p-3.5 rounded-2xl border border-indigo-100 dark:border-indigo-900/60 text-xs text-indigo-900 dark:text-indigo-200 flex flex-wrap items-center justify-between gap-2">
-        <span>💡 All candidate exam attempts are permanently preserved in <strong>history.bat</strong>. Even if sessions are cleared for a new batch, this archive remains safe.</span>
+        <span><svg class="w-4 h-4 text-amber-500 inline mr-1 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>All candidate exam attempts are permanently preserved in <strong>history.bat</strong>. Even if sessions are cleared for a new batch, this archive remains safe.</span>
         <button onclick="copyHistoryToClipboard()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 active:scale-95">
-          📋 Copy History
+          <svg class="w-3.5 h-3.5 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy History
         </button>
       </div>
 
@@ -293,7 +293,7 @@ Loading history...
       <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-4">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-xl shadow-inner">
-            🏷️
+            
           </div>
           <div>
             <h3 class="text-base font-black text-slate-900 dark:text-white">Create New Batch</h3>
@@ -329,7 +329,7 @@ Loading history...
             Cancel
           </button>
           <button type="submit" class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition active:scale-95">
-            🚀 Create Batch
+            <svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>Create Batch
           </button>
         </div>
       </form>
@@ -342,11 +342,11 @@ Loading history...
   <div id="deleteBatchModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="max-w-md w-full bg-white dark:bg-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl border-2 border-rose-500/50 space-y-5 text-center">
       <div class="w-14 h-14 mx-auto rounded-3xl bg-rose-100 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-800 flex items-center justify-center text-3xl shadow-inner">
-        🗑️
+        
       </div>
       <div>
         <h3 class="text-lg font-black text-slate-900 dark:text-white">Delete Batch?</h3>
-        <p class="text-xs text-rose-600 dark:text-rose-400 font-semibold mt-1">⚠️ Warning: This action cannot be undone!</p>
+        <p class="text-xs text-rose-600 dark:text-rose-400 font-semibold mt-1"><svg class="w-4 h-4 text-rose-500 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Warning: This action cannot be undone!</p>
         <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
           Are you sure you want to delete batch <strong id="deleteBatchCodeDisplay" class="font-mono text-slate-800 dark:text-white px-2 py-0.5 bg-slate-100 dark:bg-slate-700 rounded-lg">BATCH</strong>? All candidate results and exam attempts in this batch will be permanently removed.
         </p>
@@ -357,7 +357,7 @@ Loading history...
           Cancel
         </button>
         <button id="confirmDeleteBatchBtn" onclick="executeBatchDelete()" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-lg transition active:scale-95">
-          🗑️ Yes, Delete Batch
+          <svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Yes, Delete Batch
         </button>
       </div>
     </div>
@@ -371,7 +371,7 @@ Loading history...
       <!-- Modal Header (Non-printing controls) -->
       <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3 no-print">
         <div class="flex items-center gap-2">
-          <span class="text-xl">🖨️</span>
+          <svg class="w-5 h-5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           <div>
             <h3 class="text-base font-black text-slate-900 dark:text-white">Candidate Marksheet & Statement of Marks</h3>
             <p class="text-xs text-slate-500 dark:text-slate-400">Official verified examination report ready to print or save as PDF</p>
@@ -379,7 +379,7 @@ Loading history...
         </div>
         <div class="flex items-center gap-2">
           <button onclick="printStudentMarksheet()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5 active:scale-95">
-            <span>🖨️</span>
+            <svg class="w-4 h-4 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
             <span>Print / Save as PDF</span>
           </button>
           <button onclick="closeStudentMarksheetModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-700 transition">✕</button>
@@ -394,77 +394,85 @@ Loading history...
   </div>
 
   <!-- TOP HEADER (FULLY RESPONSIVE & ADAPTIVE: SLEEK SINGLE-ROW ON LAPTOP/PC, 3-ROW ON MOBILE/RESIZED WINDOW) -->
-  <header class="bg-indigo-900 text-white shadow-lg sticky top-0 z-40 transition-all duration-200">
+  <header class="bg-white/95 dark:bg-slate-900/95 text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 shadow-sm sticky top-0 z-40 backdrop-blur-md transition-colors duration-200">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 sm:py-2.5">
       <div class="header-responsive-grid">
         
         <!-- 1. Brand & Logo + Made by Prem -->
         <div class="grid-area-brand flex items-center space-x-3 shrink-0">
-          <img src="/admin/logo.png" alt="ExamShield LAN" class="w-[52px] h-[52px] rounded-xl shadow-md border border-indigo-400/50 object-cover shrink-0" />
-          <div class="flex flex-col justify-between h-[52px] shrink-0">
-            <h1 class="text-sm sm:text-base font-bold tracking-tight flex items-center gap-2 leading-none whitespace-nowrap">
+          <img src="/admin/logo.png" alt="ExamShield LAN" class="w-[50px] h-[50px] rounded-xl shadow-md border border-slate-300 dark:border-indigo-400/50 object-cover shrink-0" />
+          <div class="flex flex-col justify-between h-[50px] shrink-0">
+            <h1 class="text-sm sm:text-base font-bold tracking-tight flex items-center gap-2 leading-none whitespace-nowrap text-slate-900 dark:text-white">
               <span>ExamShield LAN</span>
-              <span class="inline-flex items-center gap-1.5 text-[9.5px] font-bold px-2 py-[2.5px] rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 uppercase tracking-wider shrink-0" style="padding-top: 2.5px; padding-bottom: 2.5px;">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>Host Server
+              <span class="inline-flex items-center gap-1.5 text-[9.5px] font-bold px-2 py-[2.5px] rounded-md bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/40 uppercase tracking-wider shrink-0">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>Host Server
               </span>
             </h1>
-            <p class="text-[10px] sm:text-[11px] text-indigo-200 leading-none whitespace-nowrap">Offline LAN-Based Exam Engine</p>
-            <p class="text-[10px] sm:text-[11px] font-bold text-amber-300 tracking-wide flex items-center gap-1 leading-none whitespace-nowrap">
+            <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-indigo-200 leading-none whitespace-nowrap">Offline LAN-Based Exam Engine</p>
+            <p class="text-[10px] sm:text-[11px] font-bold text-amber-600 dark:text-amber-300 tracking-wide flex items-center gap-1 leading-none whitespace-nowrap">
               <span>Made by Prem</span>
             </p>
           </div>
         </div>
 
-        <!-- 2. Live Local Clock Badge (Clean & Transparent) -->
-        <div class="grid-area-clock flex items-center gap-1.5 px-1 py-1 font-mono text-xs text-emerald-400 shrink-0">
-          <span class="text-sm">🕒</span>
+        <!-- 2. Live Local Clock Badge (Clean & Transparent with SVG) -->
+        <div class="grid-area-clock flex items-center gap-2 px-1 py-1 font-mono text-xs shrink-0">
+          <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
           <div>
-            <span class="text-indigo-300 block text-[8px] sm:text-[9px] uppercase font-bold tracking-wider leading-none">Local Time</span>
-            <span id="teacherLiveClock" class="font-bold text-xs">--:--:--</span>
+            <span class="text-slate-400 dark:text-indigo-300 block text-[8px] sm:text-[9px] uppercase font-bold tracking-wider leading-none">Local Time</span>
+            <span id="teacherLiveClock" class="font-bold text-xs text-slate-900 dark:text-emerald-400">--:--:--</span>
           </div>
         </div>
 
-        <!-- 3. Student Exam URL Badge (Clean & Transparent with sleek Copy button) -->
+        <!-- 3. Student Exam URL Badge with SVG Copy button -->
         <div class="grid-area-url flex items-center gap-2.5 sm:gap-3 px-1 py-1 text-xs">
           <div class="min-w-0">
-            <span class="text-indigo-300 block text-[9px] sm:text-[10px] font-semibold tracking-wide whitespace-nowrap">Student Exam URL (LAN):</span>
-            <span id="studentUrlText" class="font-mono text-emerald-400 font-bold text-xs sm:text-sm tracking-wide break-all sm:break-normal select-all">Loading...</span>
+            <span class="text-slate-400 dark:text-indigo-300 block text-[9px] sm:text-[10px] font-semibold tracking-wide whitespace-nowrap">Student Exam URL (LAN):</span>
+            <span id="studentUrlText" class="font-mono text-indigo-600 dark:text-emerald-400 font-bold text-xs sm:text-sm tracking-wide break-all sm:break-normal select-all">Loading...</span>
           </div>
-          <button onclick="copyStudentUrl()" class="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-white font-bold transition active:scale-95 text-xs flex items-center gap-1 shrink-0 shadow ml-1 cursor-pointer" title="Copy Student Exam URL">
-            <span>📋</span>
+          <button onclick="copyStudentUrl()" class="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-white font-bold transition active:scale-95 text-xs flex items-center gap-1.5 shrink-0 shadow-sm ml-1 cursor-pointer" title="Copy Student Exam URL">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
             <span>Copy</span>
           </button>
         </div>
 
-        <!-- 4. Quick Metrics (Clean, Transparent Stat Block without bulky background box) -->
+        <!-- 4. Quick Metrics -->
         <div class="grid-area-metrics flex items-center gap-2 sm:gap-3 px-1 sm:px-2 py-0.5 text-xs shrink-0">
           <div class="text-center px-1">
-            <span class="text-indigo-200/90 block text-[8px] sm:text-[10px] font-semibold whitespace-nowrap">Total Students</span>
-            <span id="metricTotalStudents" class="text-xs sm:text-base font-black text-white block mt-0.5">0</span>
+            <span class="text-slate-400 dark:text-indigo-200/90 block text-[8px] sm:text-[10px] font-semibold whitespace-nowrap">Total Students</span>
+            <span id="metricTotalStudents" class="text-xs sm:text-base font-black text-slate-900 dark:text-white block mt-0.5">0</span>
           </div>
-          <div class="text-center border-l border-indigo-400/25 pl-2 sm:pl-3 pr-1">
-            <span class="text-indigo-200/90 block text-[8px] sm:text-[10px] font-semibold whitespace-nowrap">Active</span>
-            <span id="metricActiveStudents" class="text-xs sm:text-base font-black text-emerald-400 block mt-0.5">0</span>
+          <div class="text-center border-l border-slate-200 dark:border-indigo-400/25 pl-2 sm:pl-3 pr-1">
+            <span class="text-slate-400 dark:text-indigo-200/90 block text-[8px] sm:text-[10px] font-semibold whitespace-nowrap">Active</span>
+            <span id="metricActiveStudents" class="text-xs sm:text-base font-black text-emerald-600 dark:text-emerald-400 block mt-0.5">0</span>
           </div>
-          <div class="text-center border-l border-indigo-400/25 pl-2 sm:pl-3 pr-1">
-            <span class="text-indigo-200/90 block text-[8px] sm:text-[10px] font-semibold whitespace-nowrap">Violations</span>
-            <span id="metricFrozenStudents" class="text-xs sm:text-base font-black text-rose-400 block mt-0.5">0</span>
+          <div class="text-center border-l border-slate-200 dark:border-indigo-400/25 pl-2 sm:pl-3 pr-1">
+            <span class="text-slate-400 dark:text-indigo-200/90 block text-[8px] sm:text-[10px] font-semibold whitespace-nowrap">Violations</span>
+            <span id="metricFrozenStudents" class="text-xs sm:text-base font-black text-rose-600 dark:text-rose-400 block mt-0.5">0</span>
           </div>
         </div>
 
         <!-- 5. Actions (Theme & Lock Console Buttons) -->
         <div class="grid-area-actions flex items-center gap-1.5 sm:gap-2 shrink-0">
-          <!-- Universal Theme Toggle -->
+          <!-- Universal Theme Toggle with SVG Icon -->
           <button onclick="toggleTeacherTheme()" id="teacherThemeBtn" title="Toggle Light / Dark Mode"
-            class="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-indigo-800 hover:bg-indigo-700 border border-indigo-700/60 rounded-xl text-white font-bold text-xs transition flex items-center gap-1 active:scale-95 shadow-sm shrink-0">
-            <span class="teacher-theme-icon text-xs sm:text-sm">🌙</span>
-            <span class="teacher-theme-text text-xs">Dark</span>
+            class="px-2.5 sm:px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-700 dark:text-slate-200 font-bold text-xs transition flex items-center gap-1.5 active:scale-95 shadow-xs shrink-0 cursor-pointer">
+            <span id="teacherThemeIcon" class="flex items-center">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            </span>
+            <span id="teacherThemeText" class="text-xs">Light</span>
           </button>
 
-          <!-- Lock Console Button -->
+          <!-- Lock Console Button with SVG Icon -->
           <button onclick="lockAdminConsole()" title="Lock Control Center"
-            class="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-indigo-800 hover:bg-indigo-700 border border-indigo-700/60 rounded-xl text-white font-bold text-xs transition flex items-center gap-1 active:scale-95 shadow-sm shrink-0">
-            <span>🔒</span>
+            class="px-2.5 sm:px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-700 dark:text-slate-200 font-bold text-xs transition flex items-center gap-1.5 active:scale-95 shadow-xs shrink-0 cursor-pointer">
+            <svg class="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
             <span class="text-xs">Lock</span>
           </button>
         </div>
@@ -472,26 +480,26 @@ Loading history...
       </div>
     </div>
 
-    <!-- TABS BAR (RESPONSIVE SCROLLABLE STRIP) -->
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 border-t border-indigo-800/60 flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar py-1 text-xs sm:text-sm">
-      <button onclick="switchTab('monitor')" id="tabBtn-monitor" class="py-2 px-3 sm:px-4 rounded-xl border-b-2 border-emerald-400 bg-indigo-800/80 text-white font-bold flex items-center gap-1.5 whitespace-nowrap shadow-sm shrink-0">
-        <span>🖥️</span>
+    <!-- TABS BAR WITH MODERN SVG ICONS & THEME ADAPTATION -->
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 border-t border-slate-200 dark:border-slate-800 flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar py-1.5 text-xs sm:text-sm">
+      <button onclick="switchTab('monitor')" id="tabBtn-monitor" class="tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-indigo-600 dark:border-emerald-400 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-white font-bold flex items-center gap-2 whitespace-nowrap shadow-xs shrink-0 cursor-pointer">
+        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         <span>Live Monitor</span>
       </button>
-      <button onclick="switchTab('questions')" id="tabBtn-questions" class="py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-indigo-200 hover:text-white hover:bg-indigo-800/40 flex items-center gap-1.5 whitespace-nowrap transition shrink-0">
-        <span>📚</span>
+      <button onclick="switchTab('questions')" id="tabBtn-questions" class="tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 flex items-center gap-2 whitespace-nowrap transition shrink-0 cursor-pointer">
+        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
         <span>Question Bank</span>
       </button>
-      <button onclick="switchTab('settings')" id="tabBtn-settings" class="py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-indigo-200 hover:text-white hover:bg-indigo-800/40 flex items-center gap-1.5 whitespace-nowrap transition shrink-0">
-        <span>⚙️</span>
+      <button onclick="switchTab('settings')" id="tabBtn-settings" class="tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 flex items-center gap-2 whitespace-nowrap transition shrink-0 cursor-pointer">
+        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         <span>Exam Settings</span>
       </button>
-      <button onclick="switchTab('batches')" id="tabBtn-batches" class="py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-indigo-200 hover:text-white hover:bg-indigo-800/40 flex items-center gap-1.5 whitespace-nowrap transition shrink-0">
-        <span>🏷️</span>
+      <button onclick="switchTab('batches')" id="tabBtn-batches" class="tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 flex items-center gap-2 whitespace-nowrap transition shrink-0 cursor-pointer">
+        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
         <span>Batch Manager</span>
       </button>
-      <button onclick="switchTab('results')" id="tabBtn-results" class="py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-indigo-200 hover:text-white hover:bg-indigo-800/40 flex items-center gap-1.5 whitespace-nowrap transition shrink-0">
-        <span>📊</span>
+      <button onclick="switchTab('results')" id="tabBtn-results" class="tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 flex items-center gap-2 whitespace-nowrap transition shrink-0 cursor-pointer">
+        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         <span>Results & Reports</span>
       </button>
     </div>
@@ -507,57 +515,57 @@ Loading history...
 
     <!-- TAB 1: LIVE EXAM MONITOR -->
     <section id="tabContent-monitor" class="space-y-6">
-      <!-- MASTER EXAM LIFECYCLE COMMAND CENTER -->
-      <div id="examLifecycleControlCard" class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-5 rounded-2xl shadow-xl border border-indigo-700/50 space-y-4">
+      <!-- MASTER EXAM LIFECYCLE COMMAND CENTER (Dual Theme: Light Frosted Glass / Dark Slate) -->
+      <div id="examLifecycleControlCard" class="bg-white dark:bg-slate-900 text-slate-800 dark:text-white p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 space-y-4 transition-colors duration-200">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div class="space-y-1">
             <div class="flex items-center gap-2">
-              <span class="text-xs font-bold text-indigo-300 uppercase tracking-wider">Cohort Lifecycle Command Bar</span>
-              <span id="lifecycleBatchBadge" class="text-xs px-2 py-0.5 rounded-md font-mono bg-indigo-500/30 text-indigo-200 border border-indigo-400/40">BATCH-01</span>
+              <span class="text-xs font-bold text-slate-500 dark:text-indigo-300 uppercase tracking-wider">Cohort Lifecycle Command Bar</span>
+              <span id="lifecycleBatchBadge" class="text-xs px-2 py-0.5 rounded-md font-mono bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-200 border border-indigo-200 dark:border-indigo-800 font-bold">BATCH-01</span>
             </div>
             <div class="flex items-center gap-3">
-              <h3 class="text-lg font-black text-white">Exam State:</h3>
-              <div id="lifecycleStatusBadge" class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm">
-                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+              <h3 class="text-lg font-black text-slate-900 dark:text-white">Exam State:</h3>
+              <div id="lifecycleStatusBadge" class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-500/40 shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
                 <span>WAITING ROOM MODE</span>
               </div>
             </div>
           </div>
 
-          <!-- Master Action Buttons -->
+          <!-- Master Action Buttons with Sleek SVGs -->
           <div class="flex items-center gap-2.5 flex-wrap">
-            <button onclick="triggerStartExam()" id="btnStartExamLifecycle" class="btn-shimmer px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider shadow-lg flex items-center gap-2 transition active:scale-95">
-              <span>🚀</span>
+            <button onclick="triggerStartExam()" id="btnStartExamLifecycle" class="btn-shimmer px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider shadow-md flex items-center gap-2 transition active:scale-95 cursor-pointer">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               <span>Start Exam (Launch Waiting Room)</span>
             </button>
-            <button onclick="triggerStopExam()" id="btnStopExamLifecycle" class="px-4 py-2.5 bg-rose-600/90 hover:bg-rose-600 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider shadow-md flex items-center gap-2 transition active:scale-95 border border-rose-500/40">
-              <span>🛑</span>
-              <span>Stop Exam & Collect All</span>
+            <button onclick="triggerStopExam()" id="btnStopExamLifecycle" class="px-4 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider shadow-sm flex items-center gap-2 transition active:scale-95 border border-rose-500/30 cursor-pointer">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
+              <span>Stop Exam &amp; Collect All</span>
             </button>
-            <button onclick="triggerSetWaitingMode()" id="btnWaitingExamLifecycle" class="px-3.5 py-2.5 bg-amber-600/80 hover:bg-amber-600 text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-sm flex items-center gap-1.5 transition active:scale-95 border border-amber-500/40">
-              <span>⏳</span>
+            <button onclick="triggerSetWaitingMode()" id="btnWaitingExamLifecycle" class="px-3.5 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-xs flex items-center gap-1.5 transition active:scale-95 border border-amber-500/30 cursor-pointer">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               <span>Open Waiting Room</span>
             </button>
           </div>
         </div>
 
-        <!-- Metric Badges Row -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-indigo-800/40 text-xs">
-          <div class="p-2.5 rounded-xl bg-slate-800/70 border border-slate-700/60 flex items-center justify-between">
-            <span class="text-slate-400 font-semibold">Waiting in Lounge:</span>
-            <span id="lifecycleWaitingCount" class="font-black text-amber-400 text-sm px-2 py-0.5 rounded-md bg-amber-950/60 border border-amber-800">0</span>
+        <!-- Metric Badges Row (Light Slate in light theme / Dark Slate in dark theme) -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-slate-200 dark:border-slate-800 text-xs">
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between">
+            <span class="text-slate-600 dark:text-slate-400 font-semibold">Waiting in Lounge:</span>
+            <span id="lifecycleWaitingCount" class="font-black text-amber-700 dark:text-amber-400 text-sm px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800">0</span>
           </div>
-          <div class="p-2.5 rounded-xl bg-slate-800/70 border border-slate-700/60 flex items-center justify-between">
-            <span class="text-slate-400 font-semibold">Active in Exam:</span>
-            <span id="lifecycleActiveCount" class="font-black text-emerald-400 text-sm px-2 py-0.5 rounded-md bg-emerald-950/60 border border-emerald-800">0</span>
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between">
+            <span class="text-slate-600 dark:text-slate-400 font-semibold">Active in Exam:</span>
+            <span id="lifecycleActiveCount" class="font-black text-emerald-700 dark:text-emerald-400 text-sm px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800">0</span>
           </div>
-          <div class="p-2.5 rounded-xl bg-slate-800/70 border border-slate-700/60 flex items-center justify-between">
-            <span class="text-slate-400 font-semibold">Submitted Papers:</span>
-            <span id="lifecycleSubmittedCount" class="font-black text-indigo-300 text-sm px-2 py-0.5 rounded-md bg-indigo-950/60 border border-indigo-800">0</span>
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between">
+            <span class="text-slate-600 dark:text-slate-400 font-semibold">Submitted Papers:</span>
+            <span id="lifecycleSubmittedCount" class="font-black text-indigo-700 dark:text-indigo-300 text-sm px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800">0</span>
           </div>
-          <div class="p-2.5 rounded-xl bg-slate-800/70 border border-slate-700/60 flex items-center justify-between">
-            <span class="text-slate-400 font-semibold">Total Enrolled:</span>
-            <span id="lifecycleTotalCount" class="font-black text-white text-sm px-2 py-0.5 rounded-md bg-slate-700/80 border border-slate-600">0</span>
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between">
+            <span class="text-slate-600 dark:text-slate-400 font-semibold">Total Enrolled:</span>
+            <span id="lifecycleTotalCount" class="font-black text-slate-800 dark:text-white text-sm px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-700/80 border border-slate-300 dark:border-slate-600">0</span>
           </div>
         </div>
       </div>
@@ -565,7 +573,11 @@ Loading history...
       <div class="flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
         <div>
           <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
-            <span>🔴 Live Candidate Monitoring</span>
+            <span class="relative flex h-3 w-3">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            </span>
+            <span>Live Candidate Monitoring</span>
             <span class="text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2.5 py-0.5 rounded-full border border-slate-200 dark:border-slate-600 font-medium">Real-Time Sync</span>
           </h2>
           <p class="text-xs text-slate-500 dark:text-slate-400">Instant focus-loss detection with 1-click unfreeze capability</p>
@@ -574,16 +586,19 @@ Loading history...
         <div class="flex items-center gap-2 flex-wrap">
           <!-- Batch Selector Filter -->
           <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-700/80 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600">
-            <span class="text-xs font-bold text-slate-500 dark:text-slate-400">🏷️ Filter:</span>
+            <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            <span class="text-xs font-bold text-slate-500 dark:text-slate-400">Filter:</span>
             <select id="monitorBatchFilter" onchange="onBatchFilterChange(this.value)" class="bg-transparent text-xs font-bold text-slate-800 dark:text-white border-0 focus:ring-0 cursor-pointer outline-none">
-              <option value="all">🌐 All Batches</option>
+              <option value="all">All Batches</option>
             </select>
           </div>
-          <button onclick="refreshStudentList()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-600 transition flex items-center gap-1.5">
-            🔄 Refresh
+          <button onclick="refreshStudentList()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-600 transition flex items-center gap-1.5 cursor-pointer">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            <span>Refresh</span>
           </button>
-          <button onclick="endExamForAll()" class="px-3 py-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 text-xs font-semibold rounded-xl border border-rose-300 dark:border-rose-800 transition flex items-center gap-1.5">
-            ⏹️ End Exam & Collect All Papers
+          <button onclick="endExamForAll()" class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 text-xs font-semibold rounded-xl border border-rose-300 dark:border-rose-800 transition flex items-center gap-1.5 cursor-pointer">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
+            <span>End Exam &amp; Collect All Papers</span>
           </button>
         </div>
       </div>
@@ -592,7 +607,7 @@ Loading history...
       <div id="studentsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- Rendered dynamically -->
         <div class="col-span-full py-12 text-center text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
-          <span class="text-4xl block mb-2">👨‍🎓</span>
+          <svg class="w-12 h-12 mx-auto mb-2 text-slate-300 dark:text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           <p class="font-medium text-slate-600 dark:text-slate-300">No students connected yet</p>
           <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Students can join using the URL displayed at the top header.</p>
         </div>
@@ -609,10 +624,10 @@ Loading history...
           <!-- Mode Switcher: Upload DOCX vs Create Manually -->
           <div class="flex items-center p-1 bg-slate-100 dark:bg-slate-700/60 rounded-xl">
             <button type="button" id="qbModeUploadBtn" onclick="switchQuestionBankMode('upload')" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm flex items-center justify-center gap-1.5">
-              <span>📄 Upload .DOCX</span>
+              <svg class="w-4 h-4 inline mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Upload .DOCX</span>
             </button>
             <button type="button" id="qbModeCreateBtn" onclick="switchQuestionBankMode('create')" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-center gap-1.5">
-              <span>✍️ Create Question</span>
+              <svg class="w-4 h-4 inline mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><span>Create Question</span>
             </button>
           </div>
 
@@ -634,7 +649,7 @@ Loading history...
               </div>
 
               <div class="bg-indigo-50/70 dark:bg-indigo-950/50 p-3 rounded-xl border border-indigo-100 dark:border-indigo-900/60 text-[11px] text-indigo-900 dark:text-indigo-200 space-y-1">
-                <p class="font-bold">📋 DOCX Format Specifications:</p>
+                <p class="font-bold"><svg class="w-4 h-4 text-indigo-500 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>DOCX Format Specifications:</p>
                 <p>• <strong>Single Choice:</strong> <code>Answer: C (single)</code> or <code>Answer: C</code></p>
                 <p>• <strong>Multiple Choice:</strong> <code>Answer: B, C (multiple)</code></p>
                 <p>• <strong>Images:</strong> Auto-extracted & converted to Base64</p>
@@ -642,13 +657,13 @@ Loading history...
               </div>
 
               <button type="submit" id="uploadBtn" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 active:scale-95">
-                <span>🚀 Import Question Bank</span>
+                <svg class="w-4 h-4 inline mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span>Import Question Bank</span>
               </button>
             </form>
 
             <div class="pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
               <button onclick="clearAllQuestionBank()" class="text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 font-medium flex items-center gap-1">
-                🗑️ Clear Entire Question Bank
+                <svg class="w-4 h-4 inline mr-1 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Clear Entire Question Bank
               </button>
             </div>
           </div>
@@ -658,7 +673,7 @@ Loading history...
             <div class="border-b border-slate-100 dark:border-slate-700 pb-2 flex items-center justify-between">
               <div>
                 <h3 class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                  <span>✍️ Create Question Directly</span>
+                  <svg class="w-4 h-4 inline mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg><span>Create Question Directly</span>
                 </h3>
                 <p class="text-[11px] text-slate-500 dark:text-slate-400">Save directly to exam pool & optionally download as .DOCX</p>
               </div>
@@ -669,7 +684,7 @@ Loading history...
               <div class="flex items-center justify-between mb-1">
                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Topic / Subject <span class="text-rose-500">*</span></label>
                 <button type="button" onclick="exportManualTopicDocx()" class="text-[11px] text-emerald-600 dark:text-emerald-400 hover:underline font-bold flex items-center gap-1" title="Download current topic as Microsoft Word .docx">
-                  📥 Export .DOCX
+                  <svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export .DOCX
                 </button>
               </div>
               <select id="manualQuestionTopicSelect" onchange="onManualTopicChange()" class="w-full text-xs px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer">
@@ -706,7 +721,7 @@ Loading history...
               <div id="manualImageDropZone" class="border border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-2.5 text-center hover:border-indigo-500 transition bg-slate-50/50 dark:bg-slate-900/30">
                 <input type="file" id="manualQuestionImageInput" accept="image/png,image/jpeg,image/jpg,image/webp" onchange="handleManualImageSelect(event)" class="hidden" />
                 <div id="manualImagePlaceholder" onclick="document.getElementById('manualQuestionImageInput').click()" class="cursor-pointer py-1">
-                  <span class="text-lg">🖼️</span>
+                  <svg class="w-5 h-5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                   <p class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400">Click to attach image (.png, .jpg)</p>
                   <p class="text-[10px] text-slate-400">Offline Base64 conversion</p>
                 </div>
@@ -737,7 +752,7 @@ Loading history...
                 Clear
               </button>
               <button type="button" onclick="submitManualQuestion()" id="saveManualQuestionBtn" class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer">
-                <span>💾 Save Question to Bank</span>
+                <svg class="w-4 h-4 inline mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span>Save Question to Bank</span>
               </button>
             </div>
           </div>
@@ -748,12 +763,12 @@ Loading history...
         <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-5">
           <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
             <div>
-              <h3 class="text-base font-bold text-slate-800 dark:text-white">📊 Question Bank Breakdown</h3>
+              <h3 class="text-base font-bold text-slate-800 dark:text-white inline-flex items-center gap-2"><svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span>Question Bank Breakdown</span></h3>
               <p class="text-xs text-slate-500 dark:text-slate-400">Summary of imported questions across topics</p>
             </div>
             <div class="flex items-center gap-2">
               <button onclick="exportTopicDocx('all')" class="text-xs font-bold px-3 py-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded-full hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition flex items-center gap-1" title="Download all questions across all topics as Microsoft Word .docx">
-                <span>📥 Export All .DOCX</span>
+                <svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>Export All .DOCX</span>
               </button>
               <span id="totalPoolCountBadge" class="text-xs font-bold px-3 py-1 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 rounded-full">
                 0 Questions Loaded
@@ -786,13 +801,13 @@ Loading history...
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-700 pb-3">
           <div>
             <h3 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
-              <span>🔍 Question Bank Explorer & Live Preview</span>
+              <svg class="w-4 h-4 inline mr-1 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Question Bank Explorer & Live Preview</span>
             </h3>
             <p class="text-xs text-slate-500 dark:text-slate-400">Search question or option text, inspect answer keys and diagram previews</p>
           </div>
           <div class="flex items-center gap-2 flex-wrap">
             <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-700/80 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600">
-              <span class="text-xs font-bold text-slate-500 dark:text-slate-400">🏷️ Topic:</span>
+              <span class="text-xs font-bold text-slate-500 dark:text-slate-400 inline-flex items-center gap-1"><svg class="w-3.5 h-3.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span>Topic:</span></span>
               <select id="previewTopicFilter" onchange="loadQuestionsPreview()" class="bg-transparent text-xs font-bold text-slate-800 dark:text-white border-0 focus:ring-0 cursor-pointer outline-none">
                 <option value="all">All Topics</option>
               </select>
@@ -800,7 +815,7 @@ Loading history...
             <input type="text" id="previewSearchInput" oninput="debounceSearchQuestions()" placeholder="Search question or option text..."
               class="text-xs px-3 py-1.5 border border-slate-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none w-56" />
             <button onclick="exportCurrentExplorerDocx()" class="text-xs font-bold px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm transition flex items-center gap-1 active:scale-95 cursor-pointer" title="Export currently filtered questions to Microsoft Word (.docx)">
-              <span>📥 Export .DOCX</span>
+              <svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>Export .DOCX</span>
             </button>
             <span id="previewCountBadge" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 rounded-lg border border-indigo-200 dark:border-indigo-800">
               0 Questions
@@ -821,7 +836,7 @@ Loading history...
         <!-- General Parameters -->
         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-6">
           <div class="border-b border-slate-100 dark:border-slate-700 pb-3">
-            <h3 class="text-base font-bold text-slate-800 dark:text-white">⚙️ Examination Parameters</h3>
+            <h3 class="text-base font-bold text-slate-800 dark:text-white inline-flex items-center gap-2"><svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Examination Parameters</span></h3>
             <p class="text-xs text-slate-500 dark:text-slate-400">Configure duration, passing marks, and question distribution</p>
           </div>
 
@@ -888,7 +903,7 @@ Loading history...
               <div class="flex items-center justify-between">
                 <div>
                   <label class="block text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                    <span>🎯 Competitive Exam Mode</span>
+                    <svg class="w-4 h-4 inline mr-1 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span>Competitive Exam Mode</span>
                     <span id="competitiveBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-slate-300">Disabled</span>
                   </label>
                   <p class="text-[11px] text-slate-500 dark:text-slate-400">Marking: <strong class="text-emerald-600 dark:text-emerald-400 font-bold">+4</strong> for Right, <strong class="text-rose-600 dark:text-rose-400 font-bold">-1</strong> for Wrong, <strong class="text-slate-500 font-bold">0</strong> for Unattempted.</p>
@@ -906,10 +921,10 @@ Loading history...
 
             <div class="pt-4 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
               <button type="submit" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition active:scale-95">
-                💾 Save Configuration
+                <svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Save Configuration
               </button>
               <button type="button" onclick="resetAllStudentSessions()" class="text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 font-semibold">
-                ⚠️ Reset Sessions
+                <svg class="w-4 h-4 inline mr-1 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Reset Sessions
               </button>
             </div>
           </form>
@@ -919,7 +934,7 @@ Loading history...
         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-6">
           <div class="border-b border-slate-100 dark:border-slate-700 pb-3">
             <h3 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
-              <span>🔒 Host Security PIN</span>
+              <svg class="w-4 h-4 inline mr-1 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Host Security PIN</span>
               <span class="text-[10px] bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 font-bold px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-800">Active Protection</span>
             </h3>
             <p class="text-xs text-slate-500 dark:text-slate-400">Prevents students from accessing this administration panel over the LAN</p>
@@ -940,7 +955,7 @@ Loading history...
 
             <div class="pt-2">
               <button type="submit" class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold text-xs rounded-xl shadow transition active:scale-95">
-                🔑 Update Security PIN
+                <svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-1.5 1.5L14 9l-1.5-1.5L11 9l-1-1-6 6V20h6l6-6 1.5-1.5z"/></svg>Update Security PIN
               </button>
             </div>
           </form>
@@ -950,7 +965,7 @@ Loading history...
         <div class="col-span-1 md:col-span-2 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800/90 dark:to-indigo-950/40 p-6 rounded-2xl border border-blue-200 dark:border-indigo-800/60 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div class="space-y-1">
             <h3 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
-              <span>💾</span><span>Data Portability: School PC ➔ Home Laptop Transfer</span>
+              <svg class="w-4 h-4 text-indigo-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg><span>Data Portability: School PC ➔ Home Laptop Transfer</span>
               <span class="text-[10px] bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 font-bold px-2 py-0.5 rounded-full border border-blue-300 dark:border-blue-800">1-Click Sync</span>
             </h3>
             <p class="text-xs text-slate-600 dark:text-slate-300">
@@ -959,10 +974,10 @@ Loading history...
           </div>
           <div class="flex items-center gap-2.5 shrink-0 flex-wrap">
             <button type="button" onclick="backupExamDatabase()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5 active:scale-95">
-              <span>💾 Download Backup (.db)</span>
+              <span><svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download Backup (.db)</span>
             </button>
             <button type="button" onclick="document.getElementById('dbRestoreInput').click()" class="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5 active:scale-95">
-              <span>📥 Restore Backup (.db)</span>
+              <span><svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Restore Backup (.db)</span>
             </button>
           </div>
         </div>
@@ -976,7 +991,7 @@ Loading history...
       <div class="flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
         <div>
           <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
-            <span>🏷️ Examination Batch Manager</span>
+            <svg class="w-4 h-4 inline mr-1.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg><span>Examination Batch Manager</span>
             <span id="activeBatchPill" class="text-xs bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 px-3 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-700 font-bold">
               Active: BATCH-01
             </span>
@@ -989,12 +1004,12 @@ Loading history...
         <div class="flex items-center gap-2.5">
           <button onclick="openCreateBatchModal()"
             class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5 active:scale-95">
-            <span>➕</span>
+            <svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             <span>Create New Batch</span>
           </button>
           <button onclick="loadBatches()"
             class="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-600 transition flex items-center gap-1">
-            🔄 Refresh
+            <svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Refresh
           </button>
         </div>
       </div>
@@ -1012,11 +1027,11 @@ Loading history...
 
         <div class="flex items-center gap-3">
           <button onclick="viewBatchInMonitor()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5 active:scale-95">
-            <span>🖥️</span>
+            <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
             <span>Monitor This Batch</span>
           </button>
           <button onclick="viewBatchResults()" class="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl border border-white/20 transition flex items-center gap-1.5 active:scale-95">
-            <span>📊</span>
+            <svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
             <span>Batch Results</span>
           </button>
         </div>
@@ -1026,7 +1041,7 @@ Loading history...
       <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
         <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
           <h4 class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
-            <span>📁 All Recorded Batches</span>
+            <svg class="w-4 h-4 inline mr-1.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span>All Recorded Batches</span>
             <span id="batchCountBadge" class="text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full font-bold">1</span>
           </h4>
           <span class="text-xs text-slate-400 dark:text-slate-500">Click Activate to switch the live exam to that batch</span>
@@ -1062,16 +1077,16 @@ Loading history...
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 class="text-base sm:text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
-              <span>📊 Examination Results & Reports</span>
+              <svg class="w-4 h-4 inline mr-1.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span>Examination Results & Reports</span>
             </h2>
             <p class="text-xs text-slate-500 dark:text-slate-400">Live scorecard with multi-topic breakdowns and tie-breaking ranks</p>
           </div>
 
           <!-- Batch Filter Pill -->
           <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-700/80 px-3.5 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600">
-            <span class="text-xs font-bold text-slate-600 dark:text-slate-300 whitespace-nowrap">🏷️ Filter Batch:</span>
+            <span class="text-xs font-bold text-slate-600 dark:text-slate-300 whitespace-nowrap inline-flex items-center gap-1"><svg class="w-3.5 h-3.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg><span>Filter Batch:</span></span>
             <select id="resultsBatchFilter" onchange="onBatchFilterChange(this.value)" class="bg-transparent text-xs font-bold text-slate-800 dark:text-white border-0 focus:ring-0 cursor-pointer outline-none min-w-[140px] pr-1">
-              <option value="all">🌐 All Batches</option>
+              <option value="all">All Batches</option>
             </select>
           </div>
         </div>
@@ -1084,22 +1099,22 @@ Loading history...
             <button onclick="downloadMasterExcel('normal', 'xlsx')"
               title="Download formatted Excel workbook with banners, bold headers and colors (.xlsx)"
               class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 active:scale-95 whitespace-nowrap">
-              <span>📊</span><span>Excel [Normal]</span>
+              <svg class="w-3.5 h-3.5 inline mr-1 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Excel [Normal]</span>
             </button>
             <button onclick="downloadMasterExcel('rank', 'xlsx')"
               title="Download formatted Excel workbook sorted by student rank with full design (.xlsx)"
               class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 active:scale-95 whitespace-nowrap">
-              <span>🏆</span><span>Excel [Ranked]</span>
+              <svg class="w-3.5 h-3.5 inline mr-1 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg><span>Excel [Ranked]</span>
             </button>
             <button onclick="downloadMasterExcel('rank', 'csv')"
               title="Download clean Comma-Separated Values (.csv)"
               class="px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 active:scale-95 whitespace-nowrap">
-              <span>📄</span><span>CSV</span>
+              <svg class="w-3.5 h-3.5 inline mr-1 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg><span>CSV</span>
             </button>
             <button onclick="openHistoryModal()"
               title="View complete exam history archive"
               class="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 active:scale-95 whitespace-nowrap">
-              <span>📜</span><span>History</span>
+              <svg class="w-3.5 h-3.5 inline mr-1 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>History</span>
             </button>
           </div>
 
@@ -1109,12 +1124,12 @@ Loading history...
             <button onclick="backupExamDatabase()"
               title="Download full database snapshot (.db) to transfer to your home laptop via USB"
               class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 active:scale-95 whitespace-nowrap">
-              <span>💾</span><span>Backup DB</span>
+              <svg class="w-3.5 h-3.5 inline mr-1 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg><span>Backup DB</span>
             </button>
             <button onclick="document.getElementById('dbRestoreInput').click()"
               title="Restore database backup from school PC (.db)"
               class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 active:scale-95 whitespace-nowrap">
-              <span>📥</span><span>Restore DB</span>
+              <svg class="w-3.5 h-3.5 inline mr-1 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span>Restore DB</span>
             </button>
             <input type="file" id="dbRestoreInput" accept=".db" class="hidden" onchange="restoreExamDatabase(this.files[0])" />
           </div>
@@ -1125,9 +1140,9 @@ Loading history...
       <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-4">
         <div class="space-y-1">
           <div class="flex items-center gap-2.5">
-            <span class="text-base font-bold text-slate-800 dark:text-white">📢 Review Answers & Solutions Publishing</span>
+            <span class="text-base font-bold text-slate-800 dark:text-white inline-flex items-center gap-2"><svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span>Review Answers & Solutions Publishing</span></span>
             <span id="globalReviewBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600">
-              🔒 Locked by Default
+              <svg class="w-3.5 h-3.5 text-slate-500 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Locked by Default</span>
             </span>
           </div>
           <p class="text-xs text-slate-500 dark:text-slate-400">
@@ -1137,7 +1152,7 @@ Loading history...
         <div class="flex items-center gap-3">
           <button id="btnToggleGlobalReview" onclick="toggleGlobalReviewPublish()"
             class="px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow-md flex items-center gap-2 active:scale-95 bg-indigo-600 hover:bg-indigo-700 text-white">
-            <span id="globalReviewBtnIcon">📢</span>
+            <span id="globalReviewBtnIcon"><svg class="w-4 h-4 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span>
             <span id="globalReviewBtnText">Publish Review Answers for ALL Students</span>
           </button>
         </div>
@@ -1158,8 +1173,8 @@ Loading history...
                 <th class="py-3 px-4 font-bold">Candidate Name</th>
                 <th class="py-3 px-3 font-bold text-center whitespace-nowrap min-w-[95px]">Paper Mode</th>
                 <th class="py-3 px-3 font-bold">Score</th>
-                <th class="py-3 px-3 font-bold text-center text-emerald-600 dark:text-emerald-400">Right (✓)</th>
-                <th class="py-3 px-3 font-bold text-center text-rose-600 dark:text-rose-400">Wrong (✗)</th>
+                <th class="py-3 px-3 font-bold text-center text-emerald-600 dark:text-emerald-400">Right (Correct)</th>
+                <th class="py-3 px-3 font-bold text-center text-rose-600 dark:text-rose-400">Wrong (Incorrect)</th>
                 <th class="py-3 px-3 font-bold">Percentage</th>
                 <th class="py-3 px-3 font-bold">Status</th>
                 <th class="py-3 px-4 font-bold">Topic Breakdown</th>
@@ -1279,10 +1294,16 @@ Loading history...
     // UNIVERSAL THEME ENGINE (DARK / LIGHT)
     // ========================================================
     function updateTeacherThemeUI(isDark) {
-      const icons = document.querySelectorAll('.teacher-theme-icon');
-      const texts = document.querySelectorAll('.teacher-theme-text');
-      icons.forEach(el => el.innerText = isDark ? '☀️' : '🌙');
-      texts.forEach(el => el.innerText = isDark ? 'Light' : 'Dark');
+      const iconEl = document.getElementById('teacherThemeIcon');
+      const textEl = document.getElementById('teacherThemeText');
+      if (iconEl) {
+        iconEl.innerHTML = isDark
+          ? '<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+          : '<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+      }
+      if (textEl) {
+        textEl.innerText = isDark ? 'Dark' : 'Light';
+      }
     }
 
     function toggleTeacherTheme() {
@@ -1413,7 +1434,7 @@ Loading history...
       } finally {
         if (submitBtn) {
           submitBtn.disabled = false;
-          submitBtn.innerHTML = '<span>🔓 Unlock Control Center</span>';
+          submitBtn.innerHTML = '<svg class="w-4 h-4 inline mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg><span>Unlock Control Center</span>';
         }
       }
     }
@@ -1515,7 +1536,7 @@ Loading history...
     async function triggerStartExam() {
       const token = localStorage.getItem('examshield_admin_token');
       const batchCode = (currentBatchFilter && currentBatchFilter !== 'all') ? currentBatchFilter : (currentExam?.active_batch_code || 'BATCH-01');
-      if (!confirm(`🚀 Launch Live Exam for ${batchCode}?\n\nThis will trigger the 3-2-1 countdown on all waiting student screens and begin the examination immediately.`)) return;
+      if (!confirm(`Launch Live Exam for ${batchCode}?\n\nThis will trigger the 3-2-1 countdown on all waiting student screens and begin the examination immediately.`)) return;
 
       try {
         const res = await fetch('/api/teacher/exam/start', {
@@ -1525,7 +1546,7 @@ Loading history...
         });
         const data = await res.json();
         if (data.success) {
-          showToast(`🚀 Exam launched for ${batchCode}! Waiting students released.`);
+          showToast(`Exam launched for ${batchCode}! Waiting students released.`);
           refreshExamLifecycleStatus();
           refreshStudentList();
         } else {
@@ -1539,7 +1560,7 @@ Loading history...
     async function triggerStopExam() {
       const token = localStorage.getItem('examshield_admin_token');
       const batchCode = (currentBatchFilter && currentBatchFilter !== 'all') ? currentBatchFilter : (currentExam?.active_batch_code || 'BATCH-01');
-      if (!confirm(`🛑 STOP EXAMINATION for ${batchCode}?\n\nAll active student papers will be instantly submitted, calculated, and locked. New candidate registrations will be blocked.`)) return;
+      if (!confirm(`STOP EXAMINATION for ${batchCode}?\n\nAll active student papers will be instantly submitted, calculated, and locked. New candidate registrations will be blocked.`)) return;
 
       try {
         const res = await fetch('/api/teacher/exam/stop', {
@@ -1549,7 +1570,7 @@ Loading history...
         });
         const data = await res.json();
         if (data.success) {
-          showToast(`🛑 Exam stopped for ${batchCode}. ${data.auto_submitted_count || 0} papers submitted.`);
+          showToast(`Exam stopped for ${batchCode}. ${data.auto_submitted_count || 0} papers submitted.`);
           refreshExamLifecycleStatus();
           refreshStudentList();
         } else {
@@ -1624,10 +1645,10 @@ Loading history...
         const btn = document.getElementById(`tabBtn-${t}`);
         const content = document.getElementById(`tabContent-${t}`);
         if (t === tabId) {
-          btn.className = 'py-2 px-3 sm:px-4 rounded-xl border-b-2 border-emerald-400 bg-indigo-800/80 text-white font-bold flex items-center gap-1.5 whitespace-nowrap shadow-sm shrink-0';
+          btn.className = 'tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-indigo-600 dark:border-emerald-400 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-white font-bold flex items-center gap-2 whitespace-nowrap shadow-xs shrink-0 cursor-pointer';
           content.classList.remove('hidden');
         } else {
-          btn.className = 'py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-indigo-200 hover:text-white hover:bg-indigo-800/40 flex items-center gap-1.5 whitespace-nowrap transition shrink-0';
+          btn.className = 'tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 flex items-center gap-2 whitespace-nowrap transition shrink-0 cursor-pointer';
           content.classList.add('hidden');
         }
       });
@@ -1684,7 +1705,7 @@ Loading history...
       if (!badge) return;
       if (enabled) {
         badge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500 text-white shadow-sm";
-        badge.innerText = "+4 / -1 Active 🎯";
+        badge.innerText = "+4 / -1 Active";
       } else {
         badge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-slate-300";
         badge.innerText = "Disabled";
@@ -1809,7 +1830,7 @@ Loading history...
       alertEl.className = 'p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border-2 border-rose-500 shadow-lg flex flex-wrap items-center justify-between gap-3 animate-pulse-red';
       alertEl.innerHTML = `
         <div class="flex items-center gap-3">
-          <span class="text-2xl">🚨</span>
+          <svg class="w-6 h-6 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           <div>
             <h4 class="text-sm font-black text-rose-900 dark:text-rose-200 uppercase tracking-wide">
               Focus Lost Violation Detected — Attempt Frozen
@@ -1821,7 +1842,7 @@ Loading history...
         </div>
         <div class="flex items-center gap-2">
           <button onclick="unfreezeStudent('${data.sessionId}', '${cardId}')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1 active:scale-95">
-            🔓 1-Click Unfreeze / Resume
+            <svg class="w-4 h-4 inline mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>1-Click Unfreeze / Resume
           </button>
           <button onclick="dismissAlert('${cardId}')" class="px-3 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl transition">
             Dismiss
@@ -1892,7 +1913,7 @@ Loading history...
       if (students.length === 0) {
         grid.innerHTML = `
           <div class="col-span-full py-12 text-center text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
-            <span class="text-4xl block mb-2">👨‍🎓</span>
+            <svg class="w-12 h-12 mx-auto mb-2 text-slate-300 dark:text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             <p class="font-medium text-slate-600 dark:text-slate-300">No students connected yet</p>
             <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Students can join using the URL displayed at the top header.</p>
           </div>
@@ -1932,8 +1953,14 @@ Loading history...
                 <div>
                   <h4 class="text-base font-bold text-slate-800 dark:text-slate-100">${escapeHtml(s.student_name)}</h4>
                   <div class="flex items-center gap-2 mt-0.5">
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-mono whitespace-nowrap shrink-0">🏷️ ${s.batch_code || 'BATCH-01'}</span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 inline-flex items-center gap-1 whitespace-nowrap"><span>🎲</span><span>Random Order</span></span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-mono whitespace-nowrap shrink-0 inline-flex items-center gap-1">
+                      <svg class="w-3 h-3 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                      <span>${escapeHtml(s.batch_code || 'BATCH-01')}</span>
+                    </span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 inline-flex items-center gap-1 whitespace-nowrap shrink-0">
+                      <svg class="w-3 h-3 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+                      <span>Random Order</span>
+                    </span>
                     ${statusBadge}
                   </div>
                 </div>
@@ -1975,12 +2002,14 @@ Loading history...
                 <div class="mt-3 p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-xs text-blue-900 dark:text-blue-200 space-y-1.5">
                   <div class="flex justify-between items-center">
                     <span>Score: <strong>${s.total_score}/${s.max_score}</strong> (${s.percentage}%)</span>
-                    <span class="font-bold ${s.passed ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">${s.passed ? 'PASSED 🏆' : 'FAILED ❌'}</span>
+                    <span class="font-bold inline-flex items-center gap-1 ${s.passed ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">
+                      ${s.passed ? '<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> PASSED' : '<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> FAILED'}
+                    </span>
                   </div>
                   <div class="flex items-center gap-3 pt-1 border-t border-blue-200/50 dark:border-blue-800/50 text-[11px]">
-                    <span class="text-emerald-700 dark:text-emerald-300 font-bold">✓ Right: ${s.correct_count ?? 0}</span>
-                    <span class="text-rose-700 dark:text-rose-300 font-bold">✗ Wrong: ${s.wrong_count ?? 0}</span>
-                    <span class="text-slate-500 font-medium">⚪ Skipped: ${s.unattempted_count ?? 0}</span>
+                    <span class="text-emerald-700 dark:text-emerald-300 font-bold inline-flex items-center gap-1"><svg class="w-3 h-3 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Right: ${s.correct_count ?? 0}</span>
+                    <span class="text-rose-700 dark:text-rose-300 font-bold inline-flex items-center gap-1"><svg class="w-3 h-3 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Wrong: ${s.wrong_count ?? 0}</span>
+                    <span class="text-slate-500 font-medium inline-flex items-center gap-1"><svg class="w-3 h-3 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg> Skipped: ${s.unattempted_count ?? 0}</span>
                   </div>
                 </div>
               ` : ''}
@@ -2111,7 +2140,7 @@ Loading history...
         alert('Upload failed: ' + err.message);
       } finally {
         btn.disabled = false;
-        btn.innerText = '🚀 Import Question Bank';
+        btn.innerHTML = '<svg class="w-4 h-4 inline mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span>Import Question Bank</span>';
       }
     }
 
@@ -2355,7 +2384,7 @@ Loading history...
                   </div>
                 ` : `
                   <button type="button" onclick="document.getElementById('optImgInput_${idx}').click()" class="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 p-1 text-xs font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 shrink-0 transition flex items-center gap-1 cursor-pointer" title="Attach Diagram to Option ${opt.letter}">
-                    <span>📷</span>
+                    <svg class="w-3.5 h-3.5 inline text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                   </button>
                 `}
 
@@ -2527,7 +2556,7 @@ Loading history...
           loadSystemInfo();
           filterQuestionsByTopic(topic);
 
-          showAdminSuccessToast(`✅ Question added to "${topic}" successfully!`);
+          showAdminSuccessToast(`Question added to "${topic}" successfully!`);
         } else {
           alert('Failed to save question: ' + data.error);
         }
@@ -2535,7 +2564,7 @@ Loading history...
         alert('Failed to save question: ' + err.message);
       } finally {
         saveBtn.disabled = false;
-        saveBtn.innerHTML = '<span>💾 Save Question to Bank</span>';
+        saveBtn.innerHTML = '<svg class="w-4 h-4 inline mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span>Save Question to Bank</span>';
       }
     }
 
@@ -2774,15 +2803,15 @@ Loading history...
 
       if (isPublished) {
         badge.className = "text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700";
-        badge.innerText = "📢 Published for ALL Students";
+        badge.innerHTML = "<svg class=\"w-3.5 h-3.5 text-emerald-500 inline mr-1\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><polygon points=\"11 5 6 9 2 9 2 15 6 15 11 19 11 5\"/><path d=\"M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07\"/></svg>Published for ALL Students";
         btn.className = "px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow-md flex items-center gap-2 active:scale-95 bg-rose-600 hover:bg-rose-700 text-white";
-        if (btnIcon) btnIcon.innerText = "🔒";
+        if (btnIcon) btnIcon.innerHTML = "<svg class=\"w-3.5 h-3.5 inline\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><rect x=\"3\" y=\"11\" width=\"18\" height=\"11\" rx=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg>";
         if (btnText) btnText.innerText = "Lock Review Answers for ALL Students";
       } else {
         badge.className = "text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600";
-        badge.innerText = "🔒 Locked by Default";
+        badge.innerHTML = "<svg class=\"w-3.5 h-3.5 text-slate-500 inline mr-1\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><rect x=\"3\" y=\"11\" width=\"18\" height=\"11\" rx=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg>Locked by Default";
         btn.className = "px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow-md flex items-center gap-2 active:scale-95 bg-indigo-600 hover:bg-indigo-700 text-white";
-        if (btnIcon) btnIcon.innerText = "📢";
+        if (btnIcon) btnIcon.innerHTML = "<svg class=\"w-3.5 h-3.5 inline\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><polygon points=\"11 5 6 9 2 9 2 15 6 15 11 19 11 5\"/><path d=\"M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07\"/></svg>";
         if (btnText) btnText.innerText = "Publish Review Answers for ALL Students";
       }
     }
@@ -2873,21 +2902,21 @@ Loading history...
           if (isGlobalPublished) {
             reviewActionHtml = `
               <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
-                ✓ Published (All)
+                Published (All)
               </span>
             `;
           } else if (s.individual_allow_review) {
             reviewActionHtml = `
               <button onclick="toggleStudentReview('${s.id}', false)" title="Click to lock review answers for this candidate"
                 class="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center gap-1 mx-auto">
-                🔓 Unlocked (Lock)
+                Unlocked (Lock)
               </button>
             `;
           } else {
             reviewActionHtml = `
               <button onclick="toggleStudentReview('${s.id}', true)" title="Click to allow review answers for this candidate"
                 class="px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 rounded-lg text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center gap-1 mx-auto">
-                🔒 Locked (Allow)
+                Locked (Allow)
               </button>
             `;
           }
@@ -2898,14 +2927,14 @@ Loading history...
         return `
           <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/40 transition">
             <td class="py-3 px-3 font-black text-center text-sm ${s.rank === 1 ? 'text-amber-500 font-extrabold' : 'text-slate-700 dark:text-slate-300'}">
-              ${s.rank === 1 ? '🥇 ' : (s.rank === 2 ? '🥈 ' : (s.rank === 3 ? '🥉 ' : ''))}${s.rank}
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full font-bold text-xs ${s.rank === 1 ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-800' : (s.rank === 2 ? 'bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-200' : (s.rank === 3 ? 'bg-amber-800/10 text-amber-900 dark:bg-amber-900/40 dark:text-amber-400' : 'text-slate-500'))}">${s.rank}</span>
             </td>
             <td class="py-3 px-4 font-bold text-slate-800 dark:text-slate-100">
               <div>${escapeHtml(s.student_name)}</div>
-              <div class="text-[10px] text-indigo-600 dark:text-indigo-400 font-mono font-medium">🏷️ ${escapeHtml(s.batch_code || 'BATCH-01')}</div>
+              <div class="text-[10px] text-indigo-600 dark:text-indigo-400 font-mono font-medium">${escapeHtml(s.batch_code || 'BATCH-01')}</div>
             </td>
             <td class="py-3 px-3 text-center whitespace-nowrap">
-              <span class="inline-flex items-center justify-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700/80 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-bold text-[10.5px] shadow-xs whitespace-nowrap">🎲&nbsp;Random</span>
+              <span class="inline-flex items-center justify-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700/80 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-bold text-[10.5px] shadow-xs whitespace-nowrap"><svg class="w-3 h-3 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg><span>Random</span></span>
             </td>
             <td class="py-3 px-3 font-bold text-indigo-700 dark:text-indigo-400">${isSubmitted ? `${s.total_score} / ${s.max_score}` : '-'}</td>
             <td class="py-3 px-3 text-center font-bold text-emerald-600 dark:text-emerald-400">${isSubmitted ? (s.correct_count ?? 0) : '-'}</td>
@@ -2920,7 +2949,7 @@ Loading history...
               ${isSubmitted ? `
                 <button onclick="openStudentMarksheet('${s.id}')" title="Print candidate marksheet"
                   class="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950/50 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 rounded-lg text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center gap-1 mx-auto">
-                  📄 Marksheet
+                  Marksheet
                 </button>
               ` : '<span class="text-slate-400 dark:text-slate-500 text-[10px]">-</span>'}
             </td>
@@ -2947,9 +2976,9 @@ Loading history...
       banner.classList.remove('hidden');
 
       const topCards = [
-        { rank: 1, title: '🥇 1st Place (Winner)', student: ranked[0], border: 'border-amber-400 dark:border-amber-500', bg: 'bg-gradient-to-br from-amber-500/10 via-amber-400/5 to-transparent', badge: 'bg-amber-500 text-white', medal: '🥇' },
-        { rank: 2, title: '🥈 2nd Place (Runner-Up)', student: ranked[1], border: 'border-slate-300 dark:border-slate-600', bg: 'bg-gradient-to-br from-slate-400/10 via-slate-400/5 to-transparent', badge: 'bg-slate-400 text-white', medal: '🥈' },
-        { rank: 3, title: '🥉 3rd Place (2nd Runner-Up)', student: ranked[2], border: 'border-amber-700/60 dark:border-amber-700', bg: 'bg-gradient-to-br from-amber-700/10 via-amber-700/5 to-transparent', badge: 'bg-amber-700 text-white', medal: '🥉' }
+        { rank: 1, title: '1st Place (Winner)', student: ranked[0], border: 'border-amber-400 dark:border-amber-500', bg: 'bg-gradient-to-br from-amber-500/10 via-amber-400/5 to-transparent', badge: 'bg-amber-500 text-white', medal: '1st' },
+        { rank: 2, title: '2nd Place (Runner-Up)', student: ranked[1], border: 'border-slate-300 dark:border-slate-600', bg: 'bg-gradient-to-br from-slate-400/10 via-slate-400/5 to-transparent', badge: 'bg-slate-400 text-white', medal: '2nd' },
+        { rank: 3, title: '3rd Place (2nd Runner-Up)', student: ranked[2], border: 'border-amber-700/60 dark:border-amber-700', bg: 'bg-gradient-to-br from-amber-700/10 via-amber-700/5 to-transparent', badge: 'bg-amber-700 text-white', medal: '3rd' }
       ];
 
       banner.innerHTML = topCards.map(c => {
@@ -2968,14 +2997,14 @@ Loading history...
             <div class="space-y-1">
               <div class="flex items-center gap-1.5">
                 <span class="text-xs font-black px-2 py-0.5 rounded-full ${c.badge}">${c.medal} Rank ${c.rank}</span>
-                <span class="text-[10px] font-mono text-indigo-600 dark:text-indigo-400 font-bold">🏷️ ${s.batch_code || 'BATCH-01'}</span>
+                <span class="text-[10px] font-mono text-indigo-600 dark:text-indigo-400 font-bold">${s.batch_code || 'BATCH-01'}</span>
               </div>
               <h4 class="text-sm font-black text-slate-900 dark:text-white truncate max-w-[180px]">${escapeHtml(s.student_name)}</h4>
               <p class="text-[11px] text-slate-500 dark:text-slate-400">Score: <strong class="text-indigo-600 dark:text-indigo-400">${s.total_score}/${s.max_score}</strong> (${s.percentage}%)</p>
             </div>
             <div class="text-right shrink-0">
               <button onclick="openStudentMarksheet('${s.id}')" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md transition active:scale-95 flex items-center gap-1">
-                <span>📄 Marksheet</span>
+                <span>Marksheet</span>
               </button>
             </div>
           </div>
@@ -3071,7 +3100,7 @@ Loading history...
                 <span class="inline-block px-3.5 py-1 text-xs font-black uppercase rounded-lg border-2 shadow-sm whitespace-nowrap ${
                   isPassed ? 'bg-emerald-50 text-emerald-800 border-emerald-600' : 'bg-rose-50 text-rose-800 border-rose-600'
                 }">
-                  ${isPassed ? '✓ OFFICIAL PASS' : '✗ FAILED'}
+                  ${isPassed ? 'OFFICIAL PASS' : 'FAILED'}
                 </span>
                 <div class="text-[10px] text-slate-500 font-mono mt-1 font-semibold whitespace-nowrap">Date: ${formattedDate}</div>
               </div>
@@ -3085,7 +3114,7 @@ Loading history...
               </div>
               <div>
                 <span class="block text-[9px] uppercase font-extrabold tracking-wider" style="color: #312e81;">Assigned Batch</span>
-                <span class="font-extrabold text-sm font-mono" style="color: #312e81;">🏷️ ${student.batch_code || 'BATCH-01'}</span>
+                <span class="font-extrabold text-sm font-mono" style="color: #312e81;">${student.batch_code || 'BATCH-01'}</span>
               </div>
               <div>
                 <span class="block text-[9px] uppercase font-extrabold tracking-wider" style="color: #312e81;">Session ID</span>
@@ -3108,11 +3137,11 @@ Loading history...
                 <span class="text-2xl sm:text-3xl font-black ${isPassed ? 'text-emerald-700' : 'text-rose-700'}">${student.percentage}%</span>
               </div>
               <div class="p-2.5 sm:p-3 bg-emerald-50/80 border border-emerald-200 rounded-xl shadow-xs">
-                <span class="text-[9px] font-extrabold uppercase tracking-wider text-emerald-700 block">Correct (✓)</span>
+                <span class="text-[9px] font-extrabold uppercase tracking-wider text-emerald-700 block">Correct</span>
                 <span class="text-2xl sm:text-3xl font-black text-emerald-800">${student.correct_count ?? 0}</span>
               </div>
               <div class="p-2.5 sm:p-3 bg-rose-50/80 border border-rose-200 rounded-xl shadow-xs">
-                <span class="text-[9px] font-extrabold uppercase tracking-wider text-rose-700 block">Incorrect (✗)</span>
+                <span class="text-[9px] font-extrabold uppercase tracking-wider text-rose-700 block">Incorrect</span>
                 <span class="text-2xl sm:text-3xl font-black text-rose-800">${student.wrong_count ?? 0}</span>
               </div>
             </div>
@@ -3152,7 +3181,7 @@ Loading history...
                 <span class="text-[9px] text-slate-500">Student Acknowledgment</span>
               </div>
               <div class="text-center px-4 py-2 rounded-xl text-[9px] font-mono shadow-xs" style="border: 2px dashed #312e81; background-color: rgba(49, 46, 129, 0.08);">
-                <span class="font-black block text-[10px] tracking-wide" style="color: #312e81;">🛡️ EXAMSHIELD AUDIT STAMP</span>
+                <span class="font-black block text-[10px] tracking-wide" style="color: #312e81;">EXAMSHIELD AUDIT STAMP</span>
                 <span class="font-semibold text-slate-700">Verified LAN Examination Record</span>
               </div>
               <div class="text-center w-44">
@@ -3336,7 +3365,7 @@ Loading history...
                 </span>
                 <span>${optText}</span>
               </div>
-              ${isCorrect ? '<span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold shrink-0">✓ Correct Answer</span>' : ''}
+              ${isCorrect ? '<span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold shrink-0">Correct Answer</span>' : ''}
             </div>
           `;
         }).join('');
@@ -3353,7 +3382,7 @@ Loading history...
             <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-2">
                 <span class="text-xs font-black px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-mono">Q${idx + 1}</span>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">🏷️ ${q.topic}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">${q.topic}</span>
               </div>
               <span class="text-[10px] text-slate-400 font-mono">ID: ${q.id}</span>
             </div>
@@ -3454,10 +3483,10 @@ Loading history...
           : `
             <div class="flex items-center justify-end gap-2">
               <button onclick="activateBatch('${b.batch_code}')" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition active:scale-95">
-                ⚡ Activate
+                <svg class="w-3.5 h-3.5 inline mr-1 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Activate
               </button>
               <button onclick="promptDeleteBatch('${b.batch_code}')" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-300 rounded-lg text-xs font-semibold border border-rose-200 dark:border-rose-800 transition active:scale-95">
-                🗑️ Delete
+                <svg class="w-3.5 h-3.5 inline mr-1 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Delete
               </button>
             </div>
           `;
@@ -3493,10 +3522,10 @@ Loading history...
       const resultsFilter = document.getElementById('resultsBatchFilter');
       
       const optionsHtml = `
-        <option value="all" ${currentBatchFilter === 'all' ? 'selected' : ''}>🌐 All Batches</option>
+        <option value="all" ${currentBatchFilter === 'all' ? 'selected' : ''}>All Batches</option>
         ${batches.map(b => `
           <option value="${b.batch_code}" ${currentBatchFilter === b.batch_code ? 'selected' : ''}>
-            🏷️ ${b.batch_code} ${b.batch_code === activeBatchCode ? '(Active)' : ''}
+            ${b.batch_code} ${b.batch_code === activeBatchCode ? '(Active)' : ''}
           </option>
         `).join('')}
       `;
