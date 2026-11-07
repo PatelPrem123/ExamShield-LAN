@@ -551,6 +551,11 @@ router.post('/student/submit', asyncHandler(async (req, res) => {
     timeSpentStr = `${m}m ${s < 10 ? '0' : ''}${s}s`;
   }
 
+  const auditLogs = db.getRecentAuditLogs ? db.getRecentAuditLogs(200) : [];
+  const calculatedViolations = auditLogs.filter(a =>
+    a.student_name === session.student_name && a.event_type === 'FOCUS_LOST'
+  ).length;
+
   const resultObj = {
     total_score: scoreData.total_score,
     max_score: scoreData.max_score,
@@ -560,6 +565,7 @@ router.post('/student/submit', asyncHandler(async (req, res) => {
     correct_count: scoreData.correct_count,
     wrong_count: scoreData.wrong_count,
     unattempted_count: scoreData.unattempted_count,
+    violations: session.violation_count !== undefined ? session.violation_count : calculatedViolations,
     competitive_mode: scoreData.competitive_mode,
     analytics: computeCandidateAnalytics({
       total_questions: session.assigned_questions.length,

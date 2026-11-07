@@ -954,35 +954,37 @@
         </div>
       </div>
 
-      <!-- Breakdown 4 Stats Grid (Total Score, Correct Answers, Time Spent, Violations) -->
+      <!-- Breakdown 4 Stats Grid (Total Score, Correct Answers, Time Spent, Violations) - Uniform Equal Heights & Proportions -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-left">
-        <div class="p-3 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800/80 flex flex-col justify-between">
+        <div class="p-3 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800/80 flex flex-col justify-between min-h-[80px]">
           <div class="text-[10px] sm:text-[11px] font-bold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
             <svg class="w-3.5 h-3.5 text-indigo-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
             <span>Total Score</span>
           </div>
-          <div id="finalTotalScoreDisplay" class="text-lg sm:text-2xl font-black text-indigo-700 dark:text-indigo-300 font-mono mt-1 whitespace-nowrap">0 / 0</div>
+          <div id="finalTotalScoreDisplay" class="text-lg sm:text-2xl font-black text-indigo-700 dark:text-indigo-300 font-mono mt-1 whitespace-nowrap leading-none">0 / 0</div>
         </div>
-        <div class="p-3 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/80 flex flex-col justify-between">
+        <div class="p-3 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/80 flex flex-col justify-between min-h-[80px]">
           <div class="text-[10px] sm:text-[11px] font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
             <svg class="w-3.5 h-3.5 text-emerald-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             <span>Correct</span>
           </div>
-          <div id="finalCorrectDisplay" class="text-lg sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1 whitespace-nowrap">0 / 0</div>
+          <div id="finalCorrectDisplay" class="text-lg sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1 whitespace-nowrap leading-none">0 / 0</div>
         </div>
-        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between min-h-[80px]">
           <div class="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
             <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             <span>Time Spent</span>
           </div>
-          <div id="finalTimeDisplay" class="text-lg sm:text-2xl font-black text-slate-800 dark:text-slate-200 font-mono mt-1 whitespace-nowrap">--</div>
+          <div id="finalTimeDisplay" class="text-lg sm:text-2xl font-black text-slate-800 dark:text-slate-200 font-mono mt-1 whitespace-nowrap leading-none">--</div>
         </div>
-        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between min-h-[80px]">
           <div class="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
             <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             <span>Violations</span>
           </div>
-          <div id="finalViolationsDisplay" class="text-lg sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1 whitespace-nowrap">0 <span class="text-xs font-semibold opacity-75">(Clean)</span></div>
+          <div id="finalViolationsDisplay" class="text-lg sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1 whitespace-nowrap flex items-baseline leading-none">
+            <span>0</span><span class="text-xs sm:text-sm font-semibold opacity-75 font-sans ml-1.5">(Clean)</span>
+          </div>
         </div>
       </div>
 
@@ -2375,27 +2377,27 @@
     }
 
     
-    // Ultra-lightweight Confetti Cannon
+    // Ultra-lightweight Confetti Cannon (Supports full-viewport celebratory fireworks)
     const PortalConfetti = {
       canvas: null,
       ctx: null,
       particles: [],
       animId: null,
-      fire(count = 140) {
+      fire(count = 180) {
         if (!this.canvas) {
           this.canvas = document.getElementById('confetti-canvas');
-          if (!this.canvas) return;
-          this.ctx = this.canvas.getContext('2d');
-          this.canvas.width = window.innerWidth;
-          this.canvas.height = window.innerHeight;
         }
-        const colors = ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#3b82f6'];
+        if (!this.canvas) return;
+        this.ctx = this.canvas.getContext('2d');
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        const colors = ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#3b82f6', '#8b5cf6', '#14b8a6', '#f43f5e', '#eab308'];
         for (let i = 0; i < count; i++) {
           this.particles.push({
-            x: this.canvas.width / 2 + (Math.random() - 0.5) * 300,
-            y: this.canvas.height / 2 + (Math.random() - 0.5) * 100,
-            vx: (Math.random() - 0.5) * 16,
-            vy: -Math.random() * 15 - 5,
+            x: this.canvas.width / 2 + (Math.random() - 0.5) * (this.canvas.width * 0.75),
+            y: this.canvas.height * 0.35 + (Math.random() - 0.5) * 120,
+            vx: (Math.random() - 0.5) * 18,
+            vy: -Math.random() * 16 - 6,
             size: Math.random() * 8 + 4,
             color: colors[Math.floor(Math.random() * colors.length)],
             rotation: Math.random() * 360,
@@ -2431,6 +2433,9 @@
         }
       }
     };
+    const ConfettiMgr = PortalConfetti;
+    window.ConfettiMgr = ConfettiMgr;
+    window.PortalConfetti = PortalConfetti;
 
     let lastResultData = null;
     let examDurationSeconds = 3600;
@@ -2511,8 +2516,19 @@
         if (progress < 1) {
           requestAnimationFrame(step);
         } else {
+          // Score countup animation completed!
+          // Instantly trigger celebratory confetti explosion regardless of pass/fail
+          try {
+            if (typeof ConfettiMgr !== 'undefined' && ConfettiMgr.fire) {
+              ConfettiMgr.fire(180);
+            } else if (typeof PortalConfetti !== 'undefined' && PortalConfetti.fire) {
+              PortalConfetti.fire(180);
+            }
+          } catch (e) {
+            console.error('Confetti trigger error:', e);
+          }
+
           if (isPassed) {
-            ConfettiMgr.fire(160);
             if (typeof AudioFX !== 'undefined' && AudioFX.playSuccess) AudioFX.playSuccess();
           } else {
             if (typeof AudioFX !== 'undefined' && AudioFX.playAlert) AudioFX.playAlert();
@@ -2583,7 +2599,14 @@
       if (timeEl) timeEl.innerText = timeSpentStr;
 
       if (violationsEl) {
-        violationsEl.innerText = '0 (Clean)';
+        const vCount = (result && result.violations !== undefined) ? Number(result.violations) : (window.violationCount || 0);
+        if (vCount === 0) {
+          violationsEl.className = 'text-lg sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1 whitespace-nowrap flex items-baseline leading-none';
+          violationsEl.innerHTML = '<span>0</span><span class="text-xs sm:text-sm font-semibold text-emerald-600/80 dark:text-emerald-400/80 font-sans ml-1.5">(Clean)</span>';
+        } else {
+          violationsEl.className = 'text-lg sm:text-2xl font-black text-rose-600 dark:text-rose-400 font-mono mt-1 whitespace-nowrap flex items-baseline leading-none';
+          violationsEl.innerHTML = `<span>${vCount}</span><span class="text-xs sm:text-sm font-semibold text-rose-600/80 dark:text-rose-400/80 font-sans ml-1.5">(${vCount === 1 ? 'Alert' : 'Alerts'})</span>`;
+        }
       }
 
       // Populate Right / Wrong / Skipped breakdown pills
@@ -2759,61 +2782,7 @@
       if (AudioFX.enabled) AudioFX.play(800, 0.05);
     }
 
-    const ConfettiMgr = {
-      canvas: null,
-      ctx: null,
-      particles: [],
-      animId: null,
-      fire(count = 140) {
-        if (!this.canvas) {
-          this.canvas = document.getElementById('confetti-canvas');
-          if (!this.canvas) return;
-          this.ctx = this.canvas.getContext('2d');
-          this.canvas.width = window.innerWidth;
-          this.canvas.height = window.innerHeight;
-        }
-        const colors = ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#3b82f6'];
-        for (let i = 0; i < count; i++) {
-          this.particles.push({
-            x: this.canvas.width / 2 + (Math.random() - 0.5) * 300,
-            y: this.canvas.height / 2 + (Math.random() - 0.5) * 100,
-            vx: (Math.random() - 0.5) * 16,
-            vy: -Math.random() * 15 - 5,
-            size: Math.random() * 8 + 4,
-            color: colors[Math.floor(Math.random() * colors.length)],
-            rotation: Math.random() * 360,
-            opacity: 1
-          });
-        }
-        if (!this.animId) this.loop();
-      },
-      loop() {
-        if (!this.ctx) return;
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        for (let i = this.particles.length - 1; i >= 0; i--) {
-          const p = this.particles[i];
-          p.x += p.vx;
-          p.y += p.vy;
-          p.vy += 0.45;
-          p.opacity -= 0.007;
-          if (p.opacity <= 0 || p.y > this.canvas.height) {
-            this.particles.splice(i, 1);
-            continue;
-          }
-          this.ctx.save();
-          this.ctx.translate(p.x, p.y);
-          this.ctx.globalAlpha = Math.max(0, p.opacity);
-          this.ctx.fillStyle = p.color;
-          this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.4);
-          this.ctx.restore();
-        }
-        if (this.particles.length > 0) {
-          this.animId = requestAnimationFrame(() => this.loop());
-        } else {
-          this.animId = null;
-        }
-      }
-    };
+    // ConfettiMgr is initialized at PortalConfetti with full screen support
   
     function returnToJoinScreen() {
       if (timerInterval) clearInterval(timerInterval);
