@@ -1380,7 +1380,7 @@
 
         return `
           <div onclick="selectOption('${opt.key}', ${q.is_multiple_choice})"
-            class="p-4 rounded-2xl border-2 cursor-pointer transition flex items-start gap-3 ${cardStyle}">
+            class="option-card-modern p-4 rounded-2xl border-2 cursor-pointer transition flex items-start gap-3 ${cardStyle}">
             <input type="${inputType}" name="q_${q.id}" ${isSelected ? 'checked' : ''}
               class="mt-1 accent-indigo-600 cursor-pointer w-4 h-4 pointer-events-none" />
             <div class="flex-1 text-xs md:text-sm text-slate-800 dark:text-slate-100">

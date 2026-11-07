@@ -39,6 +39,13 @@
     .animate-pulse-red {
       animation: pulse-red 1.2s infinite;
     }
+    @keyframes breathing-emerald {
+      0%, 100% { box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.2), 0 2px 8px rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.4); }
+      50% { box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.35), 0 4px 14px rgba(16, 185, 129, 0.18); border-color: rgba(16, 185, 129, 0.7); }
+    }
+    .animate-breathing-emerald {
+      animation: breathing-emerald 2.5s infinite ease-in-out;
+    }
     html {
       scroll-behavior: smooth;
     }
@@ -1706,9 +1713,14 @@ Loading history...
       grid.innerHTML = students.map(s => {
         const isFrozen = s.status === 'frozen';
         const isSubmitted = s.status === 'submitted';
-        const cardBorder = isFrozen 
-          ? 'border-2 border-rose-500 bg-white dark:bg-slate-800 shadow-md' 
-          : 'border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md';
+        let cardBorder = '';
+        if (isFrozen) {
+          cardBorder = 'border-2 border-rose-500 bg-rose-50/40 dark:bg-rose-950/30 shadow-lg animate-pulse-red';
+        } else if (isSubmitted) {
+          cardBorder = 'border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/80 shadow-xs';
+        } else {
+          cardBorder = 'border-2 border-emerald-400/60 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md animate-breathing-emerald';
+        }
         
         let statusBadge = '';
         if (isFrozen) {
