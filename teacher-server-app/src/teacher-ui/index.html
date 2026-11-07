@@ -1660,12 +1660,34 @@ Loading history...
       }
     }
 
+    
+    function animateTeacherMetric(elementId, targetValue) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const current = parseInt(el.innerText, 10) || 0;
+      if (current === targetValue) {
+        el.innerText = targetValue;
+        return;
+      }
+      const duration = 600;
+      const startTime = performance.now();
+      const step = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        el.innerText = Math.round(current + (targetValue - current) * ease);
+        if (progress < 1) requestAnimationFrame(step);
+        else el.innerText = targetValue;
+      };
+      requestAnimationFrame(step);
+    }
+
     function updateMetrics(students) {
-      document.getElementById('metricTotalStudents').innerText = students.length;
+      animateTeacherMetric('metricTotalStudents', students.length);
       const active = students.filter(s => s.status === 'in_progress').length;
       const violations = students.filter(s => s.status === 'frozen' || (Array.isArray(s.warnings) && s.warnings.length > 0) || (typeof s.warnings === 'number' && s.warnings > 0)).length;
-      document.getElementById('metricActiveStudents').innerText = active;
-      document.getElementById('metricFrozenStudents').innerText = violations;
+      animateTeacherMetric('metricActiveStudents', active);
+      animateTeacherMetric('metricFrozenStudents', violations);
     }
 
     function renderStudentCards(students) {

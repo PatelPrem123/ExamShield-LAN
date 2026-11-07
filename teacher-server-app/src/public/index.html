@@ -64,9 +64,161 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+  
+    /* ========================================================
+       MODERN UI ANIMATIONS (GPU-ACCELERATED ZERO-LAG)
+       ======================================================== */
+    .glow-input {
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glow-input:focus {
+      border-color: #6366f1 !important;
+      box-shadow: 0 0 0 1px #6366f1, 0 0 20px rgba(99, 102, 241, 0.35) !important;
+      transform: translateY(-1px);
+    }
+    .btn-shimmer {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+    }
+    .btn-shimmer::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -150%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+      transform: skewX(-20deg);
+      transition: left 0.75s ease;
+    }
+    .btn-shimmer:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+    }
+    .btn-shimmer:hover::before {
+      left: 150%;
+    }
+    .tooltip-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+    .vengeance-tooltip {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%) translateY(6px) scale(0.92);
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      color: #ffffff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.5);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 50;
+    }
+    .vengeance-tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 4px;
+      border-style: solid;
+      border-color: rgba(15, 23, 42, 0.95) transparent transparent transparent;
+    }
+    .tooltip-wrapper:hover .vengeance-tooltip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+    .slide-left-in {
+      animation: slide-in-from-right 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .slide-right-in {
+      animation: slide-in-from-left 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes slide-in-from-right {
+      from { transform: translateX(25px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slide-in-from-left {
+      from { transform: translateX(-25px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .option-card-modern {
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .option-card-modern:hover {
+      transform: translateX(4px);
+    }
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 8px;
+      background: rgba(148, 163, 184, 0.2);
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #10b981);
+      border-radius: 8px;
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+    .progress-fill::after {
+      content: "";
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 15px;
+      background: rgba(255, 255, 255, 0.7);
+      filter: blur(2px);
+      box-shadow: 0 0 8px #ffffff;
+    }
+    .gold-shimmer-badge {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 13px;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
+      overflow: hidden;
+    }
+    .gold-shimmer-badge::after {
+      content: "";
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+      transform: skewX(-25deg);
+      animation: shimmer-sweep 2.5s infinite;
+    }
+    @keyframes shimmer-sweep {
+      0% { left: -100%; }
+      60%, 100% { left: 200%; }
+    }
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
+  <canvas id="confetti-canvas"></canvas>
 
   <!-- FLOATING THEME TOGGLE (Visible on Login & Result Screens) -->
   <div id="floatingThemeToggle" class="fixed top-4 right-4 z-40">
@@ -202,7 +354,7 @@
           <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
             Candidate Full Name
           </label>
-          <input type="text" id="candidateNameInput" required placeholder="Enter your full name" autofocus
+          <input type="text" id="candidateNameInput" required placeholder="Enter your full name" autofocus class="glow-input w-full px-4 py-3 text-sm rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
             class="w-full px-4 py-3 text-sm rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition" />
           <p class="text-[11px] text-slate-400 mt-1">Roll number is not required. Enter only your name.</p>
         </div>
@@ -215,7 +367,7 @@
           </div>
 
           <button type="submit" id="startExamBtn"
-            class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
+            class="btn-shimmer w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
             <span>🚀 Start Examination</span>
           </button>
         </div>
@@ -278,6 +430,18 @@
         </div>
       </div>
     </header>
+
+    
+    <!-- LIVE ANIMATED EXAM PROGRESS BAR -->
+    <div class="max-w-7xl mx-auto px-4 pt-3 pb-1 w-full">
+      <div class="flex justify-between text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
+        <span>Exam Progress</span>
+        <span id="examOverallProgressLabel">0 of 0 Answered (0%)</span>
+      </div>
+      <div class="progress-track">
+        <div id="examOverallProgressBar" class="progress-fill" style="width: 0%;"></div>
+      </div>
+    </div>
 
     <!-- EXAM CONTENT AREA (2 Columns: Main Question Area + Right Palette) -->
     <div class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -1341,36 +1505,50 @@
     }
 
     function renderPalette() {
-      const grid = document.getElementById('paletteGrid');
-      let answeredCount = 0;
+        const grid = document.getElementById('paletteGrid');
+        let answeredCount = 0;
 
-      grid.innerHTML = questions.map((q, idx) => {
-        const isCurrent = idx === currentIndex;
-        const hasAnswer = (answers[q.id] && answers[q.id].length > 0);
-        const isMarked = markedForReview.has(q.id);
+        grid.innerHTML = questions.map((q, idx) => {
+          const isCurrent = idx === currentIndex;
+          const hasAnswer = (answers[q.id] && answers[q.id].length > 0);
+          const isMarked = markedForReview.has(q.id);
 
-        if (hasAnswer) answeredCount++;
+          if (hasAnswer) answeredCount++;
 
-        let bgClass = 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'; // Unanswered
-        if (hasAnswer) {
-          bgClass = 'bg-emerald-500 text-white font-bold'; // Answered
-        }
-        if (isMarked) {
-          bgClass = 'bg-amber-500 text-white font-bold'; // Marked for Review
-        }
+          let bgClass = 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'; // Unanswered
+          let tooltipStatus = 'Not Visited';
+          if (hasAnswer) {
+            bgClass = 'bg-emerald-500 text-white font-bold shadow-sm shadow-emerald-500/20'; // Answered
+            tooltipStatus = 'Answered';
+          }
+          if (isMarked) {
+            bgClass = 'bg-amber-500 text-white font-bold shadow-sm shadow-amber-500/20'; // Marked for Review
+            tooltipStatus = 'Marked for Review';
+          }
 
-        const borderClass = isCurrent ? 'ring-2 ring-indigo-600 ring-offset-2 dark:ring-offset-slate-800 scale-105' : '';
+          const borderClass = isCurrent ? 'ring-2 ring-indigo-600 ring-offset-2 dark:ring-offset-slate-800 scale-105' : '';
+          const currentBadge = isCurrent ? ' (Viewing)' : '';
 
-        return `
-          <button onclick="jumpToQuestion(${idx})"
-            class="h-8 rounded-xl text-xs font-semibold transition flex items-center justify-center ${bgClass} ${borderClass}">
-            ${idx + 1}
-          </button>
-        `;
-      }).join('');
+          return `
+            <div class="tooltip-wrapper">
+              <button onclick="jumpToQuestion(${idx})"
+                class="w-full h-8 rounded-xl text-xs font-semibold transition flex items-center justify-center ${bgClass} ${borderClass}">
+                ${idx + 1}
+              </button>
+              <div class="vengeance-tooltip">Q${idx + 1}: ${tooltipStatus}${currentBadge}</div>
+            </div>
+          `;
+        }).join('');
 
-      document.getElementById('paletteCountSummary').innerText = `${answeredCount}/${questions.length} Answered`;
-    }
+        document.getElementById('paletteCountSummary').innerText = `${answeredCount}/${questions.length} Answered`;
+        
+        // Update Live Animated Progress Bar
+        const overallBar = document.getElementById('examOverallProgressBar');
+        const overallLabel = document.getElementById('examOverallProgressLabel');
+        const pct = questions.length ? Math.round((answeredCount / questions.length) * 100) : 0;
+        if (overallBar) overallBar.style.width = `${pct}%`;
+        if (overallLabel) overallLabel.innerText = `${answeredCount} of ${questions.length} Answered (${pct}%)`;
+      }
 
     function toggleMobilePalette() {
       const aside = document.getElementById('paletteAside');
@@ -1422,6 +1600,86 @@
       }
     }
 
+    
+    // Ultra-lightweight Confetti Cannon
+    const PortalConfetti = {
+      canvas: null,
+      ctx: null,
+      particles: [],
+      animId: null,
+      fire(count = 140) {
+        if (!this.canvas) {
+          this.canvas = document.getElementById('confetti-canvas');
+          if (!this.canvas) return;
+          this.ctx = this.canvas.getContext('2d');
+          this.canvas.width = window.innerWidth;
+          this.canvas.height = window.innerHeight;
+        }
+        const colors = ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#3b82f6'];
+        for (let i = 0; i < count; i++) {
+          this.particles.push({
+            x: this.canvas.width / 2 + (Math.random() - 0.5) * 300,
+            y: this.canvas.height / 2 + (Math.random() - 0.5) * 100,
+            vx: (Math.random() - 0.5) * 16,
+            vy: -Math.random() * 15 - 5,
+            size: Math.random() * 8 + 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            opacity: 1
+          });
+        }
+        if (!this.animId) this.loop();
+      },
+      loop() {
+        if (!this.ctx) return;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+          const p = this.particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.45;
+          p.opacity -= 0.007;
+          if (p.opacity <= 0 || p.y > this.canvas.height) {
+            this.particles.splice(i, 1);
+            continue;
+          }
+          this.ctx.save();
+          this.ctx.translate(p.x, p.y);
+          this.ctx.globalAlpha = Math.max(0, p.opacity);
+          this.ctx.fillStyle = p.color;
+          this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.4);
+          this.ctx.restore();
+        }
+        if (this.particles.length > 0) {
+          this.animId = requestAnimationFrame(() => this.loop());
+        } else {
+          this.animId = null;
+        }
+      }
+    };
+
+    function animateFinalPercentage(targetPct) {
+      const el = document.getElementById('finalPercentageDisplay');
+      if (!el) return;
+      el.innerText = '0%';
+      let current = 0;
+      const duration = 1500;
+      const start = performance.now();
+      const step = (time) => {
+        const elapsed = time - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+        current = Math.round(ease * targetPct);
+        el.innerText = `${current}%`;
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else if (targetPct >= 40) {
+          PortalConfetti.fire(150);
+        }
+      };
+      requestAnimationFrame(step);
+    }
+
     function displayFinalResults(result) {
       document.getElementById('examInterface').classList.add('hidden');
       document.getElementById('frozenOverlay').classList.add('hidden');
@@ -1434,7 +1692,7 @@
       updateReviewButtonUI();
 
       document.getElementById('finalScoreDisplay').innerText = `${result.total_score} / ${result.max_score}`;
-      document.getElementById('finalPercentageDisplay').innerText = `${result.percentage}%`;
+      animateFinalPercentage(result.percentage || 0);
 
       const rightEl = document.getElementById('finalRightDisplay');
       const wrongEl = document.getElementById('finalWrongDisplay');

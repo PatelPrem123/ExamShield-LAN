@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ExamShield LAN - Merged Modern Experience</title>
+  <link rel="icon" type="image/png" href="../logo.png">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              500: '#6366f1',
+              600: '#4f46e5'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Modern Animation Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    body {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+    }
+    input {
+      user-select: text;
+    }
+
+    /* Floating Tooltip inside Palette (Vengeance UI) */
+    .vce-palette-cell {
+      position: relative;
+    }
+    .vce-palette-cell:hover .palette-tooltip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+    .palette-tooltip {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%) translateY(6px) scale(0.92);
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      color: #ffffff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.5);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 50;
+    }
+    .palette-tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 4px;
+      border-style: solid;
+      border-color: rgba(15, 23, 42, 0.95) transparent transparent transparent;
+    }
+
+    /* Option Card Selection & Lift */
+    .merged-option-card {
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      background: var(--bg-secondary);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+    }
+    .merged-option-card:hover {
+      transform: translateX(4px);
+      background: var(--bg-tertiary);
+    }
+    .merged-option-card.selected {
+      border-color: var(--brand-primary) !important;
+      background: rgba(99, 102, 241, 0.12) !important;
+      box-shadow: 0 0 0 1px var(--brand-primary), 0 0 18px var(--brand-glow);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans transition-colors duration-200">
+
+  <!-- Confetti Canvas Layer -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- 3-2-1 Countdown Overlay -->
+  <div id="countdown-overlay" class="countdown-overlay">
+    <div style="font-size:15px;text-transform:uppercase;letter-spacing:3px;color:var(--text-muted);margin-bottom:12px;font-weight:700;">
+      Teacher Has Started The Examination
+    </div>
+    <div id="countdown-display" class="countdown-number">3</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-top:16px;">
+      Locking screen into secure fullscreen mode...
+    </div>
+  </div>
+
+  <!-- Demo Top Navigation Bar (Single-Row Capsule) -->
+  <header class="demo-top-nav">
+    <!-- Brand / Logo -->
+    <div class="brand-section">
+      <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#6366f1,#4f46e5);display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px var(--brand-glow);color:#ffffff;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <div>
+        <div style="font-size:15px;font-weight:800;letter-spacing:0.2px;line-height:1.2;display:flex;align-items:center;gap:6px;">
+          ExamShield LAN
+          <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:12px;background:rgba(16,185,129,0.18);color:var(--success-color);border:1px solid rgba(16,185,129,0.3);">MERGED</span>
+        </div>
+        <div class="brand-subtext" style="font-size:11px;color:var(--text-muted);line-height:1;">Actual App + Modern Animations</div>
+      </div>
+    </div>
+
+    <!-- Center Navigation Tabs (5 Full Tabs) -->
+    <nav class="demo-tabs-container">
+      <button onclick="showScreen('joinScreen')" id="nav-btn-join" class="demo-tab-btn active">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>1. Login</span>
+      </button>
+
+      <button onclick="showScreen('waitingScreen')" id="nav-btn-waiting" class="demo-tab-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span>2. Waiting Room</span>
+      </button>
+
+      <button onclick="showScreen('examInterface')" id="nav-btn-exam" class="demo-tab-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+        <span>3. Live Exam</span>
+      </button>
+
+      <button onclick="showScreen('resultScreen')" id="nav-btn-result" class="demo-tab-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 9H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2"/><path d="M18 9h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34"/><path d="M6 3h12v7a6 6 0 0 1-12 0V3z"/>
+        </svg>
+        <span>4. Scorecard</span>
+      </button>
+
+      <button onclick="showScreen('teacherScreen')" id="nav-btn-teacher" class="demo-tab-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+        <span>5. Teacher Panel</span>
+      </button>
+    </nav>
+
+    <!-- Right Actions: Clean SVG Audio & Theme Buttons -->
+    <div class="nav-actions">
+      <!-- Clean SVG Speaker Icon (From Image 3) -->
+      <button onclick="toggleAudio()" id="mergedSoundBtn" class="action-pill-btn" title="Toggle Audio">
+        <svg id="mergedSoundIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+        <span id="mergedSoundText">Audio On</span>
+      </button>
+
+      <!-- Clean SVG Moon/Sun Icon (From Image 3) -->
+      <button onclick="toggleMergedTheme()" id="mergedThemeBtn" class="action-pill-btn" title="Toggle Light / Dark Mode">
+        <svg id="mergedThemeIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <span id="mergedThemeText">Dark</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main style="max-width:1100px;margin:28px auto;padding:0 20px;width:100%;">
+
+    <!-- ======================================================== -->
+    <!-- 1. MERGED JOIN SCREEN (REAL EXAMSHIELD STYLE) -->
+    <!-- ======================================================== -->
+    <div id="joinScreen" class="demo-screen">
+      <div class="glass-panel" style="max-width:680px;margin:0 auto;padding:36px;border-radius:24px;">
+        
+        <!-- Top Bar: Logo & Official Warning Sign -->
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;border-bottom:1px solid var(--card-border);padding-bottom:20px;margin-bottom:24px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div style="width:58px;height:58px;border-radius:14px;background:linear-gradient(135deg,#6366f1,#4f46e5);display:flex;align-items:center;justify-content:center;color:#ffffff;box-shadow:0 6px 16px var(--brand-glow);flex-shrink:0;">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div>
+              <h1 style="font-size:22px;font-weight:900;letter-spacing:-0.5px;line-height:1.2;">
+                ExamShield LAN
+              </h1>
+              <p style="font-size:12px;color:var(--text-muted);margin-top:2px;">Offline Certification Examination Simulator</p>
+              <div style="display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:2px 8px;border-radius:20px;background:rgba(16,185,129,0.12);color:var(--success-color);font-size:11px;font-weight:700;">
+                <span style="width:6px;height:6px;border-radius:50%;background:var(--success-color);display:inline-block;"></span>
+                Secure LAN Environment Active
+              </div>
+            </div>
+          </div>
+
+          <!-- Official Signboard: 'PLEASE TURN OFF YOUR PHONE' -->
+          <div style="border:2px solid #ef4444;border-radius:10px;background:#ffffff;padding:8px 12px;text-align:center;width:120px;box-shadow:0 2px 6px rgba(0,0,0,0.1);flex-shrink:0;">
+            <div style="display:flex;align-items:center;justify-content:center;margin-bottom:4px;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="#ef4444" stroke-width="2.2" fill="none" />
+                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#ef4444" stroke-width="2.2" />
+                <rect x="9" y="7" width="6" height="10" rx="1" stroke="#0f172a" stroke-width="1.8" />
+              </svg>
+            </div>
+            <div style="background:#ef4444;color:#ffffff;font-size:9px;font-weight:900;line-height:1.1;padding:3px;border-radius:3px;text-transform:uppercase;">
+              PLEASE<br>TURN OFF<br>YOUR PHONE
+            </div>
+          </div>
+        </div>
+
+        <!-- Prominent Exam Title -->
+        <div style="text-align:left;margin-bottom:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">Class Examination Paper</span>
+            <span style="font-size:11px;font-weight:800;font-family:monospace;padding:3px 10px;border-radius:20px;background:rgba(99,102,241,0.15);color:var(--brand-primary);border:1px solid rgba(99,102,241,0.3);">BATCH-01</span>
+          </div>
+          <h2 style="font-size:26px;font-weight:900;color:#ef4444;letter-spacing:-0.5px;">
+            NETWORK ESSENTIAL CLASSTEST
+          </h2>
+        </div>
+
+        <!-- Official Instructions Box -->
+        <div style="background:var(--bg-secondary);padding:18px 20px;border-radius:16px;border:1px solid var(--card-border);margin-bottom:24px;text-align:left;">
+          <div style="font-size:13px;font-weight:700;border-bottom:1px solid var(--card-border);padding-bottom:8px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;">
+            <span>Instructions :</span>
+            <span style="font-size:11px;color:var(--text-muted);font-weight:500;">Read carefully before starting</span>
+          </div>
+          <ol style="font-size:12px;line-height:1.7;color:var(--text-main);padding-left:18px;margin:0;">
+            <li>All questions are compulsory. Total 5 MCQs in this test set.</li>
+            <li>There is <strong>NO negative marking</strong>.</li>
+            <li>You can change your answer anytime before final submission.</li>
+            <li style="color:#ef4444;font-weight:700;margin-top:6px;">
+              Anti-Cheating Kiosk: Switching tabs or minimizing will instantly alert the proctor console.
+            </li>
+          </ol>
+        </div>
+
+        <!-- Student Name Form with ANIMMASTER NEON GLOW INPUT & SHIMMER BUTTON -->
+        <form onsubmit="handleJoinSubmit(event)" style="text-align:left;">
+          <div class="glow-input-container">
+            <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;color:var(--text-muted);">
+              Candidate Full Name
+            </label>
+            <input type="text" id="mergedCandidateName" required placeholder="Enter your full name" value="Rahul Sharma" class="glow-input">
+            <span style="font-size:11px;color:var(--text-muted);display:block;margin-top:6px;">Roll number is not required. Enter only your registered name.</span>
+          </div>
+
+          <div style="margin-top:20px;">
+            <button type="submit" class="btn-shimmer" style="width:100%;padding:16px;">
+              <span>Start Examination</span>
+              <span>&rarr;</span>
+            </button>
+          </div>
+        </form>
+
+        <div style="text-align:center;font-size:11px;color:var(--text-muted);margin-top:16px;">
+          ExamShield LAN &bull; Made by Prem &bull; Zero-Lag Architecture
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 2. MERGED WAITING ROOM SCREEN -->
+    <!-- ======================================================== -->
+    <div id="waitingScreen" class="demo-screen" style="display:none;">
+      <div class="glass-panel" style="max-width:640px;margin:0 auto;padding:44px 34px;text-align:center;">
+        
+        <!-- Live Sonar/Radar Animation -->
+        <div class="radar-wrapper">
+          <div class="radar-ring"></div>
+          <div class="radar-ring"></div>
+          <div class="radar-ring"></div>
+          <div class="radar-core">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"/></svg>
+          </div>
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <div class="live-badge">
+            <span class="ping-dot"></span>
+            WAITING ROOM: TEACHER MUST START EXAM
+          </div>
+        </div>
+
+        <h2 style="font-size:24px;font-weight:900;margin-bottom:8px;">Terminal Verified & Ready</h2>
+        <p style="color:var(--text-muted);font-size:13px;max-width:460px;margin:0 auto 24px auto;line-height:1.6;">
+          Your workstation has been logged by the Proctor Console. When the proctor starts the test, your exam will unlock automatically with the countdown timer.
+        </p>
+
+        <!-- Candidate Parameters Card -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;background:var(--bg-secondary);padding:16px;border-radius:14px;border:1px solid var(--card-border);margin-bottom:28px;text-align:left;">
+          <div>
+            <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;">Candidate</div>
+            <div id="waitingCandidateDisplay" style="font-size:14px;font-weight:700;margin-top:2px;">Rahul Sharma</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;">Duration</div>
+            <div style="font-size:14px;font-weight:700;margin-top:2px;">45 Minutes</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;">Subject</div>
+            <div style="font-size:14px;font-weight:700;margin-top:2px;">Networking</div>
+          </div>
+        </div>
+
+        <div style="padding:16px;border-radius:14px;background:rgba(99,102,241,0.08);border:1px dashed var(--brand-primary);">
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">
+            <strong>Test Trigger:</strong> Click to simulate the teacher unlocking the examination:
+          </div>
+          <button onclick="triggerCountdown()" class="btn-shimmer" style="width:100%;">
+            <span>Simulate Teacher "Start Exam" Signal (3-2-1 Countdown)</span>
+            <span>&rarr;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 3. MERGED ACTIVE EXAM INTERFACE (MATCHING IMAGE 2 EXACTLY) -->
+    <!-- ======================================================== -->
+    <div id="examInterface" class="demo-screen" style="display:none;">
+      
+      <!-- Sleek Contained Exam Header (Exact Look of Image 2) -->
+      <div class="glass-panel" style="padding:16px 24px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+        <!-- Left: RS Avatar + Name + Subject -->
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:38px;height:38px;border-radius:10px;background:rgba(16,185,129,0.18);color:var(--success-color);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;">
+            RS
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span id="mergedExamStudentName" style="font-weight:800;font-size:14px;color:var(--text-main);">Rahul Sharma (CS-2026-089)</span>
+              <span style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;background:rgba(99,102,241,0.18);color:var(--brand-primary);font-family:monospace;">BATCH-01</span>
+              <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(16,185,129,0.18);color:var(--success-color);">Randomized</span>
+            </div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Network Essential Classtest</div>
+          </div>
+        </div>
+
+        <!-- Right: Auto-Save Beacon & Countdown Timer (Matching Image 2) -->
+        <div style="display:flex;align-items:center;gap:14px;">
+          <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--success-color);">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--success-color);display:inline-block;"></span>
+            Auto-Saved
+          </span>
+
+          <!-- Red Countdown Badge with Clock SVG -->
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);padding:7px 16px;border-radius:10px;color:var(--danger-color);font-weight:800;font-size:15px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span id="liveTimerText">42:18 Remaining</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Animated Progress Bar -->
+      <div style="margin-bottom:18px;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text-muted);">
+          <span>Examination Progress</span>
+          <span id="mergedProgressLabel">1 of 5 Answered (20%)</span>
+        </div>
+        <div class="progress-track">
+          <div id="mergedProgressBar" class="progress-fill" style="width:20%;"></div>
+        </div>
+      </div>
+
+      <!-- Main Exam Layout Grid (3 Cols Question + 1 Col Palette) -->
+      <div style="display:grid;grid-template-columns:1fr 280px;gap:18px;">
+        
+        <!-- Left: Question Box with Smooth Slide Transition -->
+        <div class="glass-panel" style="padding:26px;">
+          <div class="question-viewport">
+            <div id="mergedQuestionCard" class="question-card">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Bottom Action Buttons -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:24px;padding-top:16px;border-top:1px solid var(--card-border);flex-wrap:wrap;gap:12px;">
+            <button onclick="navigateQuestion(-1)" class="btn-secondary-glow">
+              &larr; Previous Question
+            </button>
+
+            <div style="display:flex;align-items:center;gap:10px;">
+              <button onclick="toggleReviewFlag()" id="btn-review-flag" class="action-pill-btn" style="padding:10px 16px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span>Mark for Review</span>
+              </button>
+              <button onclick="navigateQuestion(1)" class="btn-secondary-glow">
+                Next Question &rarr;
+              </button>
+              <button onclick="showScreen('resultScreen')" class="btn-shimmer" style="background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 4px 15px var(--success-glow);">
+                <span>Submit Exam</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Vengeance UI-Style Question Palette -->
+        <div class="glass-panel" style="padding:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <h4 style="font-size:13px;font-weight:700;">Question Palette</h4>
+            <span style="font-size:11px;color:var(--brand-primary);font-weight:600;">Hover Tooltip</span>
+          </div>
+
+          <!-- Palette Buttons Grid -->
+          <div id="mergedPaletteContainer" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;">
+            <!-- Generated dynamically -->
+          </div>
+
+          <!-- Palette Status Legend -->
+          <div style="font-size:11px;color:var(--text-muted);display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:1px solid var(--card-border);">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="width:12px;height:12px;border-radius:3px;background:var(--success-color);display:inline-block;"></span>
+              <span>Answered</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="width:12px;height:12px;border-radius:3px;background:var(--warning-color);display:inline-block;"></span>
+              <span>Marked for Review</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="width:12px;height:12px;border-radius:3px;background:var(--bg-secondary);border:1px solid var(--card-border);display:inline-block;"></span>
+              <span>Unattempted</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="width:12px;height:12px;border-radius:3px;border:2px solid var(--brand-primary);display:inline-block;"></span>
+              <span>Active Question</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 4. MERGED SCORECARD SCREEN (COUNTING NUMBER & CONFETTI) -->
+    <!-- ======================================================== -->
+    <div id="resultScreen" class="demo-screen" style="display:none;">
+      <div class="glass-panel" style="max-width:660px;margin:0 auto;padding:44px 32px;text-align:center;">
+        
+        <!-- Top Distinction Shimmer Badge (No Raw Emoji) -->
+        <div style="margin-bottom:16px;">
+          <div class="gold-shimmer-badge">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            DISTINCTION &bull; RANK 1 (SCORE: 88%)
+          </div>
+        </div>
+
+        <h1 style="font-size:26px;font-weight:900;margin-bottom:6px;">Examination Submitted!</h1>
+        <p style="color:var(--text-muted);font-size:13px;margin-bottom:26px;">Official Response Audit & Instant Result Card</p>
+
+        <!-- Animated Radial Score Meter & Number Counter -->
+        <div class="score-circle-wrapper">
+          <svg class="score-svg" viewBox="0 0 200 200">
+            <circle class="score-track" cx="100" cy="100" r="90" />
+            <circle id="mergedScoreFillRing" class="score-fill" cx="100" cy="100" r="90" />
+          </svg>
+          <div class="score-center-text">
+            <span id="mergedScorePercentage" class="score-percentage">0%</span>
+            <span style="font-size:12px;font-weight:700;color:var(--success-color);letter-spacing:1px;margin-top:4px;">PASSED</span>
+          </div>
+        </div>
+
+        <!-- Breakdown Stats Grid -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:30px;">
+          <div style="padding:16px;border-radius:12px;background:var(--bg-secondary);border:1px solid var(--card-border);text-align:left;">
+            <div style="font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;">Correct Answers</div>
+            <div style="font-size:22px;font-weight:800;color:var(--success-color);margin-top:4px;">4 / 5</div>
+          </div>
+          <div style="padding:16px;border-radius:12px;background:var(--bg-secondary);border:1px solid var(--card-border);text-align:left;">
+            <div style="font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;">Time Spent</div>
+            <div style="font-size:22px;font-weight:800;color:var(--brand-primary);margin-top:4px;">28m 14s</div>
+          </div>
+          <div style="padding:16px;border-radius:12px;background:var(--bg-secondary);border:1px solid var(--card-border);text-align:left;">
+            <div style="font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;">Violations</div>
+            <div style="font-size:22px;font-weight:800;color:var(--success-color);margin-top:4px;">0 (Clean)</div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:center;gap:12px;">
+          <button onclick="triggerMergedScorecardAnim()" class="btn-shimmer">
+            <span>Replay Confetti & Score Counter</span>
+          </button>
+          <button onclick="showScreen('joinScreen')" class="btn-secondary-glow">
+            Back to Start
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 5. MERGED TEACHER CONTROL PANEL SCREEN (NEW INTEGRATION) -->
+    <!-- ======================================================== -->
+    <div id="teacherScreen" class="demo-screen" style="display:none;">
+      
+      <!-- Teacher Top Bar with Master Start/Stop Exam Toggle -->
+      <div class="glass-panel" style="padding:22px 24px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;">
+        <div>
+          <h2 style="font-size:20px;font-weight:800;margin-bottom:4px;">ExamShield Proctor Console</h2>
+          <div style="font-size:13px;color:var(--text-muted);">
+            LAN Master Control &bull; Hardware Lab 2 (Subnet: 192.168.1.0/24)
+          </div>
+        </div>
+
+        <!-- Master Start/Stop Toggle Switch -->
+        <div class="switch-container">
+          <div>
+            <div style="font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;">Master Exam Switch</div>
+            <div id="master-toggle-status" style="font-size:13px;margin-top:2px;">
+              <span style="color:var(--text-muted);font-weight:700;">&bull; EXAM LOCKED (WAITING ROOM)</span>
+            </div>
+          </div>
+          <div id="teacher-master-toggle" class="master-toggle" title="Click to Start/Stop Exam for all students">
+            <div class="toggle-knob"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-time Metric Counters (Animated) -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:22px;">
+        <div class="metric-card">
+          <div style="font-size:12px;color:var(--text-muted);font-weight:600;">Connected Workstations</div>
+          <div id="counter-connected" class="metric-value" style="color:var(--brand-primary);">0</div>
+          <div style="font-size:11px;color:var(--success-color);font-weight:600;margin-top:4px;">All nodes pinging (sub-2ms)</div>
+        </div>
+
+        <div class="metric-card success">
+          <div style="font-size:12px;color:var(--text-muted);font-weight:600;">Active Test-Takers</div>
+          <div id="counter-active" class="metric-value" style="color:var(--success-color);">0</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Normal progress tracking</div>
+        </div>
+
+        <div class="metric-card danger">
+          <div style="font-size:12px;color:var(--text-muted);font-weight:600;">Violation Alerts</div>
+          <div id="counter-violations" class="metric-value" style="color:var(--danger-color);">0</div>
+          <div style="font-size:11px;color:var(--danger-color);margin-top:4px;">Fullscreen focus loss alerts</div>
+        </div>
+
+        <div class="metric-card">
+          <div style="font-size:12px;color:var(--text-muted);font-weight:600;">Average Class Score</div>
+          <div id="counter-avg-score" class="metric-value" style="color:var(--text-main);">0%</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Live submission telemetry</div>
+        </div>
+      </div>
+
+      <!-- Interactive Simulation Bar for Teacher Testing -->
+      <div class="glass-panel" style="padding:16px 20px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div style="font-size:13px;">
+          <strong>Interactive Skiper UI Card Demo:</strong> Test how the proctor dashboard highlights students in real time:
+        </div>
+        <button id="btn-simulate-violation" class="btn-shimmer" style="background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 4px 15px var(--danger-glow);">
+          <span>Toggle Simulated Student Alt+Tab Violation</span>
+        </button>
+      </div>
+
+      <!-- Skiper UI Style Live Student Monitoring Grid -->
+      <div style="margin-bottom:12px;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:space-between;">
+        <span>Live Student Terminals (Real-time Heartbeat)</span>
+        <span style="font-size:12px;color:var(--text-muted);font-weight:500;">Auto-refreshed via WebSockets</span>
+      </div>
+
+      <div class="student-grid">
+        <!-- Student 1: Normal Safe -->
+        <div class="student-card status-safe">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <span style="font-size:11px;font-weight:700;color:var(--success-color);background:rgba(16,185,129,0.1);padding:2px 8px;border-radius:10px;">
+              ACTIVE (NORMAL)
+            </span>
+            <span style="font-size:11px;color:var(--text-muted);">PC-LAB-01</span>
+          </div>
+          <div style="font-weight:700;font-size:15px;">Priya Nair</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">Roll: CS-2026-042</div>
+          <div style="font-size:12px;display:flex;justify-content:space-between;color:var(--text-muted);">
+            <span>Progress: 38/50</span>
+            <span style="font-weight:700;color:var(--success-color);">76%</span>
+          </div>
+        </div>
+
+        <!-- Student 2: Aman Verma (Simulated Cheating Target Card with Red Pulse & Shake) -->
+        <div id="student-card-aman" class="student-card status-safe">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <span id="aman-violation-badge" style="font-size:11px;font-weight:700;color:var(--danger-color);background:rgba(239,68,68,0.15);padding:2px 8px;border-radius:10px;display:none;">
+              Alt+Tab Out (2x)
+            </span>
+            <span style="font-size:11px;font-weight:700;color:var(--success-color);background:rgba(16,185,129,0.1);padding:2px 8px;border-radius:10px;">
+              ACTIVE
+            </span>
+            <span style="font-size:11px;color:var(--text-muted);">PC-LAB-02</span>
+          </div>
+          <div style="font-weight:700;font-size:15px;">Aman Verma</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">Roll: CS-2026-017</div>
+          <div style="font-size:12px;display:flex;justify-content:space-between;color:var(--text-muted);">
+            <span>Progress: 14/50</span>
+            <span style="font-weight:700;color:var(--warning-color);">28%</span>
+          </div>
+        </div>
+
+        <!-- Student 3: Rohan Gupta -->
+        <div class="student-card status-safe">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <span style="font-size:11px;font-weight:700;color:var(--success-color);background:rgba(16,185,129,0.1);padding:2px 8px;border-radius:10px;">
+              ACTIVE (NORMAL)
+            </span>
+            <span style="font-size:11px;color:var(--text-muted);">PC-LAB-03</span>
+          </div>
+          <div style="font-weight:700;font-size:15px;">Rohan Gupta</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">Roll: CS-2026-081</div>
+          <div style="font-size:12px;display:flex;justify-content:space-between;color:var(--text-muted);">
+            <span>Progress: 45/50</span>
+            <span style="font-weight:700;color:var(--success-color);">90%</span>
+          </div>
+        </div>
+
+        <!-- Student 4: Rahul Sharma -->
+        <div class="student-card status-safe">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <span style="font-size:11px;font-weight:700;color:var(--success-color);background:rgba(16,185,129,0.1);padding:2px 8px;border-radius:10px;">
+              ACTIVE (NORMAL)
+            </span>
+            <span style="font-size:11px;color:var(--text-muted);">PC-LAB-04</span>
+          </div>
+          <div style="font-weight:700;font-size:15px;">Rahul Sharma</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">Roll: CS-2026-089</div>
+          <div style="font-size:12px;display:flex;justify-content:space-between;color:var(--text-muted);">
+            <span>Progress: 20/50</span>
+            <span style="font-weight:700;color:var(--brand-primary);">40%</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Complete Merged JavaScript Logic -->
+  <script>
+    // Audio synthesizer
+    const AudioFX = {
+      ctx: null,
+      enabled: true,
+      init() {
+        if (!this.ctx) {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (Ctx) this.ctx = new Ctx();
+        }
+      },
+      play(freq = 600, duration = 0.12) {
+        if (!this.enabled) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e) {}
+      },
+      playSuccess() {
+        this.play(523, 0.1);
+        setTimeout(() => this.play(659, 0.12), 90);
+        setTimeout(() => this.play(784, 0.2), 180);
+      },
+      playAlert() {
+        this.play(440, 0.18);
+        setTimeout(() => this.play(330, 0.25), 140);
+      }
+    };
+
+    function toggleAudio() {
+      AudioFX.enabled = !AudioFX.enabled;
+      const label = document.getElementById('mergedSoundText');
+      const icon = document.getElementById('mergedSoundIcon');
+      if (label) label.textContent = AudioFX.enabled ? 'Audio On' : 'Audio Off';
+      if (icon) {
+        icon.innerHTML = AudioFX.enabled
+          ? '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>'
+          : '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
+      }
+      if (AudioFX.enabled) AudioFX.play(800, 0.05);
+    }
+
+    // Bulletproof Theme Toggle (Switches both Tailwind dark mode AND CSS variables)
+    function toggleMergedTheme() {
+      const isDark = document.documentElement.classList.contains('dark');
+      const label = document.getElementById('mergedThemeText');
+      const icon = document.getElementById('mergedThemeIcon');
+
+      if (isDark) {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light-theme');
+        document.body.classList.add('light-theme');
+        if (label) label.textContent = 'Light';
+        if (icon) {
+          icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+        }
+      } else {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light-theme');
+        document.body.classList.remove('light-theme');
+        if (label) label.textContent = 'Dark';
+        if (icon) {
+          icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+        }
+      }
+      AudioFX.play(700, 0.05);
+    }
+
+    // Confetti Engine
+    const ConfettiMgr = {
+      canvas: null,
+      ctx: null,
+      particles: [],
+      animId: null,
+      fire(count = 140) {
+        if (!this.canvas) {
+          this.canvas = document.getElementById('confetti-canvas');
+          this.ctx = this.canvas.getContext('2d');
+          this.canvas.width = window.innerWidth;
+          this.canvas.height = window.innerHeight;
+        }
+        const colors = ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#3b82f6'];
+        for (let i = 0; i < count; i++) {
+          this.particles.push({
+            x: this.canvas.width / 2 + (Math.random() - 0.5) * 300,
+            y: this.canvas.height / 2 + (Math.random() - 0.5) * 100,
+            vx: (Math.random() - 0.5) * 16,
+            vy: -Math.random() * 15 - 5,
+            size: Math.random() * 8 + 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            opacity: 1
+          });
+        }
+        if (!this.animId) this.loop();
+      },
+      loop() {
+        if (!this.ctx) return;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+          const p = this.particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.45;
+          p.opacity -= 0.007;
+          if (p.opacity <= 0 || p.y > this.canvas.height) {
+            this.particles.splice(i, 1);
+            continue;
+          }
+          this.ctx.save();
+          this.ctx.translate(p.x, p.y);
+          this.ctx.globalAlpha = Math.max(0, p.opacity);
+          this.ctx.fillStyle = p.color;
+          this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.4);
+          this.ctx.restore();
+        }
+        if (this.particles.length > 0) {
+          this.animId = requestAnimationFrame(() => this.loop());
+        } else {
+          this.animId = null;
+        }
+      }
+    };
+
+    // Actual Exam Questions (Network Essential Classtest)
+    const MergedQuestions = [
+      {
+        id: 1,
+        text: "Which OSI layer is responsible for end-to-end reliable data delivery, flow control, and error correction using TCP sequence numbers?",
+        options: [
+          "Layer 2 - Data Link Layer",
+          "Layer 3 - Network Layer",
+          "Layer 4 - Transport Layer",
+          "Layer 7 - Application Layer"
+        ],
+        selected: 2,
+        isReview: false
+      },
+      {
+        id: 2,
+        text: "What is the primary function of the Address Resolution Protocol (ARP) in an IPv4 Ethernet local area network?",
+        options: [
+          "To translate human-readable domain names into IP addresses",
+          "To resolve an IP address to its corresponding physical MAC address",
+          "To allocate dynamic IP leases to newly joined workstations",
+          "To route packets between different autonomous systems"
+        ],
+        selected: null,
+        isReview: false
+      },
+      {
+        id: 3,
+        text: "In CIDR notation, what is the valid subnet mask and total usable host addresses for a network segment denoted by 192.168.1.0/26?",
+        options: [
+          "255.255.255.192 with 62 usable host addresses",
+          "255.255.255.128 with 126 usable host addresses",
+          "255.255.255.224 with 30 usable host addresses",
+          "255.255.255.240 with 14 usable host addresses"
+        ],
+        selected: null,
+        isReview: false
+      },
+      {
+        id: 4,
+        text: "Which protocol is utilized by network administrators to securely manage remote switches and routers over an encrypted terminal session?",
+        options: [
+          "Telnet (Port 23)",
+          "Secure Shell - SSH (Port 22)",
+          "Simple Network Management Protocol - SNMP (Port 161)",
+          "Trivial File Transfer Protocol - TFTP (Port 69)"
+        ],
+        selected: null,
+        isReview: false
+      },
+      {
+        id: 5,
+        text: "When configuring a trunk port on a Cisco Catalyst switch according to the IEEE 802.1Q standard, what is the function of the Native VLAN?",
+        options: [
+          "It encrypts all VLAN headers with SHA-256",
+          "It carries all untagged Ethernet frames across the trunk link",
+          "It automatically assigns DHCP addresses to trunk ports",
+          "It isolates spanning tree bridge protocol data units (BPDUs)"
+        ],
+        selected: null,
+        isReview: false
+      }
+    ];
+
+    let currentQIndex = 0;
+    let candidateName = "Rahul Sharma";
+    let teacherExamRunning = false;
+
+    function showScreen(screenId) {
+      ['joinScreen', 'waitingScreen', 'examInterface', 'resultScreen', 'teacherScreen'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = (id === screenId) ? 'block' : 'none';
+      });
+
+      // Update Top Nav Buttons
+      const navMap = {
+        joinScreen: 'nav-btn-join',
+        waitingScreen: 'nav-btn-waiting',
+        examInterface: 'nav-btn-exam',
+        resultScreen: 'nav-btn-result',
+        teacherScreen: 'nav-btn-teacher'
+      };
+      Object.keys(navMap).forEach(k => {
+        const btn = document.getElementById(navMap[k]);
+        if (btn) btn.classList.toggle('active', k === screenId);
+      });
+
+      if (screenId === 'examInterface') {
+        renderMergedQuestion();
+      } else if (screenId === 'resultScreen') {
+        triggerMergedScorecardAnim();
+      } else if (screenId === 'teacherScreen') {
+        animateMetricCounters();
+      }
+    }
+
+    function handleJoinSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('mergedCandidateName');
+      if (input && input.value.trim()) {
+        candidateName = input.value.trim();
+        document.getElementById('waitingCandidateDisplay').textContent = candidateName;
+        document.getElementById('mergedExamStudentName').textContent = candidateName + " (CS-2026-089)";
+      }
+      AudioFX.playSuccess();
+      showScreen('waitingScreen');
+    }
+
+    function triggerCountdown() {
+      const overlay = document.getElementById('countdown-overlay');
+      const countEl = document.getElementById('countdown-display');
+      overlay.classList.add('active');
+      let count = 3;
+      countEl.textContent = count;
+      AudioFX.play(600, 0.08);
+
+      const timer = setInterval(() => {
+        count--;
+        if (count > 0) {
+          countEl.textContent = count;
+          countEl.style.animation = 'none';
+          void countEl.offsetWidth;
+          countEl.style.animation = 'countdown-pop 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+          AudioFX.play(600, 0.08);
+        } else if (count === 0) {
+          countEl.textContent = 'START!';
+          countEl.style.color = '#10b981';
+          AudioFX.playSuccess();
+        } else {
+          clearInterval(timer);
+          overlay.classList.remove('active');
+          showScreen('examInterface');
+        }
+      }, 1000);
+    }
+
+    function renderMergedQuestion(direction = 'right') {
+      const q = MergedQuestions[currentQIndex];
+      const card = document.getElementById('mergedQuestionCard');
+      if (!card) return;
+
+      const inClass = direction === 'right' ? 'slide-left-in' : (direction === 'left' ? 'slide-right-in' : '');
+
+      let optionsHtml = '';
+      q.options.forEach((opt, idx) => {
+        const isSelected = q.selected === idx;
+        optionsHtml += `
+          <div onclick="selectMergedOption(${idx})" class="merged-option-card ${isSelected ? 'selected' : ''}" style="padding:16px 18px;border-radius:12px;display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+            <div class="option-radio ${isSelected ? 'selected' : ''}" style="width:22px;height:22px;border-radius:50%;border:2px solid ${isSelected ? 'var(--brand-primary)' : 'var(--text-muted)'};display:flex;align-items:center;justify-content:center;background:${isSelected ? 'var(--brand-primary)' : 'transparent'};">
+              ${isSelected ? '<span style="width:8px;height:8px;border-radius:50%;background:#fff;"></span>' : ''}
+            </div>
+            <div style="flex:1;font-size:14px;">
+              <span style="font-weight:700;color:var(--brand-primary);margin-right:8px;">${String.fromCharCode(65 + idx)}.</span>
+              <span>${opt}</span>
+            </div>
+          </div>
+        `;
+      });
+
+      card.className = `question-card ${inClass}`;
+      card.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+          <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--brand-primary);background:rgba(99,102,241,0.12);padding:4px 10px;border-radius:6px;">
+            Question ${currentQIndex + 1} of ${MergedQuestions.length}
+          </span>
+          <span style="font-size:12px;color:var(--text-muted);font-weight:600;">
+            ${q.isReview ? '<span style="color:var(--warning-color);font-weight:700;">Flagged for Review</span>' : 'Standard 4-Choice MCQ'}
+          </span>
+        </div>
+
+        <h3 style="font-size:18px;font-weight:700;line-height:1.5;margin-bottom:20px;color:var(--text-main);">
+          ${q.text}
+        </h3>
+
+        <div>
+          ${optionsHtml}
+        </div>
+      `;
+
+      // Update Review button appearance
+      const reviewBtn = document.getElementById('btn-review-flag');
+      if (reviewBtn) {
+        if (q.isReview) {
+          reviewBtn.style.background = 'var(--warning-color)';
+          reviewBtn.style.color = '#000000';
+          reviewBtn.style.borderColor = 'var(--warning-color)';
+          reviewBtn.querySelector('span').textContent = 'Flagged for Review';
+        } else {
+          reviewBtn.style.background = '';
+          reviewBtn.style.color = '';
+          reviewBtn.style.borderColor = '';
+          reviewBtn.querySelector('span').textContent = 'Mark for Review';
+        }
+      }
+
+      renderMergedPalette();
+      updateMergedProgress();
+    }
+
+    function selectMergedOption(optIdx) {
+      MergedQuestions[currentQIndex].selected = optIdx;
+      AudioFX.play(700, 0.05);
+      renderMergedQuestion('none');
+    }
+
+    function toggleReviewFlag() {
+      MergedQuestions[currentQIndex].isReview = !MergedQuestions[currentQIndex].isReview;
+      AudioFX.play(800, 0.08);
+      renderMergedQuestion('none');
+    }
+
+    function navigateQuestion(delta) {
+      const nextIdx = currentQIndex + delta;
+      if (nextIdx >= 0 && nextIdx < MergedQuestions.length) {
+        const dir = delta > 0 ? 'right' : 'left';
+        currentQIndex = nextIdx;
+        AudioFX.play(600, 0.05);
+        renderMergedQuestion(dir);
+      }
+    }
+
+    function renderMergedPalette() {
+      const container = document.getElementById('mergedPaletteContainer');
+      if (!container) return;
+
+      let html = '';
+      MergedQuestions.forEach((q, idx) => {
+        const isCurrent = idx === currentQIndex;
+        const isAnswered = q.selected !== null;
+        const isReview = q.isReview;
+
+        let statusClass = '';
+        let tooltipText = `Q${idx + 1}: Not Visited`;
+
+        if (isAnswered) {
+          statusClass = 'answered';
+          tooltipText = `Q${idx + 1}: Answered (${String.fromCharCode(65 + q.selected)})`;
+        }
+        if (isReview) {
+          statusClass = 'review';
+          tooltipText = `Q${idx + 1}: Flagged for Review`;
+        }
+        if (isCurrent) {
+          statusClass += ' active';
+          tooltipText += ' (Viewing)';
+        }
+
+        html += `
+          <div class="tooltip-wrapper">
+            <button onclick="jumpToQuestion(${idx})" class="palette-btn ${statusClass}">
+              ${idx + 1}
+            </button>
+            <div class="vengeance-tooltip">${tooltipText}</div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function jumpToQuestion(idx) {
+      if (idx !== currentQIndex) {
+        const dir = idx > currentQIndex ? 'right' : 'left';
+        currentQIndex = idx;
+        AudioFX.play(650, 0.05);
+        renderMergedQuestion(dir);
+      }
+    }
+
+    function updateMergedProgress() {
+      const answered = MergedQuestions.filter(q => q.selected !== null).length;
+      const total = MergedQuestions.length;
+      const pct = Math.round((answered / total) * 100);
+
+      const bar = document.getElementById('mergedProgressBar');
+      const label = document.getElementById('mergedProgressLabel');
+      if (bar) bar.style.width = `${pct}%`;
+      if (label) label.textContent = `${answered} of ${total} Answered (${pct}%)`;
+    }
+
+    function triggerMergedScorecardAnim() {
+      const targetScore = 88;
+      const scoreText = document.getElementById('mergedScorePercentage');
+      const scoreRing = document.getElementById('mergedScoreFillRing');
+
+      if (scoreText) scoreText.textContent = '0%';
+      if (scoreRing) scoreRing.style.strokeDashoffset = '565';
+
+      setTimeout(() => {
+        if (scoreRing) {
+          const circumference = 565;
+          const offset = circumference - (circumference * targetScore) / 100;
+          scoreRing.style.strokeDashoffset = offset;
+        }
+      }, 150);
+
+      let current = 0;
+      const duration = 1500;
+      const start = performance.now();
+
+      const step = (time) => {
+        const elapsed = time - start;
+        const p = Math.min(elapsed / duration, 1);
+        const ease = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
+        current = Math.round(ease * targetScore);
+        if (scoreText) scoreText.textContent = `${current}%`;
+
+        if (p < 1) {
+          requestAnimationFrame(step);
+        } else {
+          ConfettiMgr.fire(150);
+          AudioFX.playSuccess();
+        }
+      };
+
+      requestAnimationFrame(step);
+    }
+
+    // Teacher Panel Controls
+    function initTeacherPanel() {
+      const masterToggle = document.getElementById('teacher-master-toggle');
+      if (masterToggle) {
+        masterToggle.addEventListener('click', () => {
+          teacherExamRunning = !teacherExamRunning;
+          masterToggle.classList.toggle('active', teacherExamRunning);
+          const statusText = document.getElementById('master-toggle-status');
+          if (statusText) {
+            statusText.innerHTML = teacherExamRunning
+              ? '<span style="color:var(--success-color);font-weight:700;">● EXAM IN PROGRESS (LIVE)</span>'
+              : '<span style="color:var(--text-muted);font-weight:700;">○ EXAM LOCKED (WAITING ROOM)</span>';
+          }
+          teacherExamRunning ? AudioFX.playSuccess() : AudioFX.playAlert();
+        });
+      }
+
+      const simulateBtn = document.getElementById('btn-simulate-violation');
+      if (simulateBtn) {
+        simulateBtn.addEventListener('click', () => {
+          const targetCard = document.getElementById('student-card-aman');
+          const badge = document.getElementById('aman-violation-badge');
+          const violationsCounter = document.getElementById('counter-violations');
+          if (!targetCard) return;
+
+          const isViolated = targetCard.classList.contains('status-violation');
+          if (!isViolated) {
+            targetCard.classList.remove('status-safe');
+            targetCard.classList.add('status-violation');
+            if (badge) {
+              badge.style.display = 'inline-flex';
+              badge.textContent = 'Alt+Tab Out (2x)';
+            }
+            if (violationsCounter) violationsCounter.textContent = '2';
+            AudioFX.playAlert();
+          } else {
+            targetCard.classList.remove('status-violation');
+            targetCard.classList.add('status-safe');
+            if (badge) badge.style.display = 'none';
+            if (violationsCounter) violationsCounter.textContent = '0';
+            AudioFX.play(700, 0.05);
+          }
+        });
+      }
+    }
+
+    function animateMetricCounters() {
+      const counters = [
+        { id: 'counter-connected', target: 48 },
+        { id: 'counter-active', target: 47 },
+        { id: 'counter-violations', target: 1 },
+        { id: 'counter-avg-score', target: 84 }
+      ];
+
+      counters.forEach(item => {
+        const el = document.getElementById(item.id);
+        if (!el) return;
+        let startVal = 0;
+        const duration = 1200;
+        const startTime = performance.now();
+
+        const step = (now) => {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const ease = 1 - Math.pow(1 - progress, 3);
+          const val = Math.round(ease * item.target);
+          el.textContent = item.id === 'counter-avg-score' ? `${val}%` : val;
+          if (progress < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initTeacherPanel();
+      renderMergedQuestion();
+    });
+  </script>
+</body>
+</html>
