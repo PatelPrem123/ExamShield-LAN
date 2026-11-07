@@ -539,12 +539,12 @@
       </div>
 
       <!-- Student Name Form & Start Button -->
-      <form id="joinForm" onsubmit="handleStudentJoin(event)" class="space-y-4 text-left">
+      <form id="joinForm" onsubmit="event.preventDefault(); handleStudentJoin(event); return false;" class="space-y-4 text-left">
         <div class="glow-input-container">
           <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
             Candidate Full Name
           </label>
-          <input type="text" id="candidateNameInput" required placeholder="Enter your full name" autofocus class="glow-input" />
+          <input type="text" id="candidateNameInput" required placeholder="Enter your full name" autofocus class="glow-input" onkeydown="if(event.key==='Enter'){ event.preventDefault(); handleStudentJoin(event); }" />
           <p class="text-[11px] text-slate-400 mt-1.5">Roll number is not required. Enter only your registered name.</p>
         </div>
 
@@ -555,7 +555,7 @@
             <span>Click 'Start Examination' to begin test</span>
           </div>
 
-          <button type="submit" id="startExamBtn"
+          <button type="button" onclick="handleStudentJoin(event)" id="startExamBtn"
             class="btn-shimmer w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm uppercase tracking-wider rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
             <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none">
               <defs>
@@ -1627,14 +1627,34 @@
         if (perQSection) perQSection.classList.add('hidden');
       }
 
-      renderQuestion(0);
-      buildQuestionPalette();
-      startTimer();
+      currentQuestionIndex = 0;
+      setupAntiCheating();
+      startExamTimer();
+      if (perQuestionTimeEnabled) {
+        startPerQuestionTimer();
+      }
+      renderPalette();
+      renderCurrentQuestion();
       showToast('Examination has begun! Best of luck.');
     }
 
+    // Compatibility aliases
+    function renderQuestion(idx) {
+      currentQuestionIndex = idx || 0;
+      renderCurrentQuestion();
+    }
+    function buildQuestionPalette() {
+      renderPalette();
+    }
+    function startTimer() {
+      startExamTimer();
+    }
+
     async function handleStudentJoin(e) {
-      e.preventDefault();
+      if (e) {
+        if (typeof e.preventDefault === "function") e.preventDefault();
+        if (typeof e.stopPropagation === "function") e.stopPropagation();
+      }
       const nameInput = document.getElementById('candidateNameInput');
       const studentName = nameInput.value.trim();
       if (!studentName) return;

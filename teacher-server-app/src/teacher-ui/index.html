@@ -3396,18 +3396,18 @@ Loading history...
           const isCorrect = correctKeys.includes(optKey) || correctKeys.includes(optText) || (typeof q.correct_option === 'number' && oIdx === q.correct_option);
 
           return `
-            <div class="p-2 rounded-xl border text-xs flex items-center justify-between gap-2 ${
+            <div class="p-2.5 rounded-xl border text-xs flex items-center justify-between gap-2 ${
               isCorrect 
-                ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-400 text-emerald-900 dark:text-emerald-200 font-bold' 
-                : 'bg-slate-50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-400 dark:border-emerald-700 text-emerald-900 dark:text-emerald-200 font-bold' 
+                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200'
             }">
               <div class="flex items-center gap-2">
                 <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                  isCorrect ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-slate-200'
+                  isCorrect ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200'
                 }">
                   ${optLetter}
                 </span>
-                <span>${optText}</span>
+                <span class="leading-snug">${optText}</span>
               </div>
               ${isCorrect ? '<span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold shrink-0">Correct Answer</span>' : ''}
             </div>
@@ -3422,15 +3422,15 @@ Loading history...
         }
 
         return `
-          <div class="p-4 rounded-2xl bg-white dark:bg-slate-750 border border-slate-200 dark:border-slate-700 shadow-sm hover:border-indigo-300 dark:hover:border-indigo-600 transition space-y-2.5">
+          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700/80 shadow-sm hover:border-indigo-300 dark:hover:border-indigo-600 transition space-y-3">
             <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-2">
-                <span class="text-xs font-black px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-mono">Q${idx + 1}</span>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">${q.topic}</span>
+                <span class="text-xs font-black px-2.5 py-0.5 rounded-lg bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 font-mono border border-indigo-200 dark:border-indigo-800">Q${idx + 1}</span>
+                <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300/80 dark:border-slate-700">${q.topic}</span>
               </div>
               <span class="text-[10px] text-slate-400 font-mono">ID: ${q.id}</span>
             </div>
-            <p class="text-xs font-bold text-slate-800 dark:text-white leading-relaxed">${q.question_text}</p>
+            <p class="text-xs font-bold text-slate-900 dark:text-white leading-relaxed">${q.question_text}</p>
             ${mediaHtml}
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
               ${optionsHtml}
