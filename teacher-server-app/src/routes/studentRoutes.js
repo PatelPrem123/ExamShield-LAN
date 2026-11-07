@@ -119,11 +119,30 @@ router.post('/student/register', asyncHandler(async (req, res) => {
         !!exam.competitive_mode_enabled
       );
 
+      let timeSpentStr = null;
+      if (existing.start_time && existing.submitted_at) {
+        const start = new Date(existing.start_time).getTime();
+        const end = new Date(existing.submitted_at).getTime();
+        const diffSeconds = Math.max(0, Math.floor((end - start) / 1000));
+        const m = Math.floor(diffSeconds / 60);
+        const s = diffSeconds % 60;
+        timeSpentStr = `${m}m ${s < 10 ? '0' : ''}${s}s`;
+      } else if (existing.remaining_seconds !== undefined && exam.duration_minutes) {
+        const totalSec = exam.duration_minutes * 60;
+        const diffSeconds = Math.max(0, totalSec - existing.remaining_seconds);
+        if (diffSeconds > 0 && diffSeconds < totalSec) {
+          const m = Math.floor(diffSeconds / 60);
+          const s = diffSeconds % 60;
+          timeSpentStr = `${m}m ${s < 10 ? '0' : ''}${s}s`;
+        }
+      }
+
       const resultPayload = {
         total_score: existing.total_score,
         max_score: existing.max_score,
         percentage: existing.percentage,
         passed: existing.passed,
+        time_spent: timeSpentStr,
         correct_count: existing.correct_count ?? scoreData.correct_count,
         wrong_count: existing.wrong_count ?? scoreData.wrong_count,
         unattempted_count: existing.unattempted_count ?? scoreData.unattempted_count,
@@ -466,11 +485,22 @@ router.post('/student/submit', asyncHandler(async (req, res) => {
     });
   }
 
+  let timeSpentStr = null;
+  if (session.start_time) {
+    const start = new Date(session.start_time).getTime();
+    const end = Date.now();
+    const diffSeconds = Math.max(0, Math.floor((end - start) / 1000));
+    const m = Math.floor(diffSeconds / 60);
+    const s = diffSeconds % 60;
+    timeSpentStr = `${m}m ${s < 10 ? '0' : ''}${s}s`;
+  }
+
   const resultObj = {
     total_score: scoreData.total_score,
     max_score: scoreData.max_score,
     percentage: scoreData.percentage,
     passed: scoreData.passed,
+    time_spent: timeSpentStr,
     correct_count: scoreData.correct_count,
     wrong_count: scoreData.wrong_count,
     unattempted_count: scoreData.unattempted_count,

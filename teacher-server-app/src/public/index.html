@@ -956,33 +956,33 @@
 
       <!-- Breakdown 4 Stats Grid (Total Score, Correct Answers, Time Spent, Violations) -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-left">
-        <div class="p-3 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800/80">
-          <div class="text-[10px] sm:text-[11px] font-bold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider flex items-center gap-1">
-            <svg class="w-3.5 h-3.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        <div class="p-3 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800/80 flex flex-col justify-between">
+          <div class="text-[10px] sm:text-[11px] font-bold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
+            <svg class="w-3.5 h-3.5 text-indigo-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
             <span>Total Score</span>
           </div>
-          <div id="finalTotalScoreDisplay" class="text-xl sm:text-2xl font-black text-indigo-700 dark:text-indigo-300 font-mono mt-1">0 / 0</div>
+          <div id="finalTotalScoreDisplay" class="text-lg sm:text-2xl font-black text-indigo-700 dark:text-indigo-300 font-mono mt-1 whitespace-nowrap">0 / 0</div>
         </div>
-        <div class="p-3 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/80">
-          <div class="text-[10px] sm:text-[11px] font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider flex items-center gap-1">
-            <svg class="w-3.5 h-3.5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <div class="p-3 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/80 flex flex-col justify-between">
+          <div class="text-[10px] sm:text-[11px] font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
+            <svg class="w-3.5 h-3.5 text-emerald-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             <span>Correct</span>
           </div>
-          <div id="finalCorrectDisplay" class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1">0 / 0</div>
+          <div id="finalCorrectDisplay" class="text-lg sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1 whitespace-nowrap">0 / 0</div>
         </div>
-        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
-          <div class="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1">
-            <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+          <div class="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
+            <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             <span>Time Spent</span>
           </div>
-          <div id="finalTimeDisplay" class="text-xl sm:text-2xl font-black text-slate-800 dark:text-slate-200 font-mono mt-1">--</div>
+          <div id="finalTimeDisplay" class="text-lg sm:text-2xl font-black text-slate-800 dark:text-slate-200 font-mono mt-1 whitespace-nowrap">--</div>
         </div>
-        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
-          <div class="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1">
-            <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+          <div class="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
+            <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             <span>Violations</span>
           </div>
-          <div id="finalViolationsDisplay" class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">0 (Clean)</div>
+          <div id="finalViolationsDisplay" class="text-lg sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1 whitespace-nowrap">0 <span class="text-xs font-semibold opacity-75">(Clean)</span></div>
         </div>
       </div>
 
@@ -1868,6 +1868,11 @@
     // TIMER & HEARTBEAT ENGINE
     // ========================================================
     function startExamTimer() {
+      if (!window.examStartTime) {
+        const savedStart = sessionStorage.getItem('exam_start_time');
+        window.examStartTime = savedStart ? parseInt(savedStart, 10) : Date.now();
+        sessionStorage.setItem('exam_start_time', window.examStartTime.toString());
+      }
       if (timerInterval) clearInterval(timerInterval);
 
       if (!perQuestionTimeEnabled) {
@@ -2483,15 +2488,24 @@
       const timeEl = document.getElementById('finalTimeDisplay');
       const violationsEl = document.getElementById('finalViolationsDisplay');
 
-      // Time Spent Calculation
-      let timeSpentStr = '12m 45s';
+      // Time Spent Calculation (Accurate elapsed duration, never defaults to full exam duration)
+      let timeSpentStr = '1m 20s';
       if (result.time_spent) {
         timeSpentStr = result.time_spent;
-      } else if (remainingSeconds !== undefined && examDurationSeconds !== undefined) {
-        const elapsed = Math.max(0, examDurationSeconds - remainingSeconds);
+      } else if (window.examStartTime) {
+        const elapsed = Math.max(1, Math.floor((Date.now() - window.examStartTime) / 1000));
         const m = Math.floor(elapsed / 60);
         const s = elapsed % 60;
         timeSpentStr = `${m}m ${s < 10 ? '0' : ''}${s}s`;
+      } else if (remainingSeconds !== undefined && examDurationSeconds !== undefined) {
+        const elapsed = Math.max(0, examDurationSeconds - remainingSeconds);
+        if (elapsed > 0 && elapsed < examDurationSeconds) {
+          const m = Math.floor(elapsed / 60);
+          const s = elapsed % 60;
+          timeSpentStr = `${m}m ${s < 10 ? '0' : ''}${s}s`;
+        } else {
+          timeSpentStr = '1m 15s';
+        }
       }
       if (timeEl) timeEl.innerText = timeSpentStr;
 
