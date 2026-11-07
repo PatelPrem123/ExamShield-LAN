@@ -123,7 +123,34 @@
     }
     #paletteGrid {
       overflow-x: hidden !important;
-      scrollbar-width: thin;
+      overflow-y: auto !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+    #paletteGrid::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+    /* Robust High-Contrast Branding in Light & Dark Mode */
+    html:not(.dark) #joinScreen h1 {
+      color: #0f172a !important;
+    }
+    html.dark #joinScreen h1 {
+      color: #ffffff !important;
+    }
+    html:not(.dark) #soundToggleBtn,
+    html:not(.dark) #themeToggleBtnTop {
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
+    }
+    html.dark #soundToggleBtn,
+    html.dark #themeToggleBtnTop {
+      background-color: #1e293b !important;
+      color: #f8fafc !important;
+      border-color: #334155 !important;
     }
     .slide-left-in {
       animation: slide-in-from-right 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -846,7 +873,7 @@
           </div>
 
           <!-- Question Grid Numbers (1 to N) -->
-          <div id="paletteGrid" class="grid grid-cols-5 gap-2 overflow-y-auto overflow-x-hidden p-1.5 no-scrollbar" style="max-height: 260px; overflow-x: hidden !important;">
+          <div id="paletteGrid" class="grid grid-cols-5 gap-2 overflow-y-auto overflow-x-hidden p-2 no-scrollbar" style="max-height: 260px; overflow-x: hidden !important; scrollbar-width: none !important;">
             <!-- Dynamically populated buttons -->
           </div>
 
@@ -922,22 +949,39 @@
         </svg>
         <div class="score-center-text">
           <span id="finalPercentageDisplay" class="score-percentage">0%</span>
+          <div id="finalScoreMarksInCircle" class="text-xs font-bold text-slate-600 dark:text-slate-300 font-mono mt-0.5">Score: 0 / 0 Marks</div>
           <span id="finalPassBadge" class="text-xs font-black tracking-widest text-emerald-500 uppercase mt-1">PASSED</span>
         </div>
       </div>
 
-      <!-- Breakdown 3 Stats Grid (Correct Answers, Time Spent, Violations) -->
-      <div class="grid grid-cols-3 gap-3 text-left">
-        <div class="p-3 sm:p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
-          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Correct Answers</div>
-          <div id="finalCorrectDisplay" class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">0 / 0</div>
+      <!-- Breakdown 4 Stats Grid (Total Score, Correct Answers, Time Spent, Violations) -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-left">
+        <div class="p-3 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800/80">
+          <div class="text-[10px] sm:text-[11px] font-bold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+            <span>Total Score</span>
+          </div>
+          <div id="finalTotalScoreDisplay" class="text-xl sm:text-2xl font-black text-indigo-700 dark:text-indigo-300 font-mono mt-1">0 / 0</div>
         </div>
-        <div class="p-3 sm:p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
-          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Time Spent</div>
-          <div id="finalTimeDisplay" class="text-xl sm:text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1">--</div>
+        <div class="p-3 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/80">
+          <div class="text-[10px] sm:text-[11px] font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span>Correct</span>
+          </div>
+          <div id="finalCorrectDisplay" class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1">0 / 0</div>
         </div>
-        <div class="p-3 sm:p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
-          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Violations</div>
+        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+          <div class="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Time Spent</span>
+          </div>
+          <div id="finalTimeDisplay" class="text-xl sm:text-2xl font-black text-slate-800 dark:text-slate-200 font-mono mt-1">--</div>
+        </div>
+        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+          <div class="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Violations</span>
+          </div>
           <div id="finalViolationsDisplay" class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">0 (Clean)</div>
         </div>
       </div>
@@ -946,23 +990,27 @@
       <div class="grid grid-cols-3 gap-3">
         <div class="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-center">
           <span class="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider block inline-flex items-center justify-center gap-1"><svg class="w-3 h-3 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>Right</span></span>
-          <span id="finalRightDisplay" class="text-lg font-black text-emerald-600 dark:text-emerald-400">0</span>
+          <span id="finalRightDisplay" class="text-lg font-black text-emerald-600 dark:text-emerald-400 font-mono">0</span>
         </div>
         <div class="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-center">
           <span class="text-[10px] font-bold text-rose-700 dark:text-rose-300 uppercase tracking-wider block inline-flex items-center justify-center gap-1"><svg class="w-3 h-3 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>Wrong</span></span>
-          <span id="finalWrongDisplay" class="text-lg font-black text-rose-600 dark:text-rose-400">0</span>
+          <span id="finalWrongDisplay" class="text-lg font-black text-rose-600 dark:text-rose-400 font-mono">0</span>
         </div>
         <div class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
           <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider block inline-flex items-center justify-center gap-1"><svg class="w-3 h-3 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg><span>Skipped</span></span>
-          <span id="finalUnattemptedDisplay" class="text-lg font-black text-slate-700 dark:text-slate-300">0</span>
+          <span id="finalUnattemptedDisplay" class="text-lg font-black text-slate-700 dark:text-slate-300 font-mono">0</span>
         </div>
       </div>
 
       <!-- Competitive Mode Formula Note (Shown when competitive mode is active) -->
-      <div id="competitiveScoreFormulaNote" class="hidden p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/80 text-xs text-amber-900 dark:text-amber-200 font-medium text-center">
-        <svg class="w-4 h-4 text-amber-500 inline-block align-middle mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-          <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
-        </svg><strong>Competitive Marking:</strong> Total Score = <code>(Right &times; 4) &minus; (Wrong &times; 1)</code>
+      <div id="competitiveScoreFormulaNote" class="hidden p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/80 text-xs text-amber-900 dark:text-amber-200 font-medium text-center space-y-1">
+        <div class="flex items-center justify-center gap-1.5 font-bold text-amber-800 dark:text-amber-300">
+          <svg class="w-4 h-4 text-amber-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          <span>Competitive Marking Scheme: (+4 for Right, -1 for Wrong)</span>
+        </div>
+        <div class="text-[11px] pt-0.5 border-t border-amber-200/60 dark:border-amber-800/60">
+          Total Score = <code>(<span id="formulaRightCount">0</span> &times; 4) &minus; (<span id="formulaWrongCount">0</span> &times; 1)</code> = <strong id="formulaFinalScore" class="text-indigo-600 dark:text-indigo-400 font-mono text-xs font-black">0 Marks</strong>
+        </div>
       </div>
 
       <!-- Topic-wise Score Breakdown Table -->
@@ -973,21 +1021,25 @@
         </div>
       </div>
 
-      <!-- Action Buttons (Replay Confetti & Score Counter, View Answers, Return) -->
+      <!-- Action Buttons (View Answers, Replay Animation & Return to Login - Never Squashed) -->
       <div class="pt-2 space-y-2.5">
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <button onclick="replayConfettiAndScoreAnim()" class="btn-shimmer flex-1 w-full sm:w-auto py-3 px-5 rounded-xl bg-indigo-600 text-white font-bold text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 cursor-pointer">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <span>Replay Confetti &amp; Score Counter</span>
+        <!-- Main Action: View Answers Button (Full Width, Dominant) -->
+        <button id="viewAnswersBtn" onclick="handleViewAnswersClick()" class="w-full py-3.5 px-5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+          <svg class="w-4 h-4 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>View Answers &amp; Review</span>
+        </button>
+        <p id="reviewStatusNotice" class="text-[11px] font-medium hidden text-center"></p>
+
+        <!-- Secondary Actions Grid (Replay Animation + Return to Candidate Login) -->
+        <div class="grid grid-cols-2 gap-2.5 pt-1">
+          <button onclick="replayConfettiAndScoreAnim()" class="py-2.5 px-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer">
+            <svg class="w-3.5 h-3.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span>Replay Animation</span>
           </button>
-          <button id="viewAnswersBtn" onclick="handleViewAnswersClick()" class="flex-1 w-full sm:w-auto py-3 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
-            <svg class="w-4 h-4 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>View Answers &amp; Review</span>
+          <button onclick="returnToJoinScreen()" class="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer">
+            <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+            <span>Return to Login</span>
           </button>
         </div>
-        <p id="reviewStatusNotice" class="text-[11px] font-medium hidden text-center"></p>
-        <button onclick="returnToJoinScreen()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer">
-          <span>↩ Return to Candidate Login</span>
-        </button>
       </div>
 
       <div class="pt-4 border-t border-slate-100 dark:border-slate-700 text-xs text-slate-400">
@@ -2159,7 +2211,7 @@
             tooltipStatus = 'Marked for Review';
           }
 
-          const borderClass = isCurrent ? 'ring-2 ring-indigo-600 ring-offset-2 dark:ring-offset-slate-800 scale-105' : '';
+          const borderClass = isCurrent ? 'ring-2 ring-indigo-600 dark:ring-indigo-400 shadow-md font-black z-10' : '';
           const currentBadge = isCurrent ? ' (Viewing)' : '';
 
           return `
@@ -2411,14 +2463,25 @@
         heading.innerText = result.passed ? 'Examination Submitted!' : 'Examination Completed';
       }
 
-      // Populate 3 Metric Cards (Image 3 Style)
+      // Populate 4 Metric Cards (Total Score, Correct Answers, Time Spent, Violations)
+      const isCompetitive = !!result.competitive_mode;
+      const totalQ = questions.length || result.total_questions || (result.max_score ? (isCompetitive ? Math.round(result.max_score / 4) : result.max_score) : 8);
+      const rightCount = result.correct_count !== undefined ? result.correct_count : (result.score || 0);
+      const wrongCount = result.wrong_count !== undefined ? result.wrong_count : 0;
+
+      let computedScore = result.total_score !== undefined ? result.total_score : (result.score !== undefined ? result.score : (isCompetitive ? (rightCount * 4 - wrongCount * 1) : rightCount));
+      let maxScorePossible = result.max_score !== undefined ? result.max_score : (isCompetitive ? totalQ * 4 : totalQ);
+
+      const totalScoreEl = document.getElementById('finalTotalScoreDisplay');
+      const inCircleMarksEl = document.getElementById('finalScoreMarksInCircle');
+      if (totalScoreEl) totalScoreEl.innerText = `${computedScore} / ${maxScorePossible}`;
+      if (inCircleMarksEl) inCircleMarksEl.innerText = `Score: ${computedScore} / ${maxScorePossible} Marks`;
+
       const correctEl = document.getElementById('finalCorrectDisplay');
+      if (correctEl) correctEl.innerText = `${rightCount} / ${totalQ}`;
+
       const timeEl = document.getElementById('finalTimeDisplay');
       const violationsEl = document.getElementById('finalViolationsDisplay');
-
-      const totalQ = questions.length || result.max_score || 0;
-      const rightCount = result.correct_count ?? 0;
-      if (correctEl) correctEl.innerText = `${rightCount} / ${totalQ}`;
 
       // Time Spent Calculation
       let timeSpentStr = '12m 45s';
@@ -2440,9 +2503,16 @@
       const rightEl = document.getElementById('finalRightDisplay');
       const wrongEl = document.getElementById('finalWrongDisplay');
       const unattemptedEl = document.getElementById('finalUnattemptedDisplay');
-      if (rightEl) rightEl.innerText = result.correct_count ?? 0;
-      if (wrongEl) wrongEl.innerText = result.wrong_count ?? 0;
-      if (unattemptedEl) unattemptedEl.innerText = result.unattempted_count ?? 0;
+      if (rightEl) rightEl.innerText = rightCount;
+      if (wrongEl) wrongEl.innerText = wrongCount;
+      if (unattemptedEl) unattemptedEl.innerText = result.unattempted_count ?? Math.max(0, totalQ - (rightCount + wrongCount));
+
+      const formulaRightEl = document.getElementById('formulaRightCount');
+      const formulaWrongEl = document.getElementById('formulaWrongCount');
+      const formulaFinalEl = document.getElementById('formulaFinalScore');
+      if (formulaRightEl) formulaRightEl.innerText = rightCount;
+      if (formulaWrongEl) formulaWrongEl.innerText = wrongCount;
+      if (formulaFinalEl) formulaFinalEl.innerText = `${computedScore} Marks`;
 
       const formulaNote = document.getElementById('competitiveScoreFormulaNote');
       if (formulaNote) {

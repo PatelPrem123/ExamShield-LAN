@@ -62,18 +62,35 @@
       color-scheme: light dark;
     }
     select option {
-      background-color: #ffffff;
-      color: #0f172a;
+      background-color: #ffffff !important;
+      color: #0f172a !important;
       padding: 8px 12px;
       font-weight: 600;
       font-size: 13px;
     }
-    html.dark select option {
-      background-color: #0f172a;
-      color: #f8fafc;
+    html.dark select option,
+    .dark select option {
+      background-color: #1e293b !important;
+      color: #f8fafc !important;
       padding: 8px 12px;
       font-weight: 600;
       font-size: 13px;
+    }
+
+    /* Question Bank Card & Text Theming (100% High-Contrast in Light & Dark Mode) */
+    html:not(.dark) #questionsPreviewList > div {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+    }
+    html:not(.dark) #questionsPreviewList > div p {
+      color: #0f172a !important;
+    }
+    html.dark #questionsPreviewList > div {
+      background-color: #0f172a !important;
+      border-color: #334155 !important;
+    }
+    html.dark #questionsPreviewList > div p {
+      color: #f8fafc !important;
     }
 
     /* Light Theme Glowing Effects (Modern Luminescent Polish) */
@@ -1204,7 +1221,7 @@ Loading history...
             </button>
             <button onclick="openHistoryModal()"
               title="View complete exam history archive"
-              class="h-9 px-3.5 bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap cursor-pointer">
+              class="h-9 px-3.5 bg-slate-700 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 active:scale-95 whitespace-nowrap cursor-pointer">
               <svg class="w-4 h-4 shrink-0 text-white/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>History</span>
             </button>
           </div>
@@ -3560,8 +3577,9 @@ Loading history...
           mediaHtml = `<div class="mt-2 p-2 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-center"><img src="${q.image_path}" class="max-h-48 rounded" /></div>`;
         }
 
+        const qText = q.question_text || q.question_html || 'No question prompt available';
         return `
-          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700/80 shadow-sm hover:border-indigo-300 dark:hover:border-indigo-600 transition space-y-3">
+          <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm hover:border-indigo-400 dark:hover:border-indigo-500 transition space-y-3">
             <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-2">
                 <span class="text-xs font-black px-2.5 py-0.5 rounded-lg bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 font-mono border border-indigo-200 dark:border-indigo-800">Q${idx + 1}</span>
@@ -3569,7 +3587,7 @@ Loading history...
               </div>
               <span class="text-[10px] text-slate-400 font-mono">ID: ${q.id}</span>
             </div>
-            <p class="text-xs font-bold text-slate-900 dark:text-white leading-relaxed">${q.question_text}</p>
+            <p class="text-xs font-bold text-slate-900 dark:text-slate-100 leading-relaxed">${qText}</p>
             ${mediaHtml}
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
               ${optionsHtml}
@@ -3704,10 +3722,13 @@ Loading history...
       const monitorFilter = document.getElementById('monitorBatchFilter');
       const resultsFilter = document.getElementById('resultsBatchFilter');
       
+      const isDark = document.documentElement.classList.contains('dark');
+      const optBg = isDark ? '#1e293b' : '#ffffff';
+      const optColor = isDark ? '#f8fafc' : '#0f172a';
       const optionsHtml = `
-        <option class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 py-1" value="all" ${currentBatchFilter === 'all' ? 'selected' : ''}>All Batches</option>
+        <option style="background-color: ${optBg}; color: ${optColor};" value="all" ${currentBatchFilter === 'all' ? 'selected' : ''}>All Batches</option>
         ${batches.map(b => `
-          <option class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 py-1" value="${b.batch_code}" ${currentBatchFilter === b.batch_code ? 'selected' : ''}>
+          <option style="background-color: ${optBg}; color: ${optColor};" value="${b.batch_code}" ${currentBatchFilter === b.batch_code ? 'selected' : ''}>
             ${b.batch_code} ${b.batch_code === activeBatchCode ? '(Active)' : ''}
           </option>
         `).join('')}
