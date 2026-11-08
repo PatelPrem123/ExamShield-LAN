@@ -2860,21 +2860,6 @@
         }
       }
 
-      // Populate Right / Wrong / Skipped breakdown pills
-      const rightEl = document.getElementById('finalRightDisplay');
-      const wrongEl = document.getElementById('finalWrongDisplay');
-      const unattemptedEl = document.getElementById('finalUnattemptedDisplay');
-      if (rightEl) rightEl.innerText = rightCount;
-      if (wrongEl) wrongEl.innerText = wrongCount;
-      if (unattemptedEl) unattemptedEl.innerText = result.unattempted_count ?? Math.max(0, totalQ - (rightCount + wrongCount));
-
-      const formulaRightEl = document.getElementById('formulaRightCount');
-      const formulaWrongEl = document.getElementById('formulaWrongCount');
-      const formulaFinalEl = document.getElementById('formulaFinalScore');
-      if (formulaRightEl) formulaRightEl.innerText = rightCount;
-      if (formulaWrongEl) formulaWrongEl.innerText = wrongCount;
-      if (formulaFinalEl) formulaFinalEl.innerText = `${computedScore} Marks`;
-
       const formulaNote = document.getElementById('competitiveScoreFormulaNote');
       if (formulaNote) {
         if (result.competitive_mode) {

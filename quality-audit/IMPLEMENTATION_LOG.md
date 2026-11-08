@@ -169,3 +169,31 @@ All changes were performed under the **Execution Contract** (safe, reversible, l
 - Release Artifacts:
   - `ExamShield LAN 🛡️ - Teacher Control Center.zip` (56.59 MB)
   - `ExamShield_LAN_v2.5.16_Setup.exe` (57.02 MB)
+
+
+---
+
+## 7. CDP Chrome DevTools Audit & Student Login Hotfix (08 November 2026)
+
+### A. Issue Identified via Chrome DevTools Protocol (CDP)
+- **Symptom:** Candidate was unable to start the exam from student login. Clicking "Start Examination" had no effect.
+- **CDP Log Trace:**
+  - `[PAGE EXCEPTION] Uncaught SyntaxError: Identifier 'rightEl' has already been declared`
+  - `[PAGE EXCEPTION] Uncaught ReferenceError: handleStudentJoin is not defined`
+- **Root Cause:**
+  - In `teacher-server-app/src/public/index.html`, `const rightEl` (and related metric pill constants `wrongEl`, `unattemptedEl`, `formulaRightEl`, `formulaWrongEl`, `formulaFinalEl`) were declared twice in `displayFinalResults`.
+  - In JavaScript, duplicate `const` declarations in the same scope cause a compile-time `SyntaxError`, aborting the evaluation of the entire `<script>` tag. As a result, `handleStudentJoin` was undefined.
+
+### B. Hotfix & Automated CDP Audit Verification
+1. **Deduplication:** Removed redundant lines 2862-2876 in `teacher-server-app/src/public/index.html`, retaining the top-priority declarations at lines 2748-2761.
+2. **End-to-End CDP Headless Chrome Verification (`scratch/cdp_full_audit.js`):**
+   - **Student Flow:**
+     - Registered candidate `"CDP Verified Candidate 132"` -> Started exam -> Questions & Palette rendered -> Answered question -> Navigated -> Submitted exam.
+     - Verified scorecard output: Score `0 / 32`, Correct `0 / 8`, Right `0`, Wrong `0`, Skipped `8`, Percentage `0%`, Status `FAILED`, Distinction Badge `hidden`.
+     - Exceptions: **0**, Console Errors: **0**.
+   - **Teacher Console Tabs Flow:**
+     - Navigated to `/admin` -> Cycled through all 5 tabs (`Live Monitor`, `Question Bank`, `Exam Settings`, `Batch Manager`, `Results & Reports`).
+     - Checked table rows and podium cards.
+     - Exceptions: **0**, Console Errors: **0**.
+3. **Automated Unit Tests:** 22/22 Passing (`node unitTests.js`).
+4. **Rebuild:** Synchronized sources to distribution directory, rebuilt distribution ZIP and compiled Windows Setup Installer.
