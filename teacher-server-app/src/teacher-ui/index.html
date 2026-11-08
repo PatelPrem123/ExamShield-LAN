@@ -2130,6 +2130,7 @@ Loading history...
     }
 
     function updateMetrics(students) {
+      students = students || studentsData || [];
       animateTeacherMetric('metricTotalStudents', students.length);
       const active = students.filter(s => s.status === 'in_progress').length;
       const violations = students.filter(s => s.status === 'frozen' || (Array.isArray(s.warnings) && s.warnings.length > 0) || (typeof s.warnings === 'number' && s.warnings > 0)).length;
@@ -2138,7 +2139,9 @@ Loading history...
     }
 
     function renderStudentCards(students) {
+      students = students || studentsData || [];
       const grid = document.getElementById('studentsGrid');
+      if (!grid) return;
       if (students.length === 0) {
         grid.innerHTML = `
           <div class="col-span-full py-12 text-center text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
@@ -3122,7 +3125,9 @@ Loading history...
 
     // Render Results Table
     function renderResultsTable(students) {
+      students = students || studentsData || [];
       const tbody = document.getElementById('resultsTableBody');
+      if (!tbody) return;
       if (!students.length) {
         renderPodiumBanner([]);
         tbody.innerHTML = '<tr><td colspan="12" class="py-8 text-center text-slate-400 dark:text-slate-500">No results recorded yet.</td></tr>';

@@ -392,8 +392,90 @@
     }
 
   </style>
+
+  <!-- Immediate Anti-Inspect & DevTools Lock (Blocks F12, Shortcuts & Context Menu from first millisecond) -->
+  <script>
+    (function() {
+      // 1. Block right click context menu everywhere
+      document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }, { capture: true, passive: false });
+
+      // 2. Strict keyboard interceptor for F12 & all inspect / devtools combinations
+      function blockInspectKeys(e) {
+        // F12 key (Key code 123)
+        if (e.key === 'F12' || e.keyCode === 123 || e.which === 123 || e.code === 'F12') {
+          e.preventDefault();
+          e.stopPropagation();
+          showDevToolsToast();
+          return false;
+        }
+
+        // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+Shift+K, Ctrl+Shift+S, Ctrl+Shift+E
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey) {
+          const k = (e.key || '').toLowerCase();
+          const c = e.code || '';
+          if (['i', 'j', 'c', 'k', 's', 'e'].includes(k) || ['KeyI', 'KeyJ', 'KeyC', 'KeyK', 'KeyS', 'KeyE'].includes(c)) {
+            e.preventDefault();
+            e.stopPropagation();
+            showDevToolsToast();
+            return false;
+          }
+        }
+
+        // Ctrl+U (View Source), Ctrl+S (Save), Ctrl+P (Print), Ctrl+H (History), Ctrl+J (Downloads), Ctrl+O (Open)
+        if (e.ctrlKey || e.metaKey) {
+          const k = (e.key || '').toLowerCase();
+          const c = e.code || '';
+          if (['u', 's', 'p', 'h', 'j', 'o'].includes(k) || ['KeyU', 'KeyS', 'KeyP', 'KeyH', 'KeyJ', 'KeyO'].includes(c)) {
+            e.preventDefault();
+            e.stopPropagation();
+            showDevToolsToast();
+            return false;
+          }
+        }
+
+        // Shift+F10 (Context menu) or physical Context Menu key (93)
+        if (e.keyCode === 93 || e.which === 93 || (e.shiftKey && (e.key === 'F10' || e.keyCode === 121 || e.code === 'F10'))) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      }
+
+      function showDevToolsToast() {
+        const toast = document.getElementById('devToolsWarningToast');
+        if (toast) {
+          toast.classList.remove('hidden');
+          setTimeout(() => {
+            if (toast) toast.classList.add('hidden');
+          }, 3500);
+        }
+      }
+
+      window.addEventListener('keydown', blockInspectKeys, { capture: true, passive: false });
+      window.addEventListener('keyup', blockInspectKeys, { capture: true, passive: false });
+      window.addEventListener('keypress', blockInspectKeys, { capture: true, passive: false });
+      document.addEventListener('keydown', blockInspectKeys, { capture: true, passive: false });
+
+      // 3. Block element dragging
+      document.addEventListener('dragstart', function(e) {
+        if (e.target && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+        }
+      }, { capture: true });
+    })();
+  </script>
 </head>
-<body class="min-h-screen flex flex-col font-sans transition-colors duration-200" style="background-color: var(--bg-primary); color: var(--text-main);">
+<body class="min-h-screen flex flex-col font-sans transition-colors duration-200 select-none" oncontextmenu="return false;" ondragstart="return false;" style="background-color: var(--bg-primary); color: var(--text-main);">
+  <!-- DevTools & Inspection Prohibited Warning Toast -->
+  <div id="devToolsWarningToast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-rose-900/95 text-rose-100 text-xs font-bold px-5 py-3 rounded-2xl border-2 border-rose-500 shadow-2xl flex items-center gap-2.5 backdrop-blur-md transition-all duration-300 pointer-events-none">
+    <svg class="w-4 h-4 text-rose-300 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span>Developer Tools &amp; Source Inspection are strictly disabled by ExamShield LAN.</span>
+  </div>
+
   <canvas id="confetti-canvas"></canvas>
 
   <!-- FLOATING CONTROLS (Visible on Login, Waiting Room & Result Screens) -->
@@ -1356,8 +1438,14 @@
         const isInspectShortcut = 
           e.key === 'F12' ||
           e.keyCode === 123 ||
-          ((e.ctrlKey || e.metaKey) && e.shiftKey && ['I', 'J', 'C', 'K', 'i', 'j', 'c', 'k'].includes(e.key)) ||
-          ((e.ctrlKey || e.metaKey) && ['u', 'U', 's', 'S', 'p', 'P'].includes(e.key));
+          e.which === 123 ||
+          e.code === 'F12' ||
+          e.keyCode === 93 ||
+          (e.shiftKey && (e.key === 'F10' || e.keyCode === 121 || e.code === 'F10')) ||
+          ((e.ctrlKey || e.metaKey) && e.shiftKey && ['I', 'J', 'C', 'K', 'S', 'E', 'i', 'j', 'c', 'k', 's', 'e'].includes(e.key)) ||
+          ((e.ctrlKey || e.metaKey) && e.shiftKey && ['KeyI', 'KeyJ', 'KeyC', 'KeyK', 'KeyS', 'KeyE'].includes(e.code)) ||
+          ((e.ctrlKey || e.metaKey) && ['u', 'U', 's', 'S', 'p', 'P', 'h', 'H', 'j', 'J', 'o', 'O'].includes(e.key)) ||
+          ((e.ctrlKey || e.metaKey) && ['KeyU', 'KeyS', 'KeyP', 'KeyH', 'KeyJ', 'KeyO'].includes(e.code));
 
         const isNavBlocked = 
           currentSession && !isSubmitted &&
@@ -1366,6 +1454,11 @@
         if (isInspectShortcut || isNavBlocked) {
           e.preventDefault();
           e.stopPropagation();
+          const toast = document.getElementById('devToolsWarningToast');
+          if (toast) {
+            toast.classList.remove('hidden');
+            setTimeout(() => { if (toast) toast.classList.add('hidden'); }, 3500);
+          }
           if (currentSession && !isFrozen && !isSubmitted) {
             triggerSecurityViolation('Blocked shortcut or inspection attempt');
           }
@@ -1403,15 +1496,23 @@
 
       // 8. DevTools Docking & Sizing Differential Detector
       function checkDevToolsOpened() {
-        if (!currentSession || isSubmitted || isFrozen) return;
+        if (isFrozen || isSubmitted) return;
         const widthDiff = window.outerWidth - window.innerWidth > 160;
         const heightDiff = window.outerHeight - window.innerHeight > 160;
         if (widthDiff || heightDiff) {
-          triggerSecurityViolation('Developer Tools / Inspection Dock opened');
+          if (currentSession) {
+            triggerSecurityViolation('Developer Tools / Inspection Dock opened');
+          } else {
+            const toast = document.getElementById('devToolsWarningToast');
+            if (toast) {
+              toast.classList.remove('hidden');
+              setTimeout(() => { if (toast) toast.classList.add('hidden'); }, 3500);
+            }
+          }
         }
       }
       window.addEventListener('resize', checkDevToolsOpened);
-      setInterval(checkDevToolsOpened, 2000);
+      setInterval(checkDevToolsOpened, 1500);
     }
 
     // Initialize immediately on page load so all screens are protected
