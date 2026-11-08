@@ -669,9 +669,17 @@ function parseSessionRecord(row) {
   } catch (e) {
     violationsHistory = [];
   }
-  const violationsCount = (row.violations_count !== undefined && row.violations_count !== null)
+  const baseViolationsCount = (row.violations_count !== undefined && row.violations_count !== null)
     ? Number(row.violations_count)
     : violationsHistory.length;
+  const violationsCount = Math.max(baseViolationsCount, row.freeze_reason ? 1 : 0);
+  if (violationsHistory.length === 0 && row.freeze_reason) {
+    violationsHistory = [{
+      index: 1,
+      reason: row.freeze_reason,
+      timestamp: row.start_time ? new Date(row.start_time).toLocaleTimeString() : new Date().toLocaleTimeString()
+    }];
+  }
 
   // Compute fallback counts if legacy record didn't have them
   let correctCount = row.correct_count;

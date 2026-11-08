@@ -50,10 +50,10 @@ const upload = multer({
 
 function logSessionToHistory(session, scoreData, exam) {
   try {
-    const auditLogs = db.getRecentAuditLogs ? db.getRecentAuditLogs(200) : [];
-    const violations = auditLogs.filter(a =>
-      a.student_name === session.student_name && a.event_type === 'FOCUS_LOST'
-    ).length;
+    const freshSession = db.getSessionById(session.id) || session;
+    const vCount = (freshSession.violations_count !== undefined && freshSession.violations_count !== null)
+      ? Number(freshSession.violations_count)
+      : Math.max(session.violations_count || 0, session.freeze_reason ? 1 : 0);
 
     historyLogger.recordExamAttempt({
       timestamp: new Date().toISOString(),
@@ -69,7 +69,7 @@ function logSessionToHistory(session, scoreData, exam) {
       unattempted_count: scoreData.unattempted_count ?? 0,
       competitive_mode: !!(exam && exam.competitive_mode_enabled),
       topic_scores: scoreData.topic_scores,
-      violations_count: violations
+      violations_count: vCount
     });
   } catch (err) {
     console.error('[HistoryLogger] Async helper error:', err);
@@ -475,6 +475,37 @@ router.get('/teacher/students', requireAdminAuth, asyncHandler(async (req, res) 
   });
 }));
 
+router.post('/teacher/freeze', requireAdminAuth, asyncHandler(async (req, res) => {
+  const { session_id, reason } = req.body;
+  const session = db.getSessionById(session_id);
+  if (!session) {
+    return res.status(404).json({ success: false, error: 'Session not found.' });
+  }
+
+  const ts = new Date().toLocaleTimeString();
+  const frozen = db.freezeStudentSession(session_id, reason || 'Manually frozen by Teacher', ts);
+  db.addAuditLog(session.student_name, 'FROZEN', reason || 'Manually frozen by Teacher');
+
+  const io = req.app.get('io');
+  if (io) {
+    io.to(`student_${session_id}`).emit('exam_frozen', {
+      reason: reason || 'Manually frozen by Teacher',
+      timestamp: ts,
+      violations_count: frozen.violations_count || 1,
+      violations_history: frozen.violations_history || []
+    });
+    io.to('teacher').emit('student_frozen', {
+      sessionId: session_id,
+      studentName: session.student_name,
+      reason: reason || 'Manually frozen by Teacher',
+      timestamp: ts,
+      violations_count: frozen.violations_count || 1
+    });
+  }
+
+  res.json({ success: true, session: frozen });
+}));
+
 router.post('/teacher/unfreeze', requireAdminAuth, asyncHandler(async (req, res) => {
   const { session_id } = req.body;
   const session = db.getSessionById(session_id);
@@ -516,12 +547,29 @@ router.post('/teacher/force-submit', requireAdminAuth, asyncHandler(async (req, 
   db.addAuditLog(session.student_name, 'FORCE_SUBMIT', 'Exam force-submitted by Teacher');
   logSessionToHistory(session, scoreData, exam);
 
+  const freshSession = db.getSessionById(session_id) || updated || session;
+  const vCount = (freshSession.violations_count !== undefined && freshSession.violations_count !== null)
+    ? Number(freshSession.violations_count)
+    : Math.max(session.violations_count || 0, session.freeze_reason ? 1 : 0);
+  const vHistory = (freshSession.violations_history && freshSession.violations_history.length > 0)
+    ? freshSession.violations_history
+    : (session.violations_history && session.violations_history.length > 0 ? session.violations_history : (freshSession.freeze_reason ? [{ index: 1, reason: freshSession.freeze_reason, timestamp: new Date().toLocaleTimeString() }] : []));
+
+  const clientPayload = {
+    ...scoreData,
+    violations: vCount,
+    violations_count: vCount,
+    violations_history: vHistory
+  };
+
   const io = req.app.get('io');
   if (io) {
-    io.to(`student_${session_id}`).emit('force_submitted', scoreData);
+    io.to(`student_${session_id}`).emit('force_submitted', clientPayload);
     io.to('teacher').emit('student_submitted', {
       id: session.id,
+      sessionId: session.id,
       student_name: session.student_name,
+      studentName: session.student_name,
       exam_set: session.exam_set,
       status: 'submitted',
       total_score: scoreData.total_score,
@@ -531,6 +579,9 @@ router.post('/teacher/force-submit', requireAdminAuth, asyncHandler(async (req, 
       correct_count: scoreData.correct_count,
       wrong_count: scoreData.wrong_count,
       unattempted_count: scoreData.unattempted_count,
+      violations: vCount,
+      violations_count: vCount,
+      violations_history: vHistory,
       competitive_mode: scoreData.competitive_mode,
       topic_scores: scoreData.topic_scores
     });
@@ -556,7 +607,15 @@ router.post('/teacher/end-exam', requireAdminAuth, asyncHandler(async (req, res)
       db.submitStudentSession(s.id, scoreData);
       logSessionToHistory(s, scoreData, exam);
       if (io) {
-        io.to(`student_${s.id}`).emit('force_submitted', scoreData);
+        const vCount = (s.violations_count !== undefined && s.violations_count !== null)
+          ? Number(s.violations_count)
+          : Math.max(s.violations || 0, s.freeze_reason ? 1 : 0);
+        io.to(`student_${s.id}`).emit('force_submitted', {
+          ...scoreData,
+          violations: vCount,
+          violations_count: vCount,
+          violations_history: s.violations_history || []
+        });
       }
       submittedCount++;
     }
@@ -761,9 +820,9 @@ router.post('/teacher/exam/stop', requireAdminAuth, asyncHandler(async (req, res
   const exam = db.getActiveExam();
   const targetBatch = batch_code || db.getActiveBatchCode(exam ? exam.id : null);
 
-  // Auto-submit all students in progress for this batch
+  // Auto-submit all students in progress OR frozen for this batch
   const activeSessions = db.getAllStudentSessions(exam.id, targetBatch)
-    .filter(s => s.status === 'in_progress');
+    .filter(s => s.status === 'in_progress' || s.status === 'frozen');
 
   let autoSubmitted = 0;
   for (const session of activeSessions) {
@@ -777,6 +836,19 @@ router.post('/teacher/exam/stop', requireAdminAuth, asyncHandler(async (req, res
       db.submitStudentSession(session.id, scoreData);
       logSessionToHistory(session, scoreData, exam);
       autoSubmitted++;
+
+      const io = req.app.get('io');
+      if (io) {
+        const vCount = (session.violations_count !== undefined && session.violations_count !== null)
+          ? Number(session.violations_count)
+          : Math.max(session.violations || 0, session.freeze_reason ? 1 : 0);
+        io.to(`student_${session.id}`).emit('force_submitted', {
+          ...scoreData,
+          violations: vCount,
+          violations_count: vCount,
+          violations_history: session.violations_history || []
+        });
+      }
     } catch (err) {
       console.error('[StopExam] Auto-submit failed for session:', session.id, err);
     }

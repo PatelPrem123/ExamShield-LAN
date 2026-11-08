@@ -232,7 +232,7 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      z-index: 999;
+      z-index: 9999;
     }
 
     /* ==========================================================================
@@ -1580,6 +1580,12 @@
     });
 
     socket.on('force_submitted', (data) => {
+      if (data && (data.violations_count !== undefined || data.violations !== undefined)) {
+        window.violationCount = Math.max(window.violationCount || 0, Number(data.violations_count ?? data.violations));
+      }
+      if (data && Array.isArray(data.violations_history) && data.violations_history.length > 0) {
+        window.violationHistory = data.violations_history;
+      }
       displayFinalResults(data);
     });
 
@@ -1883,6 +1889,12 @@
         // If candidate already completed and submitted this paper, show scorecard directly
         if (data.status === 'submitted') {
           isSubmitted = true;
+          if (data.violations_count !== undefined || data.violations !== undefined) {
+            window.violationCount = Math.max(window.violationCount || 0, Number(data.violations_count ?? data.violations));
+          }
+          if (data.violations_history && Array.isArray(data.violations_history)) {
+            window.violationHistory = data.violations_history;
+          }
           currentSession = {
             id: data.session_id,
             student_token: data.student_token || '',
@@ -2637,13 +2649,19 @@
           requestAnimationFrame(step);
         } else {
           // Score countup animation completed!
-          // Instantly trigger celebratory confetti explosion regardless of pass/fail
+          // Instantly trigger celebratory dual-stage confetti explosion
           try {
-            if (typeof ConfettiMgr !== 'undefined' && ConfettiMgr.fire) {
-              ConfettiMgr.fire(180);
-            } else if (typeof PortalConfetti !== 'undefined' && PortalConfetti.fire) {
-              PortalConfetti.fire(180);
-            }
+            const fireConfetti = () => {
+              if (typeof ConfettiMgr !== 'undefined' && ConfettiMgr.fire) {
+                ConfettiMgr.fire(200);
+              } else if (typeof PortalConfetti !== 'undefined' && PortalConfetti.fire) {
+                PortalConfetti.fire(200);
+              }
+            };
+            // Burst 1: Immediate on score finish
+            fireConfetti();
+            // Burst 2: Sustained celebratory wave 350ms later
+            setTimeout(fireConfetti, 350);
           } catch (e) {
             console.error('Confetti trigger error:', e);
           }
@@ -2718,12 +2736,21 @@
       }
       if (timeEl) timeEl.innerText = timeSpentStr;
 
-      const vCount = (result && (result.violations !== undefined || result.violations_count !== undefined))
+      const serverVCount = (result && (result.violations !== undefined || result.violations_count !== undefined))
         ? Number(result.violations ?? result.violations_count)
-        : (window.violationCount || 0);
-      const vHistory = (result && Array.isArray(result.violations_history) && result.violations_history.length > 0)
-        ? result.violations_history
-        : (window.violationHistory || []);
+        : 0;
+      const clientVCount = window.violationCount || 0;
+      const historyVCount = (window.violationHistory || []).length;
+      const vCount = Math.max(serverVCount, clientVCount, historyVCount);
+
+      let vHistory = [];
+      if (result && Array.isArray(result.violations_history) && result.violations_history.length > 0) {
+        vHistory = result.violations_history;
+      } else if (window.violationHistory && Array.isArray(window.violationHistory) && window.violationHistory.length > 0) {
+        vHistory = window.violationHistory;
+      } else if (vCount > 0) {
+        vHistory = [{ index: 1, reason: 'Security infraction / Fullscreen exit', timestamp: new Date().toLocaleTimeString() }];
+      }
 
       if (violationsEl) {
         if (vCount === 0) {

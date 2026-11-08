@@ -22,7 +22,12 @@ runtime/node.exe
 **/runtime/node.exe
 ExamShield LAN * - Teacher Control Center/
 ExamShield LAN * - Student Portal/
-quality-audit/
+# Documentation & Audit tracking
+!quality-audit/
+!quality-audit/**
+
+# Scratch directory
+scratch/
 
 # Keep launcher binaries & scripts
 !ExamShield_Student.exe
