@@ -37,7 +37,7 @@ namespace ExamShieldSetup
 
         private void InitializeComponent()
         {
-            this.Text = "ExamShield LAN - Teacher Control Center Setup (v2.5.0)";
+            this.Text = "ExamShield LAN - Teacher Control Center Setup (v2.5.16)";
             this.Size = new Size(580, 485);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -69,7 +69,7 @@ namespace ExamShieldSetup
             titleLabel.AutoSize = true;
 
             subtitleLabel = new Label();
-            subtitleLabel.Text = "Teacher Control Center  •  Version 2.5.0 (Enterprise Hardened Edition)";
+            subtitleLabel.Text = "Teacher Control Center  •  Version 2.5.16 (Enterprise Hardened Edition)";
             subtitleLabel.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular, GraphicsUnit.Point);
             subtitleLabel.ForeColor = Color.FromArgb(165, 180, 252);
             subtitleLabel.Location = new Point(26, 48);
@@ -542,7 +542,7 @@ namespace ExamShieldSetup
                     if (key != null)
                     {
                         key.SetValue("DisplayName", "ExamShield LAN - Teacher Control Center");
-                        key.SetValue("DisplayVersion", "2.5.0");
+                        key.SetValue("DisplayVersion", "2.5.16");
                         key.SetValue("Publisher", "ExamShield Systems");
                         key.SetValue("InstallLocation", installDir);
                         if (File.Exists(iconPath))

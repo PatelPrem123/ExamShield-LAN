@@ -97,6 +97,8 @@ function initDb() {
   safeAddColumn('batches', "exam_status TEXT DEFAULT 'not_started'");
   safeAddColumn('batches', "started_at DATETIME");
   safeAddColumn('batches', "ended_at DATETIME");
+  safeAddColumn('student_sessions', "violations_count INTEGER DEFAULT 0");
+  safeAddColumn('student_sessions', "violations_json TEXT DEFAULT '[]'");
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS batches (
@@ -558,13 +560,37 @@ function updateHeartbeat(sessionId, remainingSeconds) {
 
 function freezeStudentSession(sessionId, reason) {
   const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+  const violationReason = reason || 'Focus lost (window blur, Alt+Tab, or minimized)';
+
+  const session = db.prepare('SELECT id, student_name, violations_count, violations_json FROM student_sessions WHERE id = ?').get(sessionId);
+  if (!session) return null;
+
+  let violations = [];
+  try {
+    violations = JSON.parse(session.violations_json || '[]');
+    if (!Array.isArray(violations)) violations = [];
+  } catch (e) {
+    violations = [];
+  }
+
+  violations.push({
+    index: violations.length + 1,
+    reason: violationReason,
+    timestamp: timestamp,
+    time_iso: new Date().toISOString()
+  });
+
+  const newCount = (session.violations_count || 0) + 1;
+
   db.prepare(`
     UPDATE student_sessions
     SET status = 'frozen',
         freeze_reason = ?,
-        freeze_timestamp = ?
+        freeze_timestamp = ?,
+        violations_count = ?,
+        violations_json = ?
     WHERE id = ? AND status != 'submitted'
-  `).run(reason, timestamp, sessionId);
+  `).run(violationReason, timestamp, newCount, JSON.stringify(violations), sessionId);
 
   return getSessionById(sessionId);
 }
@@ -636,6 +662,17 @@ function parseSessionRecord(row) {
   const assigned = JSON.parse(row.assigned_questions_json);
   const answers = JSON.parse(row.answers_json || '{}');
 
+  let violationsHistory = [];
+  try {
+    violationsHistory = JSON.parse(row.violations_json || '[]');
+    if (!Array.isArray(violationsHistory)) violationsHistory = [];
+  } catch (e) {
+    violationsHistory = [];
+  }
+  const violationsCount = (row.violations_count !== undefined && row.violations_count !== null)
+    ? Number(row.violations_count)
+    : violationsHistory.length;
+
   // Compute fallback counts if legacy record didn't have them
   let correctCount = row.correct_count;
   let wrongCount = row.wrong_count;
@@ -671,7 +708,11 @@ function parseSessionRecord(row) {
     is_waiting: !!(row.is_waiting || row.status === 'waiting'),
     correct_count: correctCount ?? 0,
     wrong_count: wrongCount ?? 0,
-    unattempted_count: unattemptedCount ?? 0
+    unattempted_count: unattemptedCount ?? 0,
+    violations_count: violationsCount,
+    violations: violationsCount,
+    violations_history: violationsHistory,
+    violations_json: row.violations_json || '[]'
   };
 }
 

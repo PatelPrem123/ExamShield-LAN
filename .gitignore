@@ -16,7 +16,7 @@ dist/
 build/
 *.zip
 *.7z
-ExamShield_LAN_v2.5.0_Setup.exe
+ExamShield_LAN_*_Setup.exe
 runtime/node.exe
 **/node.exe
 **/runtime/node.exe

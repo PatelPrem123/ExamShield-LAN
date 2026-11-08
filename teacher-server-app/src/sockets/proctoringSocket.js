@@ -115,19 +115,23 @@ function setupProctoringSocket(io) {
       const frozen = db.freezeStudentSession(sessionId, violationReason);
       db.addAuditLog(studentName, 'FOCUS_LOST', violationReason);
 
-      // 1. Emit Red Alert to all connected Teacher Dashboards
+      // 1. Emit Red Alert to all connected Teacher Dashboards with complete violation telemetry
       io.to('teacher').emit('red_alert', {
         sessionId,
         studentName,
         reason: violationReason,
         timestamp,
-        remainingSeconds: frozen ? frozen.remaining_seconds : 0
+        remainingSeconds: frozen ? frozen.remaining_seconds : 0,
+        violations_count: frozen ? frozen.violations_count : 1,
+        violations_history: frozen ? frozen.violations_history : []
       });
 
-      // 2. Lock candidate screen
+      // 2. Lock candidate screen with violation telemetry
       io.to(`student_${sessionId}`).emit('exam_frozen', {
         reason: violationReason,
-        timestamp
+        timestamp,
+        violations_count: frozen ? frozen.violations_count : 1,
+        violations_history: frozen ? frozen.violations_history : []
       });
     });
 

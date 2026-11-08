@@ -1,6 +1,6 @@
 # ==============================================================================
 # ExamShield LAN - Enterprise Build & Distribution Automation Script
-# Version: 2.5.0
+# Version: 2.5.16
 # Description: Synchronizes sources, packages clean zip distribution, and compiles
 #              the Windows Setup Installer with embedded uninstaller & shortcuts.
 # ==============================================================================
@@ -59,7 +59,7 @@ try {
     $distTeacherSrcDir = [System.IO.Path]::GetFullPath((Join-Path $distFolder "teacher-server-app\src"))
     
     $iconPath = [System.IO.Path]::GetFullPath((Join-Path $rootDir "app.ico"))
-    $setupExePath = [System.IO.Path]::GetFullPath((Join-Path $rootDir "ExamShield_LAN_v2.5.0_Setup.exe"))
+    $setupExePath = [System.IO.Path]::GetFullPath((Join-Path $rootDir "ExamShield_LAN_v2.5.16_Setup.exe"))
 
     $buildTempDir = [System.IO.Path]::GetFullPath((Join-Path $rootDir "build_temp"))
     $tempZipPath = [System.IO.Path]::GetFullPath((Join-Path $buildTempDir "payload.zip"))

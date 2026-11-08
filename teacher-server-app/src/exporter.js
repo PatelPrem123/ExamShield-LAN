@@ -106,7 +106,8 @@ async function generateMasterExcel(sessions, sortMode = 'normal', examTitle = 'E
     'Right Answers',
     'Wrong Answers',
     'Percentage (%)',
-    'Result'
+    'Result',
+    'Violations'
   ];
 
   // Add individual topic columns (Score only, NO %)
@@ -174,7 +175,8 @@ async function generateMasterExcel(sessions, sortMode = 'normal', examTitle = 'E
       isSubmitted ? (s.correct_count ?? 0) : '-',
       isSubmitted ? (s.wrong_count ?? 0) : '-',
       isSubmitted ? `${s.percentage}%` : '-',
-      isSubmitted ? (s.passed ? 'PASSED' : 'FAILED') : (s.status === 'frozen' ? 'FROZEN' : 'IN PROGRESS')
+      isSubmitted ? (s.passed ? 'PASSED' : 'FAILED') : (s.status === 'frozen' ? 'FROZEN' : 'IN PROGRESS'),
+      s.violations_count ?? 0
     ];
 
     // Topic scores: Marks only, NO %
@@ -247,7 +249,8 @@ async function generateMasterExcel(sessions, sortMode = 'normal', examTitle = 'E
     { width: 14 }, // Right Answers
     { width: 14 }, // Wrong Answers
     { width: 16 }, // Percentage (%)
-    { width: 15 }  // Result
+    { width: 15 }, // Result
+    { width: 14 }  // Violations
   ];
 
   for (let i = 0; i < topics.length; i++) {
@@ -288,7 +291,8 @@ function generateMasterCsv(sessions, sortMode = 'normal', examTitle = 'ExamShiel
     'Right Answers',
     'Wrong Answers',
     'Percentage (%)',
-    'Result'
+    'Result',
+    'Violations'
   ];
 
   for (const topic of topics) {
@@ -326,7 +330,8 @@ function generateMasterCsv(sessions, sortMode = 'normal', examTitle = 'ExamShiel
       isSubmitted ? (s.correct_count ?? 0) : '-',
       isSubmitted ? (s.wrong_count ?? 0) : '-',
       isSubmitted ? `${s.percentage}%` : '-',
-      isSubmitted ? (s.passed ? 'PASSED' : 'FAILED') : (s.status === 'frozen' ? 'FROZEN' : 'IN PROGRESS')
+      isSubmitted ? (s.passed ? 'PASSED' : 'FAILED') : (s.status === 'frozen' ? 'FROZEN' : 'IN PROGRESS'),
+      s.violations_count ?? 0
     ];
 
     for (const topic of topics) {

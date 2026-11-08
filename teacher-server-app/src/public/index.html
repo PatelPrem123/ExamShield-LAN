@@ -518,7 +518,7 @@
           </div>
           <div class="h-24 sm:h-28 flex flex-col justify-between py-0.5">
             <div>
-              <h1 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">ExamShield LAN</h1>
+              <h1 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">ExamShield LAN <span class="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">v2.5.16</span></h1>
               <p class="text-xs text-slate-600 dark:text-slate-400 font-medium">Offline Certification Examination Simulator</p>
               <p class="text-xs font-bold text-amber-600 dark:text-amber-400">Made by Prem</p>
             </div>
@@ -669,7 +669,7 @@
         </div>
       </form>
       <p class="text-center text-[11px] text-slate-400 dark:text-slate-500 font-medium pt-2">
-        ExamShield LAN • Next-Gen Cyber Proctor Node • Made by Prem
+        ExamShield LAN v2.5.16 • Next-Gen Cyber Proctor Node • Made by Prem
       </p>
     </div>
   </div>
@@ -1097,6 +1097,9 @@
         </div>
       </div>
 
+      <!-- Security Violations & Integrity Audit Log Container -->
+      <div id="violationsReportContainer" class="hidden text-left space-y-2"></div>
+
       <!-- Topic-wise Score Breakdown Table -->
       <div class="text-left space-y-3">
         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Topic Performance Breakdown</h3>
@@ -1127,7 +1130,7 @@
       </div>
 
       <div class="pt-4 border-t border-slate-100 dark:border-slate-700 text-xs text-slate-400">
-        ExamShield LAN • Offline Computer-Based Testing
+        ExamShield LAN v2.5.16 • Offline Computer-Based Testing
       </div>
     </div>
   </div>
@@ -1523,6 +1526,14 @@
       isFrozen = true;
 
       const timestamp = new Date().toLocaleTimeString();
+      window.violationCount = (window.violationCount || 0) + 1;
+      if (!window.violationHistory) window.violationHistory = [];
+      window.violationHistory.push({
+        index: window.violationCount,
+        reason: reason,
+        timestamp: timestamp
+      });
+
       showFrozenOverlay(reason, timestamp);
 
       // Emit to server to trigger teacher red alert & freeze session in DB
@@ -1550,6 +1561,14 @@
     // ========================================================
     socket.on('exam_frozen', (data) => {
       isFrozen = true;
+      if (data && data.violations_count !== undefined) {
+        window.violationCount = Number(data.violations_count);
+      } else {
+        window.violationCount = (window.violationCount || 0) + 1;
+      }
+      if (data && Array.isArray(data.violations_history) && data.violations_history.length > 0) {
+        window.violationHistory = data.violations_history;
+      }
       showFrozenOverlay(data.reason, data.timestamp);
     });
 
@@ -2699,14 +2718,73 @@
       }
       if (timeEl) timeEl.innerText = timeSpentStr;
 
+      const vCount = (result && (result.violations !== undefined || result.violations_count !== undefined))
+        ? Number(result.violations ?? result.violations_count)
+        : (window.violationCount || 0);
+      const vHistory = (result && Array.isArray(result.violations_history) && result.violations_history.length > 0)
+        ? result.violations_history
+        : (window.violationHistory || []);
+
       if (violationsEl) {
-        const vCount = (result && result.violations !== undefined) ? Number(result.violations) : (window.violationCount || 0);
         if (vCount === 0) {
           violationsEl.className = 'text-lg sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1 whitespace-nowrap flex items-baseline leading-none';
           violationsEl.innerHTML = '<span>0</span><span class="text-xs sm:text-sm font-semibold text-emerald-600/80 dark:text-emerald-400/80 font-sans ml-1.5">(Clean)</span>';
         } else {
           violationsEl.className = 'text-lg sm:text-2xl font-black text-rose-600 dark:text-rose-400 font-mono mt-1 whitespace-nowrap flex items-baseline leading-none';
-          violationsEl.innerHTML = `<span>${vCount}</span><span class="text-xs sm:text-sm font-semibold text-rose-600/80 dark:text-rose-400/80 font-sans ml-1.5">(${vCount === 1 ? 'Alert' : 'Alerts'})</span>`;
+          violationsEl.innerHTML = `<span>${vCount}</span><span class="text-xs sm:text-sm font-semibold text-rose-600/80 dark:text-rose-400/80 font-sans ml-1.5">(${vCount === 1 ? 'Violation' : 'Violations'})</span>`;
+        }
+      }
+
+      // Populate dedicated Security Audit & Violations Log Card
+      const vReportContainer = document.getElementById('violationsReportContainer');
+      if (vReportContainer) {
+        vReportContainer.classList.remove('hidden');
+        if (vCount > 0) {
+          const listHtml = vHistory.length > 0 ? vHistory.map(v => `
+            <div class="p-2.5 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-rose-200 dark:border-rose-900/80 flex items-center justify-between text-xs gap-2 shadow-xs">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-800 shrink-0 font-mono">#${v.index || '1'}</span>
+                <span class="font-semibold text-slate-800 dark:text-slate-200 truncate">${escapeHtml(v.reason || 'Focus Lost / Security Infraction')}</span>
+              </div>
+              <span class="text-[11px] font-mono font-medium text-slate-500 dark:text-slate-400 shrink-0">${v.timestamp ? escapeHtml(v.timestamp) : ''}</span>
+            </div>
+          `).join('') : `
+            <div class="p-2.5 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-rose-200 dark:border-rose-900/80 text-xs text-rose-700 dark:text-rose-300 font-medium">
+              ${vCount} security breach event(s) recorded during this attempt.
+            </div>
+          `;
+
+          vReportContainer.innerHTML = `
+            <div class="p-4 rounded-2xl bg-rose-50/80 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 space-y-2.5 shadow-xs">
+              <div class="flex items-center justify-between border-b border-rose-200/80 dark:border-rose-900/60 pb-2">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-lg bg-rose-100 dark:bg-rose-900/80 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold shrink-0">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  </div>
+                  <div>
+                    <h4 class="text-xs sm:text-sm font-black text-rose-900 dark:text-rose-100 uppercase tracking-wider">Exam Integrity &amp; Violations Audit</h4>
+                    <p class="text-[10.5px] text-rose-700/80 dark:text-rose-300/80">Proctoring infractions recorded during this session</p>
+                  </div>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-rose-600 text-white shadow-xs">${vCount} Recorded</span>
+              </div>
+              <div class="space-y-1.5 max-h-44 overflow-y-auto pr-1">
+                ${listHtml}
+              </div>
+            </div>
+          `;
+        } else {
+          vReportContainer.innerHTML = `
+            <div class="p-3.5 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 flex items-center gap-2.5 shadow-xs">
+              <div class="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold shrink-0">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-emerald-900 dark:text-emerald-100">100% Clean Exam Integrity Audit</h4>
+                <p class="text-[10.5px] text-emerald-700/80 dark:text-emerald-300/80">No focus loss, application switches, or security infractions detected during this attempt.</p>
+              </div>
+            </div>
+          `;
         }
       }
 

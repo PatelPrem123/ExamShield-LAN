@@ -146,6 +146,9 @@ router.post('/student/register', asyncHandler(async (req, res) => {
         correct_count: existing.correct_count ?? scoreData.correct_count,
         wrong_count: existing.wrong_count ?? scoreData.wrong_count,
         unattempted_count: existing.unattempted_count ?? scoreData.unattempted_count,
+        violations: existing.violations_count ?? 0,
+        violations_count: existing.violations_count ?? 0,
+        violations_history: existing.violations_history || [],
         competitive_mode: !!exam.competitive_mode_enabled,
         analytics: computeCandidateAnalytics({
           total_questions: existing.assigned_questions ? existing.assigned_questions.length : 0,
@@ -201,6 +204,9 @@ router.post('/student/register', asyncHandler(async (req, res) => {
       competitive_mode_enabled: !!exam.competitive_mode_enabled,
       status: isWaiting ? 'waiting' : existing.status,
       freeze_reason: existing.freeze_reason,
+      violations: existing.violations_count ?? 0,
+      violations_count: existing.violations_count ?? 0,
+      violations_history: existing.violations_history || [],
       answers: existing.answers,
       marked_for_review: existing.marked_for_review,
       questions: sanitizedQuestions,
@@ -487,14 +493,15 @@ router.post('/student/submit', asyncHandler(async (req, res) => {
 
   const isReviewAllowed = db.isReviewAllowed(session.id);
 
+  const freshSession = db.getSessionById(session_id) || session;
+  const accurateViolations = (freshSession.violations_count !== undefined && freshSession.violations_count !== null)
+    ? Number(freshSession.violations_count)
+    : (session.violations_count || 0);
+  const accurateHistory = freshSession.violations_history || session.violations_history || [];
+
   // Non-blocking permanent history logging
   setImmediate(() => {
     try {
-      const auditLogs = db.getRecentAuditLogs ? db.getRecentAuditLogs(200) : [];
-      const violationsCount = auditLogs.filter(a =>
-        a.student_name === session.student_name && a.event_type === 'FOCUS_LOST'
-      ).length;
-
       historyLogger.recordExamAttempt({
         timestamp: new Date().toISOString(),
         student_name: session.student_name,
@@ -509,7 +516,7 @@ router.post('/student/submit', asyncHandler(async (req, res) => {
         unattempted_count: scoreData.unattempted_count,
         competitive_mode: isCompetitive,
         topic_scores: scoreData.topic_scores,
-        violations_count: violationsCount
+        violations_count: accurateViolations
       });
     } catch (err) {
       console.error('[HistoryLogger] Async log error:', err);
@@ -534,6 +541,9 @@ router.post('/student/submit', asyncHandler(async (req, res) => {
       correct_count: scoreData.correct_count,
       wrong_count: scoreData.wrong_count,
       unattempted_count: scoreData.unattempted_count,
+      violations: accurateViolations,
+      violations_count: accurateViolations,
+      violations_history: accurateHistory,
       competitive_mode: scoreData.competitive_mode,
       topic_scores: scoreData.topic_scores,
       topicScores: scoreData.topic_scores,
@@ -551,11 +561,6 @@ router.post('/student/submit', asyncHandler(async (req, res) => {
     timeSpentStr = `${m}m ${s < 10 ? '0' : ''}${s}s`;
   }
 
-  const auditLogs = db.getRecentAuditLogs ? db.getRecentAuditLogs(200) : [];
-  const calculatedViolations = auditLogs.filter(a =>
-    a.student_name === session.student_name && a.event_type === 'FOCUS_LOST'
-  ).length;
-
   const resultObj = {
     total_score: scoreData.total_score,
     max_score: scoreData.max_score,
@@ -565,7 +570,9 @@ router.post('/student/submit', asyncHandler(async (req, res) => {
     correct_count: scoreData.correct_count,
     wrong_count: scoreData.wrong_count,
     unattempted_count: scoreData.unattempted_count,
-    violations: session.violation_count !== undefined ? session.violation_count : calculatedViolations,
+    violations: accurateViolations,
+    violations_count: accurateViolations,
+    violations_history: accurateHistory,
     competitive_mode: scoreData.competitive_mode,
     analytics: computeCandidateAnalytics({
       total_questions: session.assigned_questions.length,
