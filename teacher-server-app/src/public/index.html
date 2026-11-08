@@ -1008,13 +1008,13 @@
   <div id="resultScreen" class="flex-1 flex items-center justify-center p-4 hidden">
     <div class="glass-panel max-w-xl w-full p-6 sm:p-8 space-y-6 text-center">
       
-      <!-- Top Distinction Shimmer Badge (No Raw Emoji) -->
+      <!-- Top Distinction Shimmer Badge (Dynamic: only shown for true distinction) -->
       <div class="flex justify-center mb-1">
-        <div id="resultDistinctionBadge" class="gold-shimmer-badge">
+        <div id="resultDistinctionBadge" class="gold-shimmer-badge hidden">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
           </svg>
-          <span id="resultRankText">DISTINCTION • RANK 1 (SCORE: 88%)</span>
+          <span id="resultRankText">OFFICIAL EXAMINATION SCORECARD</span>
         </div>
       </div>
 
@@ -1240,6 +1240,18 @@
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
+    // Global Safe HTML Escaper (Prevents ReferenceError on audit rendering)
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+    window.escapeHtml = escapeHtml;
+
     const socket = io();
 
     // Auto-reconnect & session re-binding
@@ -1476,26 +1488,39 @@
         }
       });
 
+      // Track fullscreen transitions to prevent accidental freeze on ESC key
+      let lastFullscreenTransition = 0;
+
       // 5. Focus Loss & Window Blur Detection (Alt+Tab, window minimize, new window)
       window.addEventListener('blur', () => {
-        if (!isFrozen && !isSubmitted && currentSession) {
+        // Ignore transient blur events during fullscreen exit/toggle (e.g. ESC pressed)
+        if (Date.now() - lastFullscreenTransition < 1500) return;
+        if (!isFrozen && !isSubmitted && currentSession && !document.hasFocus()) {
           triggerSecurityViolation('Window blur / Alt+Tab / application switch');
         }
       });
 
-      // 6. Page Visibility Change (Tab switch)
+      // 6. Page Visibility Change (Tab switch / minimized)
       document.addEventListener('visibilitychange', () => {
         if (document.hidden && !isFrozen && !isSubmitted && currentSession) {
           triggerSecurityViolation('Tab switch / background minimized');
         }
       });
 
-      // 7. Fullscreen Exit Detection (VULN-04: Enforce Dedicated Exam Viewport)
+      // 7. Fullscreen Exit Transition (No freeze on ESC or exiting fullscreen)
       document.addEventListener('fullscreenchange', () => {
-        if (!document.fullscreenElement && currentSession && !isSubmitted && !isFrozen) {
-          triggerSecurityViolation('Exited Fullscreen mode / Window unpinned');
-        }
+        lastFullscreenTransition = Date.now();
+        console.log('[Proctoring] Fullscreen transition detected. Candidate session remains active without freeze.');
       });
+
+      // 8. ESC Key Interceptor: Prevent freeze when candidate presses ESC
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' || e.keyCode === 27) {
+          lastFullscreenTransition = Date.now();
+          // Do not trigger security violation on ESC
+          try { e.preventDefault(); } catch(err) {}
+        }
+      }, { capture: true });
 
       // 8. DevTools Docking & Sizing Differential Detector
       function checkDevToolsOpened() {
@@ -2606,12 +2631,16 @@
         }
       }
 
+      const distinctionBadge = document.getElementById('resultDistinctionBadge');
       if (distinctionText) {
-        if (targetPct >= 80) {
-          distinctionText.innerText = `DISTINCTION • RANK 1 (SCORE: ${targetPct}%)`;
+        if (targetPct >= 80 && isPassed) {
+          if (distinctionBadge) distinctionBadge.classList.remove('hidden');
+          distinctionText.innerText = `★ DISTINCTION - HIGH MERIT (SCORE: ${targetPct}%)`;
         } else if (isPassed) {
+          if (distinctionBadge) distinctionBadge.classList.remove('hidden');
           distinctionText.innerText = `MERIT CERTIFIED (SCORE: ${targetPct}%)`;
         } else {
+          if (distinctionBadge) distinctionBadge.classList.add('hidden');
           distinctionText.innerText = `OFFICIAL EXAMINATION SCORECARD (${targetPct}%)`;
         }
       }
@@ -2698,11 +2727,12 @@
       // Populate 4 Metric Cards (Total Score, Correct Answers, Time Spent, Violations)
       const isCompetitive = !!result.competitive_mode;
       const totalQ = questions.length || result.total_questions || (result.max_score ? (isCompetitive ? Math.round(result.max_score / 4) : result.max_score) : 8);
-      const rightCount = result.correct_count !== undefined ? result.correct_count : (result.score || 0);
-      const wrongCount = result.wrong_count !== undefined ? result.wrong_count : 0;
+      const rightCount = result.correct_count !== undefined ? Number(result.correct_count) : Number(result.score || 0);
+      const wrongCount = result.wrong_count !== undefined ? Number(result.wrong_count) : 0;
+      const unattemptedCount = result.unattempted_count !== undefined ? Number(result.unattempted_count) : Math.max(0, totalQ - (rightCount + wrongCount));
 
-      let computedScore = result.total_score !== undefined ? result.total_score : (result.score !== undefined ? result.score : (isCompetitive ? (rightCount * 4 - wrongCount * 1) : rightCount));
-      let maxScorePossible = result.max_score !== undefined ? result.max_score : (isCompetitive ? totalQ * 4 : totalQ);
+      let computedScore = result.total_score !== undefined ? Number(result.total_score) : (result.score !== undefined ? Number(result.score) : (isCompetitive ? (rightCount * 4 - wrongCount * 1) : rightCount));
+      let maxScorePossible = result.max_score !== undefined ? Number(result.max_score) : (isCompetitive ? totalQ * 4 : totalQ);
 
       const totalScoreEl = document.getElementById('finalTotalScoreDisplay');
       const inCircleMarksEl = document.getElementById('finalScoreMarksInCircle');
@@ -2714,6 +2744,21 @@
 
       const timeEl = document.getElementById('finalTimeDisplay');
       const violationsEl = document.getElementById('finalViolationsDisplay');
+
+      // Populate Right / Wrong / Skipped breakdown pills immediately
+      const rightEl = document.getElementById('finalRightDisplay');
+      const wrongEl = document.getElementById('finalWrongDisplay');
+      const unattemptedEl = document.getElementById('finalUnattemptedDisplay');
+      if (rightEl) rightEl.innerText = rightCount;
+      if (wrongEl) wrongEl.innerText = wrongCount;
+      if (unattemptedEl) unattemptedEl.innerText = unattemptedCount;
+
+      const formulaRightEl = document.getElementById('formulaRightCount');
+      const formulaWrongEl = document.getElementById('formulaWrongCount');
+      const formulaFinalEl = document.getElementById('formulaFinalScore');
+      if (formulaRightEl) formulaRightEl.innerText = rightCount;
+      if (formulaWrongEl) formulaWrongEl.innerText = wrongCount;
+      if (formulaFinalEl) formulaFinalEl.innerText = `${computedScore} Marks`;
 
       // Time Spent Calculation (Accurate elapsed duration, never defaults to full exam duration)
       let timeSpentStr = '1m 20s';

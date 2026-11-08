@@ -124,3 +124,48 @@ All changes were performed under the **Execution Contract** (safe, reversible, l
    - Removed `tabsScrollLeftBtn` and `tabsScrollRightBtn` from `teacher-ui/index.html`. Tabs now scroll smoothly with zero layout shift via drag, mouse wheel, or touch momentum.
 4. **Issue 4 (Image 6 - Celebration Confetti Trigger Timing):**
    - In `public/index.html`: Updated `#confetti-canvas` `z-index` to 9999 and configured dual-stage celebratory fireworks (burst 1 immediate on score completion, burst 2 after 350ms) unconditionally across all score ranges.
+
+
+---
+
+## 6. Image Bug Fixes Phase 8 (08 November 2026 - Hotfix v2.5.16)
+
+### A. Root Cause & Solution Breakdown
+
+1. **Bug 1: `Submission failed: escapeHtml is not defined` Runtime Error (Image 4):**
+   - **Root Cause:** In `teacher-server-app/src/public/index.html`, lines 2774 & 2776 invoked `escapeHtml(v.reason)` and `escapeHtml(v.timestamp)` within the violation history mapper. However, `escapeHtml` was only defined in `teacher-ui/index.html`, creating a runtime `ReferenceError` on student submission if violations existed.
+   - **Fix:** Declared global `escapeHtml(str)` helper at the top of the `<script>` section in `public/index.html` and bound it to `window.escapeHtml`.
+
+2. **Bug 2: Broken Scorecard & Hardcoded Placeholders Stuck on Screen (Image 5):**
+   - **Root Cause:** When `escapeHtml` threw, `displayFinalResults` crashed halfway:
+     - Placeholder `#resultDistinctionBadge` (`DISTINCTION • RANK 1 (SCORE: 88%)`) remained visible.
+     - Circular progress ring stayed at default `0% PASSED`.
+     - Right, Wrong, and Skipped pills remained default `0`.
+   - **Fix:**
+     - In `public/index.html`, hidden `#resultDistinctionBadge` by default (`gold-shimmer-badge hidden`) and changed default header to `OFFICIAL EXAMINATION SCORECARD`.
+     - Promoted Right, Wrong, and Skipped count population (`finalRightDisplay`, `finalWrongDisplay`, `finalUnattemptedDisplay`, `formulaRightEl`, `formulaWrongEl`, `formulaFinalEl`) to line 1 of metrics rendering before violation HTML processing.
+     - In `animateRadialScorecard`, dynamically reveal `#resultDistinctionBadge` only when `targetPct >= 80 && isPassed`.
+
+3. **Bug 3: Automatic Fullscreen Exit & ESC Key Freeze Prevention:**
+   - **Root Cause:** In `public/index.html`, pressing `ESC` or exiting fullscreen previously triggered `fullscreenchange` -> `triggerSecurityViolation('Exited Fullscreen mode / Window unpinned')`. Transient `blur` events during fullscreen transitions also caused freezes.
+   - **Fix:**
+     - Removed `triggerSecurityViolation` from `fullscreenchange`. Added `lastFullscreenTransition = Date.now()`.
+     - Added a 1500ms blur suppression window (`Date.now() - lastFullscreenTransition < 1500`) to ignore transient focus loss during fullscreen mode switches.
+     - Added a capturing `keydown` listener for `Escape` (code 27) that records the transition and prevents security freeze.
+
+4. **Bug 4: Teacher Control Center Results & Reports Table Alignment (Image 6):**
+   - **Root Cause:** In `teacher-ui/index.html`, the 13-column results table had `Time` header right-aligned with `min-w-[100px]`, while topic breakdown was unconstrained, causing the table right border to detach and misalign with the podium cards above.
+   - **Fix:**
+     - Refactored table headers with explicit column widths: `Rank (w-12)`, `Right (✓)` (emerald), `Wrong (✗)` (rose), `Topic Breakdown` constrained to `max-w-[200px]`, and `Submitted Time` centered.
+     - Standardized row cells to match headers (`Submitted Time` centered, `breakdownHtml` constrained to `max-w-[220px]`).
+
+5. **Bug 5: Automatic Confetti Execution Upon Score Countup:**
+   - **Resolution:** With `escapeHtml` error resolved, `displayFinalResults` smoothly invokes `animateRadialScorecard(result)`. The score countup runs immediately, eases towards the final percentage, and automatically detonates dual-stage celebratory confetti upon completion without requiring manual "Replay Animation" clicks.
+
+### B. Validation & Build Evidence
+- Automated Unit Tests: 22/22 Passing (`node unitTests.js`).
+- E2E Violation & Confetti Flow: Verified (`test_e2e_violation_and_confetti.js`).
+- Distribution Sync: Synchronized `teacher-server-app/src` to `ExamShield LAN 🛡️ - Teacher Control Center`.
+- Release Artifacts:
+  - `ExamShield LAN 🛡️ - Teacher Control Center.zip` (56.59 MB)
+  - `ExamShield_LAN_v2.5.16_Setup.exe` (57.02 MB)

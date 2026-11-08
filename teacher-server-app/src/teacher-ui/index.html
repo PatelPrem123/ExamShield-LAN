@@ -1270,19 +1270,19 @@ Loading history...
           <table class="w-full text-left text-xs">
             <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700">
               <tr>
-                <th class="py-3 px-3 font-bold text-center">Rank</th>
-                <th class="py-3 px-4 font-bold">Candidate Name</th>
-                <th class="py-3 px-3 font-bold text-center whitespace-nowrap min-w-[95px]">Paper Mode</th>
-                <th class="py-3 px-3 font-bold">Score</th>
-                <th class="py-3 px-3 font-bold text-center text-emerald-600 dark:text-emerald-400">Right (Correct)</th>
-                <th class="py-3 px-3 font-bold text-center text-rose-600 dark:text-rose-400">Wrong (Incorrect)</th>
-                <th class="py-3 px-3 font-bold">Percentage</th>
-                <th class="py-3 px-3 font-bold">Status</th>
-                <th class="py-3 px-3 font-bold text-center">Violations</th>
-                <th class="py-3 px-4 font-bold">Topic Breakdown</th>
-                <th class="py-3 px-3 font-bold text-center">Review Answers</th>
-                <th class="py-3 px-3 font-bold text-center">Marksheet</th>
-                <th class="py-3 px-3 font-bold text-right whitespace-nowrap min-w-[100px]">Time</th>
+                <th class="py-3 px-2 font-bold text-center w-12">Rank</th>
+                <th class="py-3 px-3 font-bold">Candidate Name</th>
+                <th class="py-3 px-2 font-bold text-center whitespace-nowrap">Paper Mode</th>
+                <th class="py-3 px-2 font-bold text-center">Score</th>
+                <th class="py-3 px-2 font-bold text-center text-emerald-600 dark:text-emerald-400 whitespace-nowrap">Right (✓)</th>
+                <th class="py-3 px-2 font-bold text-center text-rose-600 dark:text-rose-400 whitespace-nowrap">Wrong (✗)</th>
+                <th class="py-3 px-2 font-bold text-center">Percentage</th>
+                <th class="py-3 px-2 font-bold text-center">Status</th>
+                <th class="py-3 px-2 font-bold text-center">Violations</th>
+                <th class="py-3 px-3 font-bold max-w-[200px]">Topic Breakdown</th>
+                <th class="py-3 px-2 font-bold text-center whitespace-nowrap">Review Answers</th>
+                <th class="py-3 px-2 font-bold text-center whitespace-nowrap">Marksheet</th>
+                <th class="py-3 px-3 font-bold text-center whitespace-nowrap">Submitted Time</th>
               </tr>
             </thead>
             <tbody id="resultsTableBody" class="divide-y divide-slate-100 dark:divide-slate-700">
@@ -3192,7 +3192,7 @@ Loading history...
                 </span>
               `}
             </td>
-            <td class="py-3 px-4">${breakdownHtml}</td>
+            <td class="py-3 px-3 max-w-[220px]">${breakdownHtml}</td>
             <td class="py-3 px-3 text-center">${reviewActionHtml}</td>
             <td class="py-3 px-3 text-center">
               ${isSubmitted ? `
@@ -3202,7 +3202,7 @@ Loading history...
                 </button>
               ` : '<span class="text-slate-400 dark:text-slate-500 text-[10px]">-</span>'}
             </td>
-            <td class="py-3 px-3 text-right text-slate-500 dark:text-slate-400 font-mono text-[11px] whitespace-nowrap min-w-[100px]">${s.submitted_at ? formatLocalTime(s.submitted_at) : '-'}</td>
+            <td class="py-3 px-3 text-center text-slate-500 dark:text-slate-400 font-mono text-[11px] whitespace-nowrap">${s.submitted_at ? formatLocalTime(s.submitted_at) : '-'}</td>
           </tr>
         `;
       }).join('');
