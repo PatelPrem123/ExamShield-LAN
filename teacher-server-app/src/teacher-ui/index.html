@@ -873,7 +873,17 @@ Loading history...
                   <svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export .DOCX
                 </button>
               </div>
-              <select id="manualQuestionTopicSelect" onchange="onManualTopicChange()" class="w-full text-xs px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer">
+              <div id="manualQuestionTopicSelectContainer" class="modern-dropdown relative w-full">
+                <button type="button" id="manualQuestionTopicSelectBtn" onclick="toggleModernDropdown('manualQuestionTopicSelect')"
+                  class="w-full text-xs px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 text-slate-900 dark:text-white font-medium flex items-center justify-between shadow-xs hover:border-indigo-400 transition cursor-pointer select-none">
+                  <span id="manualQuestionTopicSelectSelected" class="truncate text-slate-500 dark:text-slate-400">-- Select an Existing Topic --</span>
+                  <svg id="manualQuestionTopicSelectChevron" class="w-3.5 h-3.5 ml-2 text-slate-400 transition-transform duration-200 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div id="manualQuestionTopicSelectMenu" class="modern-dropdown-menu hidden absolute left-0 right-0 top-full mt-1.5 z-50 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl p-1.5 max-h-56 overflow-y-auto space-y-0.5">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+              <select id="manualQuestionTopicSelect" onchange="onManualTopicChange()" class="hidden">
                 <option value="" disabled selected>-- Select an Existing Topic --</option>
                 <option value="__NEW__">+ Create New Topic...</option>
               </select>
@@ -2116,6 +2126,7 @@ Loading history...
             if (currentSelected && mTopicSelect.querySelector(`option[value="${currentSelected}"]`)) {
               mTopicSelect.value = currentSelected;
             }
+            if (typeof updateModernDropdownUI === 'function') updateModernDropdownUI('manualQuestionTopicSelect');
           }
 
           // Sync Global Review Button UI
@@ -2851,6 +2862,13 @@ Loading history...
         { letter: 'D', text: '', isCorrect: false, image_base64: null }
       ];
       renderManualOptions();
+      const mTopicSelect = document.getElementById('manualQuestionTopicSelect');
+      if (mTopicSelect) {
+        mTopicSelect.selectedIndex = 0;
+        if (typeof updateModernDropdownUI === 'function') updateModernDropdownUI('manualQuestionTopicSelect');
+      }
+      const newTopicInput = document.getElementById('manualQuestionNewTopicInput');
+      if (newTopicInput) newTopicInput.classList.add('hidden');
     }
 
     async function submitManualQuestion() {
