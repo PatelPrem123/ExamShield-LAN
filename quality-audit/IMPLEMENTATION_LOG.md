@@ -248,3 +248,37 @@ All changes were performed under the **Execution Contract** (safe, reversible, l
 - Verified Artifacts:
   - `ExamShield LAN 🛡️ - Teacher Control Center.zip` (56.59 MB)
   - `ExamShield_LAN_v2.5.16_Setup.exe` (57.02 MB)
+
+
+---
+
+## 4. Hallmark Modern-Minimal UI Redesign (Alerts, Confirms & Dropdowns)
+
+**Date:** 12 November 2026  
+**Target:** Elimination of native OS dialogs (`window.confirm`, `window.alert`) and native OS `<select>` menu popups.
+
+### Summary of Enhancements:
+1. **Modern Custom Dropdown Component (`.modern-dropdown`):**
+   - Implemented frosted-glass (`backdrop-blur-md`, `rounded-2xl`, high-contrast borders, shadow elevation) custom dropdown menus for `#monitorBatchFilter`, `#resultsBatchFilter`, and `#previewTopicFilter`.
+   - Replaced Windows 98/2000-style OS select popup menus with smooth in-app dropdowns featuring emerald `Active` pills, hover highlights, and checkmark (`✓`) selection indicators.
+   - Synchronized seamlessly with hidden underlying `<select>` elements, maintaining 100% backward compatibility with existing socket listeners, form handlers, and test suites.
+
+2. **Modern In-App Confirmation & Alert Modal (`#modernConfirmModal`):**
+   - Replaced native browser `confirm(...)` and `alert(...)` popups with high-contrast, animated Modern-Minimal modal cards.
+   - Implemented `showModernConfirm({ title, badge, subtitle, message, confirmText, cancelText, type })` returning a `Promise<boolean>`.
+   - Implemented `showModernAlert({ title, message, buttonText, type })` returning a `Promise<void>` and globally hooked `window.alert`.
+   - Fully aware of action types:
+     - `success`: Emerald glowing launcher modal for "Launch Live Exam".
+     - `danger`: Rose safety card for "Stop Examination", "End Exam & Collect All", "Clear All Student Data", "Erase Question Bank", and "Restore Database Backup".
+     - `warning`: Amber notice for student paper collection and review locking.
+     - `info`: Indigo card for review publishing and notifications.
+   - Added keyboard accessibility (`Enter` to confirm, `Escape` to cancel) and click-outside backdrop dismissal.
+
+3. **Student Portal Alignment (`public/index.html`):**
+   - Added `#modernConfirmModal` and `showModernConfirm` / `showModernAlert` to `public/index.html`.
+   - Upgraded "Submit Exam Paper" to display real-time counts (Answered, Unanswered, Marked for Review) in a sleek in-app card.
+   - Replaced browser `alert()` on exam time-up and instructor conclusion with in-app dialogs.
+
+4. **Testing & Distribution:**
+   - Automated unit test suite: **22/22 tests passing (100%)**.
+   - Standalone Windows Setup Installer `ExamShield_LAN_v2.5.16_Setup.exe` and distribution ZIP rebuilt successfully.

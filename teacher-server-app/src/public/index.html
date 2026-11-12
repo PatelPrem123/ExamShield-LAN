@@ -68,6 +68,25 @@
       }
     }
 
+    /* Hallmark Modern-Minimal Confirm & Alert Modal Animation */
+    #modernConfirmModal.active {
+      display: flex !important;
+      opacity: 1;
+    }
+    #modernConfirmCard {
+      animation: modern-modal-pop 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes modern-modal-pop {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.94);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
     /* Security restrictions */
     body {
       user-select: none;
@@ -2564,14 +2583,21 @@
     // ========================================================
     // SUBMISSION & SCORECARD DISPLAY
     // ========================================================
-    function confirmSubmitExam() {
+    async function confirmSubmitExam() {
       const answered = Object.keys(answers).length;
       const unanswered = questions.length - answered;
       const marked = markedForReview.size;
 
-      const confirmMsg = `Are you ready to submit your exam?\n\n• Answered: ${answered}\n• Unanswered: ${unanswered}\n• Marked for Review: ${marked}\n\nOnce submitted, you cannot change your answers.`;
+      const confirmed = await showModernConfirm({
+        title: 'Submit Examination Paper?',
+        subtitle: 'Final Paper Submission',
+        message: `• Answered Questions: ${answered}\n• Unanswered Questions: ${unanswered}\n• Marked for Review: ${marked}\n\nOnce submitted, your examination will be locked and answers cannot be changed.`,
+        confirmText: 'Submit Paper Now',
+        cancelText: 'Return to Exam',
+        type: unanswered > 0 ? 'warning' : 'success'
+      });
 
-      if (confirm(confirmMsg)) {
+      if (confirmed) {
         submitExam();
       }
     }
@@ -3190,6 +3216,193 @@
         `;
       }).join('');
     }
+  </script>
+
+  <!-- ======================================================== -->
+  <!-- HALLMARK MODERN-MINIMAL CONFIRM & ALERT MODAL (Student) -->
+  <!-- ======================================================== -->
+  <div id="modernConfirmModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[100] hidden items-center justify-center p-4">
+    <div id="modernConfirmCard" class="max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 shadow-2xl border space-y-5 text-center">
+      
+      <!-- Icon Wrapper with Dynamic Colors -->
+      <div id="modernConfirmIconWrapper" class="w-16 h-16 mx-auto rounded-3xl flex items-center justify-center shadow-inner transition-colors duration-200">
+        <div id="modernConfirmIcon"></div>
+      </div>
+
+      <!-- Header: Title & Optional Badge -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-center gap-2 flex-wrap">
+          <h3 id="modernConfirmTitle" class="text-lg md:text-xl font-black text-slate-900 dark:text-white tracking-tight"></h3>
+          <span id="modernConfirmBadge" class="hidden px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800"></span>
+        </div>
+        <p id="modernConfirmSubtitle" class="text-xs font-semibold text-slate-500 dark:text-slate-400"></p>
+      </div>
+
+      <!-- Message -->
+      <div id="modernConfirmMessage" class="text-xs md:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-h-60 overflow-y-auto px-2 whitespace-pre-line text-left md:text-center"></div>
+
+      <!-- Action Buttons -->
+      <div id="modernConfirmActions" class="flex items-center gap-3 pt-2">
+        <button id="modernConfirmCancelBtn" type="button" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl transition border border-slate-200 dark:border-slate-700 active:scale-95 cursor-pointer">
+          Cancel
+        </button>
+        <button id="modernConfirmOkBtn" type="button" class="flex-1 py-2.5 text-white font-bold text-xs rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer">
+          <span id="modernConfirmOkIcon"></span>
+          <span id="modernConfirmOkText">Confirm</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let _modernConfirmResolve = null;
+
+    function showModernConfirm(options) {
+      return new Promise((resolve) => {
+        _modernConfirmResolve = resolve;
+
+        let cfg = typeof options === 'string' ? { message: options } : (options || {});
+        const title = cfg.title || 'Confirm Action';
+        const subtitle = cfg.subtitle || '';
+        const message = cfg.message || '';
+        const badge = cfg.badge || null;
+        const confirmText = cfg.confirmText || 'Confirm';
+        const cancelText = cfg.cancelText || 'Cancel';
+        const type = cfg.type || 'info';
+
+        const modal = document.getElementById('modernConfirmModal');
+        const card = document.getElementById('modernConfirmCard');
+        const iconWrapper = document.getElementById('modernConfirmIconWrapper');
+        const iconEl = document.getElementById('modernConfirmIcon');
+        const titleEl = document.getElementById('modernConfirmTitle');
+        const badgeEl = document.getElementById('modernConfirmBadge');
+        const subtitleEl = document.getElementById('modernConfirmSubtitle');
+        const msgEl = document.getElementById('modernConfirmMessage');
+        const cancelBtn = document.getElementById('modernConfirmCancelBtn');
+        const okBtn = document.getElementById('modernConfirmOkBtn');
+        const okText = document.getElementById('modernConfirmOkText');
+        const okIcon = document.getElementById('modernConfirmOkIcon');
+
+        if (!modal) {
+          resolve(window.confirm(message || title));
+          return;
+        }
+
+        titleEl.textContent = title;
+        if (subtitle) {
+          subtitleEl.textContent = subtitle;
+          subtitleEl.classList.remove('hidden');
+        } else {
+          subtitleEl.classList.add('hidden');
+        }
+
+        msgEl.textContent = message;
+
+        if (badge) {
+          badgeEl.textContent = badge;
+          badgeEl.classList.remove('hidden');
+        } else {
+          badgeEl.classList.add('hidden');
+        }
+
+        cancelBtn.textContent = cancelText;
+        cancelBtn.classList.remove('hidden');
+        okText.textContent = confirmText;
+
+        card.className = "max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 shadow-2xl border space-y-5 text-center";
+        okBtn.className = "flex-1 py-2.5 text-white font-bold text-xs rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer";
+
+        if (type === 'success') {
+          iconWrapper.className = "w-16 h-16 mx-auto rounded-3xl flex items-center justify-center shadow-inner transition-colors duration-200 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400";
+          iconEl.innerHTML = `<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>`;
+          card.classList.add("border-emerald-500/30", "dark:border-emerald-500/40");
+          okBtn.classList.add("bg-emerald-600", "hover:bg-emerald-700", "shadow-emerald-500/30");
+          okIcon.innerHTML = `<svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
+        } else if (type === 'danger') {
+          iconWrapper.className = "w-16 h-16 mx-auto rounded-3xl flex items-center justify-center shadow-inner transition-colors duration-200 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400";
+          iconEl.innerHTML = `<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>`;
+          card.classList.add("border-rose-500/30", "dark:border-rose-500/40");
+          okBtn.classList.add("bg-rose-600", "hover:bg-rose-700", "shadow-rose-500/30");
+          okIcon.innerHTML = `<svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>`;
+        } else if (type === 'warning') {
+          iconWrapper.className = "w-16 h-16 mx-auto rounded-3xl flex items-center justify-center shadow-inner transition-colors duration-200 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-600 dark:text-amber-400";
+          iconEl.innerHTML = `<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+          card.classList.add("border-amber-500/30", "dark:border-amber-500/40");
+          okBtn.classList.add("bg-amber-600", "hover:bg-amber-700", "shadow-amber-500/30");
+          okIcon.innerHTML = `<svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
+        } else {
+          iconWrapper.className = "w-16 h-16 mx-auto rounded-3xl flex items-center justify-center shadow-inner transition-colors duration-200 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400";
+          iconEl.innerHTML = `<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`;
+          card.classList.add("border-indigo-500/30", "dark:border-indigo-500/40");
+          okBtn.classList.add("bg-indigo-600", "hover:bg-indigo-700", "shadow-indigo-500/30");
+          okIcon.innerHTML = `<svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
+        }
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        okBtn.focus();
+      });
+    }
+
+    function closeModernConfirm(result) {
+      const modal = document.getElementById('modernConfirmModal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+      if (typeof _modernConfirmResolve === 'function') {
+        const fn = _modernConfirmResolve;
+        _modernConfirmResolve = null;
+        fn(result);
+      }
+    }
+
+    function showModernAlert(options) {
+      let cfg = typeof options === 'string' ? { message: options } : (options || {});
+      return new Promise((resolve) => {
+        const title = cfg.title || (cfg.type === 'danger' || cfg.type === 'error' ? 'Notice / Alert' : (cfg.type === 'success' ? 'Success' : 'Notice'));
+        const message = cfg.message || '';
+        const buttonText = cfg.buttonText || 'Understood';
+        const type = (cfg.type === 'error' ? 'danger' : cfg.type) || 'info';
+
+        showModernConfirm({
+          title,
+          message,
+          confirmText: buttonText,
+          type
+        }).then(() => resolve());
+
+        const cancelBtn = document.getElementById('modernConfirmCancelBtn');
+        if (cancelBtn) cancelBtn.classList.add('hidden');
+      });
+    }
+
+    window.showModernConfirm = showModernConfirm;
+    window.showModernAlert = showModernAlert;
+    window.alert = function(msg) {
+      showModernAlert(msg);
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('modernConfirmModal');
+      const okBtn = document.getElementById('modernConfirmOkBtn');
+      const cancelBtn = document.getElementById('modernConfirmCancelBtn');
+
+      if (okBtn) okBtn.addEventListener('click', () => closeModernConfirm(true));
+      if (cancelBtn) cancelBtn.addEventListener('click', () => closeModernConfirm(false));
+
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) closeModernConfirm(false);
+        });
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (!modal || modal.classList.contains('hidden')) return;
+        if (e.key === 'Escape') closeModernConfirm(false);
+        if (e.key === 'Enter') closeModernConfirm(true);
+      });
+    });
   </script>
 </body>
 </html>

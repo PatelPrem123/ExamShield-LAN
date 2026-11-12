@@ -77,7 +77,54 @@
       animation: breathing-emerald 2.5s infinite ease-in-out;
     }
 
-    /* Modern-Minimal Select & Dropdown Styling */
+    /* Hallmark Modern-Minimal Select & Custom Dropdown Styling */
+    .modern-dropdown {
+      position: relative;
+    }
+    .modern-dropdown-menu {
+      min-width: 14rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+      box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(99, 102, 241, 0.12);
+      animation: modern-dropdown-pop 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes modern-dropdown-pop {
+      from {
+        opacity: 0;
+        transform: translateY(-4px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .modern-dropdown-menu::-webkit-scrollbar {
+      width: 5px;
+    }
+    .modern-dropdown-menu::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.4);
+      border-radius: 999px;
+    }
+
+    /* Modern Confirm & Alert Modal Animation */
+    #modernConfirmModal.active {
+      display: flex !important;
+      opacity: 1;
+    }
+    #modernConfirmCard {
+      animation: modern-modal-pop 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes modern-modal-pop {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.94);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
     select, .modern-select {
       appearance: none;
       -webkit-appearance: none;
@@ -714,11 +761,20 @@ Loading history...
         </div>
 
         <div class="flex items-center gap-2 flex-wrap">
-          <!-- Batch Selector Filter (Standardized h-9) -->
-          <div class="h-9 flex items-center gap-1.5 bg-slate-100 dark:bg-slate-700/80 px-3 rounded-xl border border-slate-300 dark:border-slate-600">
-            <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-            <span class="text-xs font-bold text-slate-500 dark:text-slate-400">Filter:</span>
-            <select id="monitorBatchFilter" onchange="onBatchFilterChange(this.value)" class="bg-transparent text-xs font-bold text-slate-800 dark:text-white border-0 focus:ring-0 cursor-pointer outline-none">
+          <!-- Batch Selector Filter (Modern Custom Dropdown) -->
+          <div class="relative modern-dropdown" id="monitorBatchFilterContainer">
+            <button type="button" id="monitorBatchFilterBtn" onclick="toggleModernDropdown('monitorBatchFilter')" class="h-9 flex items-center gap-2 bg-slate-100 dark:bg-slate-700/80 hover:bg-slate-200 dark:hover:bg-slate-600 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 transition cursor-pointer select-none">
+              <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+              <span class="text-xs font-bold text-slate-500 dark:text-slate-400">Filter:</span>
+              <span id="monitorBatchFilterSelected" class="text-xs font-bold text-slate-800 dark:text-white truncate max-w-[140px]">All Batches</span>
+              <span id="monitorBatchFilterActiveBadge" class="hidden text-[10px] font-black uppercase px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">Active</span>
+              <svg id="monitorBatchFilterChevron" class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200 shrink-0 ml-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="monitorBatchFilterMenu" class="modern-dropdown-menu hidden absolute left-0 top-full mt-1.5 min-w-[210px] max-h-64 overflow-y-auto bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl z-50 p-1.5 space-y-0.5">
+              <!-- Rendered items with active badges and checkmarks -->
+            </div>
+            <!-- Hidden native select element for 100% script compatibility -->
+            <select id="monitorBatchFilter" onchange="onBatchFilterChange(this.value)" class="hidden">
               <option value="all">All Batches</option>
             </select>
           </div>
@@ -936,9 +992,18 @@ Loading history...
             <p class="text-xs text-slate-500 dark:text-slate-400">Search question or option text, inspect answer keys and diagram previews</p>
           </div>
           <div class="flex items-center gap-2 flex-wrap">
-            <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-700/80 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600">
-              <span class="text-xs font-bold text-slate-500 dark:text-slate-400 inline-flex items-center gap-1"><svg class="w-3.5 h-3.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span>Topic:</span></span>
-              <select id="previewTopicFilter" onchange="loadQuestionsPreview()" class="bg-transparent text-xs font-bold text-slate-800 dark:text-white border-0 focus:ring-0 cursor-pointer outline-none">
+            <!-- Topic Filter (Modern Custom Dropdown) -->
+            <div class="relative modern-dropdown" id="previewTopicFilterContainer">
+              <button type="button" id="previewTopicFilterBtn" onclick="toggleModernDropdown('previewTopicFilter')" class="h-9 flex items-center gap-2 bg-slate-100 dark:bg-slate-700/80 hover:bg-slate-200 dark:hover:bg-slate-600 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 transition cursor-pointer select-none">
+                <svg class="w-3.5 h-3.5 text-indigo-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">Topic:</span>
+                <span id="previewTopicFilterSelected" class="text-xs font-bold text-slate-800 dark:text-white truncate max-w-[140px]">All Topics</span>
+                <svg id="previewTopicFilterChevron" class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200 shrink-0 ml-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div id="previewTopicFilterMenu" class="modern-dropdown-menu hidden absolute left-0 top-full mt-1.5 min-w-[210px] max-h-64 overflow-y-auto bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl z-50 p-1.5 space-y-0.5">
+                <!-- Rendered topics -->
+              </div>
+              <select id="previewTopicFilter" onchange="loadQuestionsPreview()" class="hidden">
                 <option value="all">All Topics</option>
               </select>
             </div>
@@ -1212,10 +1277,20 @@ Loading history...
             <p class="text-xs text-slate-500 dark:text-slate-400">Live scorecard with multi-topic breakdowns and tie-breaking ranks</p>
           </div>
 
-          <!-- Batch Filter Pill -->
-          <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-700/80 px-3.5 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600">
-            <span class="text-xs font-bold text-slate-600 dark:text-slate-300 whitespace-nowrap inline-flex items-center gap-1"><svg class="w-3.5 h-3.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg><span>Filter Batch:</span></span>
-            <select id="resultsBatchFilter" onchange="onBatchFilterChange(this.value)" class="bg-transparent text-xs font-bold text-slate-800 dark:text-white border-0 focus:ring-0 cursor-pointer outline-none min-w-[140px] pr-1">
+          <!-- Batch Filter Pill (Modern Custom Dropdown) -->
+          <div class="relative modern-dropdown" id="resultsBatchFilterContainer">
+            <button type="button" id="resultsBatchFilterBtn" onclick="toggleModernDropdown('resultsBatchFilter')" class="h-9 flex items-center gap-2 bg-slate-100 dark:bg-slate-700/80 hover:bg-slate-200 dark:hover:bg-slate-600 px-3.5 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 transition cursor-pointer select-none">
+              <svg class="w-3.5 h-3.5 text-indigo-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+              <span class="text-xs font-bold text-slate-600 dark:text-slate-300 whitespace-nowrap">Filter Batch:</span>
+              <span id="resultsBatchFilterSelected" class="text-xs font-bold text-slate-800 dark:text-white truncate max-w-[140px]">All Batches</span>
+              <span id="resultsBatchFilterActiveBadge" class="hidden text-[10px] font-black uppercase px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">Active</span>
+              <svg id="resultsBatchFilterChevron" class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200 shrink-0 ml-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="resultsBatchFilterMenu" class="modern-dropdown-menu hidden absolute left-0 top-full mt-1.5 min-w-[220px] max-h-64 overflow-y-auto bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl z-50 p-1.5 space-y-0.5">
+              <!-- Rendered items -->
+            </div>
+            <!-- Hidden native select element for 100% script compatibility -->
+            <select id="resultsBatchFilter" onchange="onBatchFilterChange(this.value)" class="hidden">
               <option value="all">All Batches</option>
             </select>
           </div>
@@ -1745,7 +1820,16 @@ Loading history...
     async function triggerStartExam() {
       const token = localStorage.getItem('examshield_admin_token');
       const batchCode = (currentBatchFilter && currentBatchFilter !== 'all') ? currentBatchFilter : (currentExam?.active_batch_code || 'BATCH-01');
-      if (!confirm(`Launch Live Exam for ${batchCode}?\n\nThis will trigger the 3-2-1 countdown on all waiting student screens and begin the examination immediately.`)) return;
+      const confirmed = await showModernConfirm({
+        title: 'Launch Live Exam?',
+        badge: batchCode,
+        subtitle: 'Live Candidate Examination',
+        message: 'This will trigger the 3-2-1 countdown on all waiting student screens and begin the examination immediately.',
+        confirmText: 'Launch Exam Now',
+        cancelText: 'Cancel',
+        type: 'success'
+      });
+      if (!confirmed) return;
 
       try {
         const res = await fetch('/api/teacher/exam/start', {
@@ -1759,17 +1843,26 @@ Loading history...
           refreshExamLifecycleStatus();
           refreshStudentList();
         } else {
-          alert('Error: ' + data.error);
+          showModernAlert({ title: 'Launch Failed', message: data.error, type: 'danger' });
         }
       } catch(e) {
-        alert('Failed to start exam: ' + e.message);
+        showModernAlert({ title: 'Network Error', message: 'Failed to start exam: ' + e.message, type: 'danger' });
       }
     }
 
     async function triggerStopExam() {
       const token = localStorage.getItem('examshield_admin_token');
       const batchCode = (currentBatchFilter && currentBatchFilter !== 'all') ? currentBatchFilter : (currentExam?.active_batch_code || 'BATCH-01');
-      if (!confirm(`STOP EXAMINATION for ${batchCode}?\n\nAll active student papers will be instantly submitted, calculated, and locked. New candidate registrations will be blocked.`)) return;
+      const confirmed = await showModernConfirm({
+        title: 'Stop Examination?',
+        badge: batchCode,
+        subtitle: 'Candidate Paper Collection',
+        message: 'All active student papers will be instantly submitted, calculated, and locked. New candidate registrations will be blocked.',
+        confirmText: 'Stop & Submit All Papers',
+        cancelText: 'Cancel',
+        type: 'danger'
+      });
+      if (!confirmed) return;
 
       try {
         const res = await fetch('/api/teacher/exam/stop', {
@@ -1783,10 +1876,10 @@ Loading history...
           refreshExamLifecycleStatus();
           refreshStudentList();
         } else {
-          alert('Error: ' + data.error);
+          showModernAlert({ title: 'Stop Failed', message: data.error, type: 'danger' });
         }
       } catch(e) {
-        alert('Failed to stop exam: ' + e.message);
+        showModernAlert({ title: 'Network Error', message: 'Failed to stop exam: ' + e.message, type: 'danger' });
       }
     }
 
@@ -2010,6 +2103,7 @@ Loading history...
             pFilter.innerHTML = '<option value="all">All Topics</option>' + 
               currentExam.topics.map(t => `<option value="${t.topic}">${t.topic} (${t.count})</option>`).join('');
             if (currentVal) pFilter.value = currentVal;
+            if (typeof updateModernDropdownUI === 'function') updateModernDropdownUI('previewTopicFilter');
           }
 
           // Populate Manual Creator Topic Dropdown
@@ -2318,7 +2412,15 @@ Loading history...
 
     // Force Submit Student
     async function forceSubmitStudent(sessionId) {
-      if (!confirm('Are you sure you want to collect and submit this student\'s paper now?')) return;
+      const confirmed = await showModernConfirm({
+        title: 'Collect Student Paper?',
+        subtitle: 'Single Candidate Submission',
+        message: 'Are you sure you want to collect and submit this candidate\'s paper now? The examination session will be locked immediately.',
+        confirmText: 'Collect & Grade Paper',
+        cancelText: 'Cancel',
+        type: 'warning'
+      });
+      if (!confirmed) return;
       try {
         const res = await adminFetch('/api/teacher/force-submit', {
           method: 'POST',
@@ -2326,24 +2428,39 @@ Loading history...
           body: JSON.stringify({ session_id: sessionId })
         });
         const data = await res.json();
-        if (data.success) refreshStudentList();
+        if (data.success) {
+          showToast('Candidate paper collected and graded.');
+          refreshStudentList();
+        }
       } catch (err) {
-        alert('Failed to submit: ' + err.message);
+        showModernAlert({ title: 'Submission Failed', message: err.message, type: 'danger' });
       }
     }
 
     // End Exam for All
     async function endExamForAll() {
-      if (!confirm('Are you sure you want to end the exam for ALL students? All active papers will be collected and graded immediately.')) return;
+      const confirmed = await showModernConfirm({
+        title: 'End Exam & Collect All Papers?',
+        subtitle: 'Mass Submission Action',
+        message: 'Are you sure you want to end the exam for ALL students? All active papers will be collected and graded immediately.',
+        confirmText: 'End Exam for All',
+        cancelText: 'Cancel',
+        type: 'danger'
+      });
+      if (!confirmed) return;
       try {
         const res = await adminFetch('/api/teacher/end-exam', { method: 'POST' });
         const data = await res.json();
         if (data.success) {
-          alert(`Exam completed. Collected ${data.count} student papers.`);
+          showModernAlert({
+            title: 'Exam Completed',
+            message: `Examination concluded successfully. Collected and graded ${data.count} student papers.`,
+            type: 'success'
+          });
           refreshStudentList();
         }
       } catch (err) {
-        alert('Error: ' + err.message);
+        showModernAlert({ title: 'Error', message: err.message, type: 'danger' });
       }
     }
 
@@ -2413,14 +2530,33 @@ Loading history...
     }
 
     async function clearTopicQuestions(topic) {
-      if (!confirm(`Are you sure you want to remove all questions under topic "${topic}"?`)) return;
+      const confirmed = await showModernConfirm({
+        title: 'Remove Topic Questions?',
+        badge: topic,
+        subtitle: 'Question Bank Deletion',
+        message: `Are you sure you want to remove all questions under topic "${topic}"? This action cannot be undone.`,
+        confirmText: 'Remove Questions',
+        cancelText: 'Cancel',
+        type: 'danger'
+      });
+      if (!confirmed) return;
       await adminFetch(`/api/exam/questions?topic=${encodeURIComponent(topic)}`, { method: 'DELETE' });
+      showToast(`Removed all questions under "${topic}".`);
       loadSystemInfo();
     }
 
     async function clearAllQuestionBank() {
-      if (!confirm('Are you sure you want to completely erase the question bank?')) return;
+      const confirmed = await showModernConfirm({
+        title: 'Erase Question Bank?',
+        subtitle: 'Irreversible Storage Cleanup',
+        message: 'Are you sure you want to completely erase the question bank? All stored topics, questions, options, and diagram images will be permanently deleted.',
+        confirmText: 'Yes, Erase Question Bank',
+        cancelText: 'Cancel',
+        type: 'danger'
+      });
+      if (!confirmed) return;
       await adminFetch('/api/exam/questions', { method: 'DELETE' });
+      showToast('Question bank completely erased.');
       loadSystemInfo();
     }
 
@@ -2935,16 +3071,24 @@ Loading history...
 
     // Reset All Sessions
     async function resetAllStudentSessions() {
-      if (!confirm('WARNING: This will permanently delete all student attempts, logs, and answers for a new exam batch. Continue?')) return;
+      const confirmed = await showModernConfirm({
+        title: 'Clear All Student Data?',
+        subtitle: 'Database Purge Warning',
+        message: 'WARNING: This will permanently delete all student attempts, logs, answers, and scores for a fresh exam batch. Are you sure you want to continue?',
+        confirmText: 'Yes, Clear All Data',
+        cancelText: 'Cancel',
+        type: 'danger'
+      });
+      if (!confirmed) return;
       try {
         const res = await adminFetch('/api/teacher/reset-sessions', { method: 'DELETE' });
         const data = await res.json();
         if (data.success) {
-          alert('All student sessions have been cleared.');
+          showModernAlert({ title: 'Sessions Cleared', message: 'All student sessions and test submissions have been permanently cleared.', type: 'success' });
           refreshStudentList();
         }
       } catch (err) {
-        alert('Error: ' + err.message);
+        showModernAlert({ title: 'Error', message: err.message, type: 'danger' });
       }
     }
 
@@ -3020,9 +3164,15 @@ Loading history...
         showAdminAuthModal();
         return;
       }
-      const confirmed = confirm(
-        `WARNING: Restoring "${file.name}" will overwrite current live exam data, questions, and student sessions with this backup.\n\nDo you want to proceed with database restore?`
-      );
+      const confirmed = await showModernConfirm({
+        title: 'Restore Database Backup?',
+        badge: file.name,
+        subtitle: 'Complete Database Replacement',
+        message: `CRITICAL WARNING: Restoring from this backup file will completely OVERWRITE your current database!\n\nAll existing questions, active batches, student attempts, and exam configurations will be replaced.\n\nAre you sure you want to proceed?`,
+        confirmText: 'Yes, Overwrite & Restore',
+        cancelText: 'Cancel',
+        type: 'danger'
+      });
       if (!confirmed) {
         const input = document.getElementById('dbRestoreInput');
         if (input) input.value = '';
@@ -3042,12 +3192,16 @@ Loading history...
         if (!res.ok || !data.success) {
           throw new Error(data.error || 'Restore failed');
         }
-        alert('Database restored successfully! The page will now reload.');
+        await showModernAlert({
+          title: 'Database Restored',
+          message: 'Database restored successfully! The page will now reload.',
+          type: 'success'
+        });
         const input = document.getElementById('dbRestoreInput');
         if (input) input.value = '';
         window.location.reload();
       } catch (err) {
-        alert('Restore Failed: ' + err.message);
+        showModernAlert({ title: 'Restore Failed', message: err.message, type: 'danger' });
         const input = document.getElementById('dbRestoreInput');
         if (input) input.value = '';
       }
@@ -3081,10 +3235,17 @@ Loading history...
     async function toggleGlobalReviewPublish() {
       const isCurrentlyPublished = !!(currentExam && currentExam.publish_review_all);
       const newPublishState = !isCurrentlyPublished;
-      const confirmMsg = newPublishState
-        ? 'Are you sure you want to PUBLISH review answers for ALL students? All submitted candidates will immediately see the "View Answers & Review Paper" button.'
-        : 'Are you sure you want to LOCK review answers for ALL students?';
-      if (!confirm(confirmMsg)) return;
+      const confirmed = await showModernConfirm({
+        title: newPublishState ? 'Publish Review Answers?' : 'Lock Review Answers?',
+        subtitle: 'Global Student Review Setting',
+        message: newPublishState
+          ? 'Are you sure you want to PUBLISH review answers for ALL students? All submitted candidates will immediately see the "View Answers & Review Paper" button.'
+          : 'Are you sure you want to LOCK review answers for ALL students? Candidates will only see their final score and percentage.',
+        confirmText: newPublishState ? 'Publish for All' : 'Lock for All',
+        cancelText: 'Cancel',
+        type: newPublishState ? 'info' : 'warning'
+      });
+      if (!confirmed) return;
 
       const btn = document.getElementById('btnToggleGlobalReview');
       if (btn) btn.disabled = true;
@@ -3568,6 +3729,7 @@ Loading history...
           sel.appendChild(opt);
         }
         sel.value = topic;
+        if (typeof updateModernDropdownUI === 'function') updateModernDropdownUI('previewTopicFilter');
       }
       loadQuestionsPreview(true);
     }
@@ -3819,6 +3981,11 @@ Loading history...
 
       if (monitorFilter) monitorFilter.innerHTML = optionsHtml;
       if (resultsFilter) resultsFilter.innerHTML = optionsHtml;
+
+      if (typeof updateModernDropdownUI === 'function') {
+        updateModernDropdownUI('monitorBatchFilter');
+        updateModernDropdownUI('resultsBatchFilter');
+      }
     }
 
     function onBatchFilterChange(val) {
@@ -3827,6 +3994,11 @@ Loading history...
       const resultsFilter = document.getElementById('resultsBatchFilter');
       if (monitorFilter) monitorFilter.value = val;
       if (resultsFilter) resultsFilter.value = val;
+
+      if (typeof updateModernDropdownUI === 'function') {
+        updateModernDropdownUI('monitorBatchFilter');
+        updateModernDropdownUI('resultsBatchFilter');
+      }
       refreshStudentList();
     }
 
@@ -4020,6 +4192,297 @@ Loading history...
       const modal = document.getElementById('violationsModal');
       if (modal) modal.classList.add('hidden');
     }
+  </script>
+
+  <!-- ======================================================== -->
+  <!-- HALLMARK MODERN-MINIMAL CONFIRM & ALERT MODAL           -->
+  <!-- ======================================================== -->
+  <div id="modernConfirmModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[100] hidden items-center justify-center p-4">
+    <div id="modernConfirmCard" class="max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 shadow-2xl border space-y-5 text-center">
+      
+      <!-- Icon Wrapper with Dynamic Colors -->
+      <div id="modernConfirmIconWrapper" class="w-16 h-16 mx-auto rounded-3xl flex items-center justify-center shadow-inner transition-colors duration-200">
+        <div id="modernConfirmIcon"></div>
+      </div>
+
+      <!-- Header: Title & Optional Badge -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-center gap-2 flex-wrap">
+          <h3 id="modernConfirmTitle" class="text-lg md:text-xl font-black text-slate-900 dark:text-white tracking-tight"></h3>
+          <span id="modernConfirmBadge" class="hidden px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800"></span>
+        </div>
+        <p id="modernConfirmSubtitle" class="text-xs font-semibold text-slate-500 dark:text-slate-400"></p>
+      </div>
+
+      <!-- Message -->
+      <div id="modernConfirmMessage" class="text-xs md:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-h-60 overflow-y-auto px-2 whitespace-pre-line text-left md:text-center"></div>
+
+      <!-- Action Buttons -->
+      <div id="modernConfirmActions" class="flex items-center gap-3 pt-2">
+        <button id="modernConfirmCancelBtn" type="button" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl transition border border-slate-200 dark:border-slate-700 active:scale-95 cursor-pointer">
+          Cancel
+        </button>
+        <button id="modernConfirmOkBtn" type="button" class="flex-1 py-2.5 text-white font-bold text-xs rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer">
+          <span id="modernConfirmOkIcon"></span>
+          <span id="modernConfirmOkText">Confirm</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ======================================================== */
+    /* HALLMARK MODERN DROPDOWN & DIALOG CONTROLLERS           */
+    /* ======================================================== */
+    let _modernConfirmResolve = null;
+
+    function showModernConfirm(options) {
+      return new Promise((resolve) => {
+        _modernConfirmResolve = resolve;
+
+        let cfg = typeof options === 'string' ? { message: options } : (options || {});
+        const title = cfg.title || 'Confirm Action';
+        const subtitle = cfg.subtitle || '';
+        const message = cfg.message || '';
+        const badge = cfg.badge || null;
+        const confirmText = cfg.confirmText || 'Confirm';
+        const cancelText = cfg.cancelText || 'Cancel';
+        const type = cfg.type || 'info'; // 'success' | 'danger' | 'warning' | 'info'
+
+        const modal = document.getElementById('modernConfirmModal');
+        const card = document.getElementById('modernConfirmCard');
+        const iconWrapper = document.getElementById('modernConfirmIconWrapper');
+        const iconEl = document.getElementById('modernConfirmIcon');
+        const titleEl = document.getElementById('modernConfirmTitle');
+        const badgeEl = document.getElementById('modernConfirmBadge');
+        const subtitleEl = document.getElementById('modernConfirmSubtitle');
+        const msgEl = document.getElementById('modernConfirmMessage');
+        const cancelBtn = document.getElementById('modernConfirmCancelBtn');
+        const okBtn = document.getElementById('modernConfirmOkBtn');
+        const okText = document.getElementById('modernConfirmOkText');
+        const okIcon = document.getElementById('modernConfirmOkIcon');
+
+        if (!modal) {
+          resolve(window.confirm(message || title));
+          return;
+        }
+
+        titleEl.textContent = title;
+        if (subtitle) {
+          subtitleEl.textContent = subtitle;
+          subtitleEl.classList.remove('hidden');
+        } else {
+          subtitleEl.classList.add('hidden');
+        }
+
+        msgEl.textContent = message;
+
+        if (badge) {
+          badgeEl.textContent = badge;
+          badgeEl.classList.remove('hidden');
+        } else {
+          badgeEl.classList.add('hidden');
+        }
+
+        cancelBtn.textContent = cancelText;
+        cancelBtn.classList.remove('hidden');
+        okText.textContent = confirmText;
+
+        // Reset base classes
+        card.className = "max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 shadow-2xl border space-y-5 text-center";
+        okBtn.className = "flex-1 py-2.5 text-white font-bold text-xs rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer";
+
+        if (type === 'success') {
+          iconWrapper.className = "w-16 h-16 mx-auto rounded-3xl flex items-center justify-center shadow-inner transition-colors duration-200 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400";
+          iconEl.innerHTML = `<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
+          card.classList.add("border-emerald-500/30", "dark:border-emerald-500/40");
+          okBtn.classList.add("bg-emerald-600", "hover:bg-emerald-700", "shadow-emerald-500/30");
+          okIcon.innerHTML = `<svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
+        } else if (type === 'danger') {
+          iconWrapper.className = "w-16 h-16 mx-auto rounded-3xl flex items-center justify-center shadow-inner transition-colors duration-200 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400";
+          iconEl.innerHTML = `<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>`;
+          card.classList.add("border-rose-500/30", "dark:border-rose-500/40");
+          okBtn.classList.add("bg-rose-600", "hover:bg-rose-700", "shadow-rose-500/30");
+          okIcon.innerHTML = `<svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>`;
+        } else if (type === 'warning') {
+          iconWrapper.className = "w-16 h-16 mx-auto rounded-3xl flex items-center justify-center shadow-inner transition-colors duration-200 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-600 dark:text-amber-400";
+          iconEl.innerHTML = `<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+          card.classList.add("border-amber-500/30", "dark:border-amber-500/40");
+          okBtn.classList.add("bg-amber-600", "hover:bg-amber-700", "shadow-amber-500/30");
+          okIcon.innerHTML = `<svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
+        } else {
+          iconWrapper.className = "w-16 h-16 mx-auto rounded-3xl flex items-center justify-center shadow-inner transition-colors duration-200 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400";
+          iconEl.innerHTML = `<svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`;
+          card.classList.add("border-indigo-500/30", "dark:border-indigo-500/40");
+          okBtn.classList.add("bg-indigo-600", "hover:bg-indigo-700", "shadow-indigo-500/30");
+          okIcon.innerHTML = `<svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
+        }
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        okBtn.focus();
+      });
+    }
+
+    function closeModernConfirm(result) {
+      const modal = document.getElementById('modernConfirmModal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+      if (typeof _modernConfirmResolve === 'function') {
+        const fn = _modernConfirmResolve;
+        _modernConfirmResolve = null;
+        fn(result);
+      }
+    }
+
+    function showModernAlert(options) {
+      let cfg = typeof options === 'string' ? { message: options } : (options || {});
+      return new Promise((resolve) => {
+        const title = cfg.title || (cfg.type === 'danger' || cfg.type === 'error' ? 'Notice / Alert' : (cfg.type === 'success' ? 'Success' : 'Notice'));
+        const message = cfg.message || '';
+        const buttonText = cfg.buttonText || 'Understood';
+        const type = (cfg.type === 'error' ? 'danger' : cfg.type) || 'info';
+
+        showModernConfirm({
+          title,
+          message,
+          confirmText: buttonText,
+          type
+        }).then(() => resolve());
+
+        const cancelBtn = document.getElementById('modernConfirmCancelBtn');
+        if (cancelBtn) cancelBtn.classList.add('hidden');
+      });
+    }
+
+    window.showModernConfirm = showModernConfirm;
+    window.showModernAlert = showModernAlert;
+    window.alert = function(msg) {
+      if (typeof msg === 'string' && (msg.startsWith('Copied') || msg.startsWith('Configuration saved') || msg.startsWith('Teacher Security PIN updated'))) {
+        if (typeof showToast === 'function') {
+          showToast(msg, 'success');
+          return;
+        }
+      }
+      showModernAlert(msg);
+    };
+
+    // Modern Dropdown Management
+    function updateModernDropdownUI(selectId) {
+      const select = document.getElementById(selectId);
+      const btn = document.getElementById(selectId + 'Btn');
+      const label = document.getElementById(selectId + 'Selected');
+      const badge = document.getElementById(selectId + 'ActiveBadge');
+      const menu = document.getElementById(selectId + 'Menu');
+      if (!select || !btn || !label || !menu) return;
+
+      const currentVal = select.value || 'all';
+      const options = Array.from(select.options);
+      const selectedOption = options.find(o => o.value === currentVal) || options[0];
+
+      if (selectedOption) {
+        let cleanText = selectedOption.text.replace(/\(Active\)/i, '').trim();
+        label.textContent = cleanText;
+        if (badge) {
+          if (selectedOption.text.toLowerCase().includes('(active)')) {
+            badge.classList.remove('hidden');
+          } else {
+            badge.classList.add('hidden');
+          }
+        }
+      }
+
+      menu.innerHTML = options.map(opt => {
+        const isSelected = opt.value === currentVal;
+        const isActive = opt.text.toLowerCase().includes('(active)');
+        const cleanLabel = opt.text.replace(/\(Active\)/i, '').trim();
+
+        return `
+          <div onclick="selectModernDropdownOption('${selectId}', '${opt.value.replace(/'/g, "\\'")}')"
+            class="group flex items-center justify-between gap-3 px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+              isSelected 
+                ? 'bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/80' 
+                : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/60 hover:text-slate-900 dark:hover:text-white border border-transparent'
+            }">
+            <div class="flex items-center gap-2 truncate">
+              <span class="truncate">${cleanLabel}</span>
+              ${isActive ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-100 dark:bg-emerald-950/90 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">Active</span>` : ''}
+            </div>
+            ${isSelected ? `<svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>` : '<span class="w-4 h-4 shrink-0"></span>'}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectModernDropdownOption(selectId, val) {
+      const select = document.getElementById(selectId);
+      if (!select) return;
+      select.value = val;
+      updateModernDropdownUI(selectId);
+      closeAllModernDropdowns();
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      if (typeof select.onchange === 'function') {
+        select.onchange();
+      }
+    }
+
+    function toggleModernDropdown(selectId) {
+      const menu = document.getElementById(selectId + 'Menu');
+      const chevron = document.getElementById(selectId + 'Chevron');
+      if (!menu) return;
+
+      const isClosed = menu.classList.contains('hidden');
+      closeAllModernDropdowns();
+
+      if (isClosed) {
+        updateModernDropdownUI(selectId);
+        menu.classList.remove('hidden');
+        if (chevron) chevron.classList.add('rotate-180');
+      }
+    }
+
+    function closeAllModernDropdowns() {
+      document.querySelectorAll('.modern-dropdown-menu').forEach(m => m.classList.add('hidden'));
+      document.querySelectorAll('.modern-dropdown [id$="Chevron"]').forEach(c => c.classList.remove('rotate-180'));
+    }
+
+    // Attach Dialog and Dropdown listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('modernConfirmModal');
+      const okBtn = document.getElementById('modernConfirmOkBtn');
+      const cancelBtn = document.getElementById('modernConfirmCancelBtn');
+
+      if (okBtn) okBtn.addEventListener('click', () => closeModernConfirm(true));
+      if (cancelBtn) cancelBtn.addEventListener('click', () => closeModernConfirm(false));
+
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) closeModernConfirm(false);
+        });
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (modal && !modal.classList.contains('hidden')) {
+          if (e.key === 'Escape') closeModernConfirm(false);
+          if (e.key === 'Enter') closeModernConfirm(true);
+        } else if (e.key === 'Escape') {
+          closeAllModernDropdowns();
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.modern-dropdown')) {
+          closeAllModernDropdowns();
+        }
+      });
+
+      // Initial sync for standard dropdowns
+      updateModernDropdownUI('monitorBatchFilter');
+      updateModernDropdownUI('resultsBatchFilter');
+      updateModernDropdownUI('previewTopicFilter');
+    });
   </script>
 
 </body>
