@@ -29,7 +29,12 @@
       };
     })();
   </script>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/tailwind.cdn.js"></script>
+  <script>
+    if (!window.tailwind) {
+      document.write('<script src="https://cdn.tailwindcss.com"><\/script>');
+    }
+  </script>
   <script>
     tailwind.config = {
       darkMode: 'class',
