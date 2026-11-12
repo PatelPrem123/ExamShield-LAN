@@ -42,6 +42,26 @@
     })();
   </script>
   <style>
+    /* Hallmark Modern-Minimal Base & Floor Rules */
+    html, body {
+      overflow-x: clip;
+    }
+    :focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 2px;
+    }
+    .tabular-nums, table, [id*="Count"], [id*="Timer"], [id*="Score"], [id*="Percentage"], [id*="totalStudents"] {
+      font-variant-numeric: tabular-nums;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
     @keyframes pulse-red {
       0%, 100% { background-color: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.8); }
       50% { background-color: rgba(239, 68, 68, 0.35); border-color: rgba(239, 68, 68, 1); }
@@ -57,9 +77,18 @@
       animation: breathing-emerald 2.5s infinite ease-in-out;
     }
 
-    /* Dropdown Options Theming (Image 1 & 8 Parity) */
-    select {
-      color-scheme: light dark;
+    /* Modern-Minimal Select & Dropdown Styling */
+    select, .modern-select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236366f1' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1rem 1rem;
+      padding-right: 2.25rem;
+    }
+    html.dark select, .dark select, html.dark .modern-select, .dark .modern-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23a5b4fc' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
     }
     select option {
       background-color: #ffffff !important;
@@ -126,7 +155,7 @@
     button[onclick*="openHistoryModal"],
     button[onclick*="backupExamDatabase"],
     button[onclick*="dbRestoreInput"] {
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
     .action-export-btn:hover,
     button[onclick*="downloadMasterExcel"]:hover,
@@ -572,7 +601,7 @@ Loading history...
     </div>
 
     <!-- TABS BAR WITH DRAG-TO-SCROLL, WHEEL SCROLL & TOUCH MOMENTUM (REACH RESULTS & REPORTS EASILY) -->
-    <div class="relative max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 border-t border-slate-200 dark:border-slate-800 flex items-center">
+    <div class="relative max-w-7xl 2xl:max-w-[1536px] mx-auto px-2 sm:px-6 lg:px-8 border-t border-slate-200 dark:border-slate-800 flex items-center">
 
 
       <!-- Scrollable Tabs Track -->
@@ -604,12 +633,12 @@ Loading history...
   </header>
 
   <!-- RED ALERT CONTAINER (Floating / Sticky) -->
-  <div id="redAlertContainer" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 w-full space-y-2 hidden">
+  <div id="redAlertContainer" class="max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 mt-4 w-full space-y-2 hidden">
     <!-- Dynamic Red Alert Cards inserted here -->
   </div>
 
   <!-- MAIN BODY -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+  <main class="max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
 
     <!-- TAB 1: LIVE EXAM MONITOR -->
     <section id="tabContent-monitor" class="space-y-6">
@@ -1270,19 +1299,19 @@ Loading history...
           <table class="w-full text-left text-xs">
             <thead class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700">
               <tr>
-                <th class="py-3 px-2 font-bold text-center w-12">Rank</th>
-                <th class="py-3 px-3 font-bold">Candidate Name</th>
-                <th class="py-3 px-2 font-bold text-center whitespace-nowrap">Paper Mode</th>
-                <th class="py-3 px-2 font-bold text-center">Score</th>
-                <th class="py-3 px-2 font-bold text-center text-emerald-600 dark:text-emerald-400 whitespace-nowrap">Right (✓)</th>
-                <th class="py-3 px-2 font-bold text-center text-rose-600 dark:text-rose-400 whitespace-nowrap">Wrong (✗)</th>
-                <th class="py-3 px-2 font-bold text-center">Percentage</th>
-                <th class="py-3 px-2 font-bold text-center">Status</th>
-                <th class="py-3 px-2 font-bold text-center">Violations</th>
-                <th class="py-3 px-3 font-bold max-w-[200px]">Topic Breakdown</th>
-                <th class="py-3 px-2 font-bold text-center whitespace-nowrap">Review Answers</th>
-                <th class="py-3 px-2 font-bold text-center whitespace-nowrap">Marksheet</th>
-                <th class="py-3 px-3 font-bold text-center whitespace-nowrap">Submitted Time</th>
+                <th class="py-2.5 px-2 font-bold text-center w-12">Rank</th>
+                <th class="py-2.5 px-3 font-bold">Candidate Name</th>
+                <th class="py-2.5 px-2 font-bold text-center whitespace-nowrap">Paper Mode</th>
+                <th class="py-2.5 px-2 font-bold text-center whitespace-nowrap">Score</th>
+                <th class="py-2.5 px-2 font-bold text-center text-emerald-600 dark:text-emerald-400 whitespace-nowrap">Right (✓)</th>
+                <th class="py-2.5 px-2 font-bold text-center text-rose-600 dark:text-rose-400 whitespace-nowrap">Wrong (✗)</th>
+                <th class="py-2.5 px-2 font-bold text-center whitespace-nowrap">Percentage</th>
+                <th class="py-2.5 px-2 font-bold text-center whitespace-nowrap">Status</th>
+                <th class="py-2.5 px-2 font-bold text-center whitespace-nowrap">Violations</th>
+                <th class="py-2.5 px-2.5 font-bold max-w-[210px]">Topic Breakdown</th>
+                <th class="py-2.5 px-2 font-bold text-center whitespace-nowrap">Review Answers</th>
+                <th class="py-2.5 px-2 font-bold text-center whitespace-nowrap">Marksheet</th>
+                <th class="py-2.5 px-3 font-bold text-center whitespace-nowrap">Submitted Time</th>
               </tr>
             </thead>
             <tbody id="resultsTableBody" class="divide-y divide-slate-100 dark:divide-slate-700">
@@ -3161,40 +3190,40 @@ Loading history...
 
         return `
           <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/40 transition">
-            <td class="py-3 px-3 font-black text-center text-sm ${s.rank === 1 ? 'text-amber-500 font-extrabold' : 'text-slate-700 dark:text-slate-300'}">
+            <td class="py-2.5 px-2 font-black text-center text-sm ${s.rank === 1 ? 'text-amber-500 font-extrabold' : 'text-slate-700 dark:text-slate-300'}">
               <span class="inline-flex items-center justify-center w-6 h-6 rounded-full font-bold text-xs ${s.rank === 1 ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-800' : (s.rank === 2 ? 'bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-200' : (s.rank === 3 ? 'bg-amber-800/10 text-amber-900 dark:bg-amber-900/40 dark:text-amber-400' : 'text-slate-500'))}">${s.rank}</span>
             </td>
-            <td class="py-3 px-4 font-bold text-slate-800 dark:text-slate-100">
+            <td class="py-2.5 px-3 font-bold text-slate-800 dark:text-slate-100">
               <div>${escapeHtml(s.student_name)}</div>
               <div class="text-[10px] text-indigo-600 dark:text-indigo-400 font-mono font-medium">${escapeHtml(s.batch_code || 'BATCH-01')}</div>
             </td>
-            <td class="py-3 px-3 text-center whitespace-nowrap">
-              <span class="inline-flex items-center justify-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700/80 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-bold text-[10.5px] shadow-xs whitespace-nowrap"><svg class="w-3 h-3 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg><span>Random</span></span>
+            <td class="py-2.5 px-2 text-center whitespace-nowrap">
+              <span class="inline-flex items-center justify-center gap-1 px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700/80 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-bold text-[10px] shadow-xs whitespace-nowrap"><svg class="w-3 h-3 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg><span>Random</span></span>
             </td>
-            <td class="py-3 px-3 font-bold text-indigo-700 dark:text-indigo-400">${isSubmitted ? `${s.total_score} / ${s.max_score}` : '-'}</td>
-            <td class="py-3 px-3 text-center font-bold text-emerald-600 dark:text-emerald-400">${isSubmitted ? (s.correct_count ?? 0) : '-'}</td>
-            <td class="py-3 px-3 text-center font-bold text-rose-600 dark:text-rose-400">${isSubmitted ? (s.wrong_count ?? 0) : '-'}</td>
-            <td class="py-3 px-3 font-bold ${s.passed ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">${isSubmitted ? `${s.percentage}%` : '-'}</td>
-            <td class="py-3 px-3">
-              ${isSubmitted ? (s.passed ? '<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 font-bold text-[10px]">PASSED</span>' : '<span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-300 dark:border-rose-800 font-bold text-[10px]">FAILED</span>') : '<span class="text-slate-400 dark:text-slate-500">In Progress</span>'}
+            <td class="py-2.5 px-2 text-center font-bold text-indigo-700 dark:text-indigo-400 font-mono whitespace-nowrap">${isSubmitted ? `${s.total_score} / ${s.max_score}` : '-'}</td>
+            <td class="py-2.5 px-2 text-center font-bold text-emerald-600 dark:text-emerald-400 font-mono whitespace-nowrap">${isSubmitted ? (s.correct_count ?? 0) : '-'}</td>
+            <td class="py-2.5 px-2 text-center font-bold text-rose-600 dark:text-rose-400 font-mono whitespace-nowrap">${isSubmitted ? (s.wrong_count ?? 0) : '-'}</td>
+            <td class="py-2.5 px-2 text-center font-bold font-mono whitespace-nowrap ${s.passed ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">${isSubmitted ? `${s.percentage}%` : '-'}</td>
+            <td class="py-2.5 px-2 text-center whitespace-nowrap">
+              ${isSubmitted ? (s.passed ? '<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 font-bold text-[10px]">PASSED</span>' : '<span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-300 dark:border-rose-800 font-bold text-[10px]">FAILED</span>') : '<span class="text-slate-400 dark:text-slate-500 text-[10px]">In Progress</span>'}
             </td>
-            <td class="py-3 px-3 text-center whitespace-nowrap">
+            <td class="py-2.5 px-2 text-center whitespace-nowrap">
               ${(s.violations_count && s.violations_count > 0) ? `
                 <button onclick="viewStudentViolations('${s.id}')" title="Click to inspect security violation log"
-                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10.5px] font-black bg-rose-100 text-rose-800 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-300 dark:border-rose-800 shadow-xs hover:bg-rose-200 dark:hover:bg-rose-900 transition cursor-pointer mx-auto">
+                  class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-black bg-rose-100 text-rose-800 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-300 dark:border-rose-800 shadow-xs hover:bg-rose-200 dark:hover:bg-rose-900 transition cursor-pointer mx-auto">
                   <svg class="w-3 h-3 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                   <span>${s.violations_count} Alert${s.violations_count > 1 ? 's' : ''}</span>
                 </button>
               ` : `
-                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10.5px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
                   <svg class="w-3 h-3 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                   <span>0 (Clean)</span>
                 </span>
               `}
             </td>
-            <td class="py-3 px-3 max-w-[220px]">${breakdownHtml}</td>
-            <td class="py-3 px-3 text-center">${reviewActionHtml}</td>
-            <td class="py-3 px-3 text-center">
+            <td class="py-2.5 px-2.5 max-w-[210px]">${breakdownHtml}</td>
+            <td class="py-2.5 px-2 text-center whitespace-nowrap">${reviewActionHtml}</td>
+            <td class="py-2.5 px-2 text-center whitespace-nowrap">
               ${isSubmitted ? `
                 <button onclick="openStudentMarksheet('${s.id}')" title="Print candidate marksheet"
                   class="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950/50 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 rounded-lg text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center gap-1 mx-auto">
@@ -3202,7 +3231,7 @@ Loading history...
                 </button>
               ` : '<span class="text-slate-400 dark:text-slate-500 text-[10px]">-</span>'}
             </td>
-            <td class="py-3 px-3 text-center text-slate-500 dark:text-slate-400 font-mono text-[11px] whitespace-nowrap">${s.submitted_at ? formatLocalTime(s.submitted_at) : '-'}</td>
+            <td class="py-2.5 px-3 text-center text-slate-500 dark:text-slate-400 font-mono text-[11px] whitespace-nowrap">${s.submitted_at ? formatLocalTime(s.submitted_at) : '-'}</td>
           </tr>
         `;
       }).join('');

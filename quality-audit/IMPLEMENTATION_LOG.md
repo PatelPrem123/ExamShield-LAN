@@ -197,3 +197,54 @@ All changes were performed under the **Execution Contract** (safe, reversible, l
      - Exceptions: **0**, Console Errors: **0**.
 3. **Automated Unit Tests:** 22/22 Passing (`node unitTests.js`).
 4. **Rebuild:** Synchronized sources to distribution directory, rebuilt distribution ZIP and compiled Windows Setup Installer.
+
+
+---
+
+## 8. Hallmark Modern-Minimal Restyle, ESC Freeze Immunity & Table Layout Fix (Phase 9)
+
+### A. Root Cause & Solution Breakdown
+
+1. **Bug 1: `Submission failed: escapeHtml is not defined` & Broken Scorecard State (Images 1 & 2):**
+   - **Root Cause:** When candidate submitted exam, `displayFinalResults` revealed `resultScreen` first and populated basic metrics. However, when parsing violation history, it called `escapeHtml(v.reason)`. `escapeHtml` was previously missing from `public/index.html`, throwing a runtime `ReferenceError`.
+   - **Impact:**
+     - The catch block in `submitExam` displayed the alert `Submission failed: escapeHtml is not defined`.
+     - JavaScript execution halted before `animateRadialScorecard(result)` could run.
+     - The radial meter remained un-animated at `0% PASSED`, placeholder badge `DISTINCTION - RANK 1` remained visible, and count metrics displayed `0`.
+     - When clicking "Replay Animation", `replayConfettiAndScoreAnim` directly invoked `animateRadialScorecard(lastResultData)`, which is why animation only triggered manually.
+   - **Fix:**
+     - Global `escapeHtml` declared and bound to `window.escapeHtml`.
+     - Wrapped violation report generation in a defensive `try...catch` block so unexpected log records never interrupt scorecard animation.
+     - Scorecount ease-up runs immediately on submission and automatically fires dual-stage celebration fireworks.
+
+2. **Bug 2: ESC Key & Fullscreen Exit Screen Freeze:**
+   - **Root Cause:** On pressing `ESC` or exiting fullscreen mode, the browser chrome (URL bar, tabs, bookmarks) reappears, generating a `resize` event. In `checkDevToolsOpened()`, `outerHeight - innerHeight` exceeded 160px due to normal Windows browser chrome, triggering a false-positive `triggerSecurityViolation('Developer Tools / Inspection Dock opened')` and freezing the exam.
+   - **Fix:**
+     - Added a 4000ms transition guard (`Date.now() - lastFullscreenTransition < 4000`) ignoring window resize events during fullscreen toggles.
+     - In windowed mode (`!document.fullscreenElement`), raised the threshold to `heightDiff > 320` and `widthDiff > 280` so normal browser chrome is never classified as DevTools.
+     - Bound capturing `keydown` listener for `Escape` (code 27) that updates `lastFullscreenTransition` and prevents security violations.
+
+3. **Bug 3: Teacher UI Results Table Alignment & Horizontal Overflow (Image 3):**
+   - **Root Cause:** Container was hard-capped at `max-w-7xl` (1280px). When zoomed out (e.g. 50% zoom in Image 3), large empty margins appeared. Inside the container, 13 unconstrained columns with uneven cell padding caused the 13th column (`Submitted Time`) to be clipped off-screen by `overflow-x-auto`.
+   - **Fix:**
+     - Added `2xl:max-w-[1536px]` fluid responsive container width.
+     - Balanced header and cell paddings (`py-2.5 px-2` / `px-3`) and constrained `Topic Breakdown` (`max-w-[210px]`) so all 13 columns fit seamlessly on both standard laptop and wide monitors.
+
+4. **Hallmark Modern-Minimal Redesign:**
+   - Dealt `Wayfind` design tokens (`tokens.css`, `base.css`).
+   - Implemented Hallmark Floor Rules:
+     - `overflow-x: clip` on `html, body`.
+     - Replaced `transition: all` with targeted property transitions.
+     - Added high-contrast `:focus-visible` outline rings.
+     - Added `@media (prefers-reduced-motion: reduce)` fallbacks.
+     - Added `font-variant-numeric: tabular-nums` to timers, scores, and counter elements.
+     - Fixed stray syntax bracket in CSS at line 179 in `public/index.html`.
+     - Custom styled Modern-Minimal `<select>` dropdowns with custom SVG chevron caret and dark/light high-contrast options.
+     - Modern-Minimal styled alert system for `#frozenOverlay` and `#redAlertContainer`.
+
+### B. Verification & Distribution Sync
+- Unit Tests: 22/22 Passing (`node unitTests.js`).
+- Distribution Build: Rebuilt and synced via `scripts/build-distribution.ps1`.
+- Verified Artifacts:
+  - `ExamShield LAN 🛡️ - Teacher Control Center.zip` (56.59 MB)
+  - `ExamShield_LAN_v2.5.16_Setup.exe` (57.02 MB)
