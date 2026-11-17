@@ -282,3 +282,46 @@ All changes were performed under the **Execution Contract** (safe, reversible, l
 4. **Testing & Distribution:**
    - Automated unit test suite: **22/22 tests passing (100%)**.
    - Standalone Windows Setup Installer `ExamShield_LAN_v2.5.16_Setup.exe` and distribution ZIP rebuilt successfully.
+
+---
+
+## 5. Offline Tailwind Runtime Bundling & Student Accessibility Font Size Zoomer
+
+**Date:** 18 November 2026  
+**Target:** 100% Air-Gapped Offline Independence & Multi-Display Physical Lab Accessibility.
+
+### Summary of Enhancements:
+1. **Offline Tailwind Runtime Bundling (`tailwind.cdn.js`):**
+   - **Problem:** When running in an isolated air-gapped classroom network without WAN/Internet access, browsers attempting to fetch `https://cdn.tailwindcss.com` experienced connection delays, rendering failures, and broken layouts.
+   - **Solution:** Bundled the standalone Tailwind runtime directly into the repository:
+     - `teacher-server-app/src/public/tailwind.cdn.js` (407 KB)
+     - `teacher-server-app/src/teacher-ui/tailwind.cdn.js` (407 KB)
+   - Updated both client entrypoints (`src/public/index.html` and `src/teacher-ui/index.html`) to load `/tailwind.cdn.js` locally from the Express static server.
+   - Verified 100% offline styling with zero external network requests.
+
+2. **Student Portal Accessibility Font Size Zoomer (`A` / `A+` / `A++`):**
+   - **Problem:** Examination halls feature mixed workstation hardware ranging from compact 14-inch CRT/LCD monitors to 24-inch widescreen displays. Fixed font sizes caused eye strain for candidates seated at small or low-resolution screens.
+   - **Solution:** Implemented a 3-pill segmented accessibility control in the student top navigation bar:
+     - `A` (**Standard - 100%**): Question stem `1.00rem`, option text `0.875rem`.
+     - `A+` (**Large - 118%**): Question stem `1.18rem`, option text `1.020rem`.
+     - `A++` (**Extra Large - 138%**): Question stem `1.38rem`, option text `1.180rem`.
+   - Dynamic scaling configured via CSS custom properties (`--q-font-size`, `--opt-font-size`) with smooth `0.15s` ease-out transitions.
+   - Automatically persisted to candidate browser `localStorage` (`examshield_font_size`), ensuring preferences survive accidental reloads or system reboots.
+   - Attached `window.setFontSize` and `window.currentFontSize` for seamless global and automated test access.
+
+3. **Chrome DevTools Protocol (CDP) Automated Verification:**
+   - Authored and executed automated Headless Chrome CDP test script (`scratch/test_font_size.js`):
+     - Initial standard scale verified (`--q-font-size: 1rem`).
+     - Clicked `A+` pill: Verified `--q-font-size: 1.18rem` and `localStorage: large`.
+     - Clicked `A++` pill: Verified `--q-font-size: 1.38rem` and `localStorage: xlarge`.
+     - Clicked `A` pill: Verified `--q-font-size: 1rem` and `localStorage: normal`.
+     - Console error & unhandled exception monitoring: **0 errors detected**.
+     - **Verification Outcome:** `VERDICT: PASS`.
+
+4. **Distribution Compilation & Synchronization:**
+   - Executed `scripts/build-distribution.ps1`:
+     - Synchronized source code to distribution directory.
+     - Compiled native C# uninstaller `Uninstall_ExamShield.exe`.
+     - Built compressed payload and updated `ExamShield LAN 🛡️ - Teacher Control Center.zip` (56.83 MB).
+     - Compiled native Windows setup installer `ExamShield_LAN_v2.5.16_Setup.exe` (57.26 MB).
+   - Git Commit & Push: Pushed to GitHub `main` branch.

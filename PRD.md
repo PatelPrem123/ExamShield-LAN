@@ -83,6 +83,11 @@ ExamShield LAN delivers a **100% offline, air-gapped, zero-cloud assessment syst
 - **FR-14 (Answer Key Review Permissions):** Instructor can globally publish or individually unlock question reviews for candidates.
 - **FR-15 (Export Engine):** Generates UTF-8 BOM CSV and native styled Excel (`.xlsx`) spreadsheets with candidate ranks, batch codes, marks, right/wrong metrics, and timestamps.
 
+### 3.5 Accessibility, Modern Overlays & Air-Gap Offline Integrity
+- **FR-16 (Student Accessibility Font Size Zoomer):** Top bar must provide a 3-pill segmented font zoomer (`A` = Standard 100%, `A+` = Large 118%, `A++` = Extra Large 138%) dynamically adjusting question stems (`--q-font-size`) and option text (`--opt-font-size`). Zoom preferences must persist in `localStorage` across page reloads and device reboots.
+- **FR-17 (Hallmark Modern-Minimal Dialog & Dropdown Overlays):** All native browser popups (`window.alert`, `window.confirm`) and OS native select menus must be replaced with custom, accessible, theme-aware overlays (`showModernConfirm`, `showModernAlert`, and `toggleModernDropdown`) featuring glassmorphism, dynamic badges, status icons, and keyboard trapping.
+- **FR-18 (Zero-External Asset Bundling):** All CSS and JavaScript libraries (specifically Tailwind CSS) must be bundled locally (`tailwind.cdn.js`), ensuring zero dependency on remote CDNs and preventing visual degredation in air-gapped LAN environments.
+
 ---
 
 ## 4. Non-Functional Requirements

@@ -94,9 +94,11 @@ ExamShield LAN/
         ├── sockets/
         │   └── proctoringSocket.js        # Live telemetry, focus loss, alerts
         ├── public/                        # Student Portal Static Files
-        │   └── index.html                 # Student client (SPA)
+        │   ├── index.html                 # Student client (SPA)
+        │   └── tailwind.cdn.js            # Bundled local offline Tailwind CSS runtime
         └── teacher-ui/                    # Teacher Control Center Static Files
-            └── index.html                 # Admin console (SPA)
+            ├── index.html                 # Admin console (SPA)
+            └── tailwind.cdn.js            # Bundled local offline Tailwind CSS runtime
 ```
 
 ---
@@ -151,7 +153,16 @@ sequenceDiagram
 
 ---
 
-## 4. Security Boundaries & Threat Modeling
+## 4. Air-Gapped Client Architecture & Offline Isolation
+
+1. **Local Tailwind CSS Delivery Engine:** To ensure complete air-gapped immunity from CDN DNS failures or network lag, `tailwind.cdn.js` (407 KB) is bundled locally on the host and delivered directly by Express at `/tailwind.cdn.js`. Client browsers never initiate external HTTP/HTTPS calls to `cdn.tailwindcss.com`.
+2. **Accessibility Typography Zoom Engine:** Student UI font scaling is decoupled from global viewport zoom using dynamic CSS custom properties (`--q-font-size`, `--opt-font-size`). Zoom levels (`normal`, `large`, `xlarge`) are persisted in browser `localStorage`, ensuring instant, non-jank scaling on any physical laboratory display (14" to 24").
+3. **Branded Asynchronous Dialog Overlays:** Native synchronous blocking popups (`window.alert`, `window.confirm`) are replaced with asynchronous Promise-based components (`showModernConfirm`, `showModernAlert`). These are rendered inside the application DOM with glassmorphism overlays and keyboard trapping, preserving UI aesthetic consistency and avoiding operating system window freezing.
+4. **Resilient Dropdown Systems:** Custom floating dropdown menus replace OS-native `<select>` popups for multi-batch filtering and settings, backed by synchronized hidden native elements to maintain test automation compatibility.
+
+---
+
+## 5. Security Boundaries & Threat Modeling
 
 1. **Air-Gapped Isolation:** Zero external internet dependencies. No CDNs, third-party fonts, analytics trackers, or external APIs.
 2. **Cryptographic Token Binding:** Every student receives a 48-character hex token (`crypto.randomBytes(24)`). Every answer save, status update, and submission must present this token in headers (`x-student-token`).

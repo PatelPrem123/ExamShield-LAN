@@ -44,6 +44,17 @@
   - `Option Label:` `14px – 15px` (`text-sm sm:text-base`), font-normal (`font-400`).
   - `Caption / Badge:` `11px – 12px` (`text-xs`), font-bold (`font-700`), uppercase tracking-widest.
 
+### 2.3 Accessibility (A11y) Typography Zoom Scale
+To eliminate eye strain on laboratory monitors of varying physical dimensions (from compact 14" screens to 24" desktop monitors), the student exam interface supports a 3-tier CSS custom property zoom system:
+
+| Size Key | Pill Label | Question Stem (`--q-font-size`) | Option Text (`--opt-font-size`) | Relative Zoom |
+|---|---|---|---|---|
+| `normal` | **A** | `1.00rem` (16px) | `0.875rem` (14px) | Baseline (100%) |
+| `large` | **A+** | `1.18rem` (18.9px) | `1.020rem` (16.3px) | +18% Scale |
+| `xlarge` | **A++** | `1.38rem` (22.1px) | `1.180rem` (18.9px) | +38% Scale |
+
+*Transitions are handled via `transition: font-size 0.15s ease-out` on `#questionContentArea` and `.option-text-container` to eliminate layout jank.*
+
 ---
 
 ## 3. Layout Grid & Spacing System
@@ -80,6 +91,21 @@
   - `Marked for Review:` Solid amber orange fill (`bg-amber-500 text-white font-bold`).
   - `Marked & Answered:` Split or dual indicator (amber with checkmark indicator).
   - `Unattempted:` Neutral gray outline (`bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300`).
+
+### 4.4 Custom Modern Dialog & Confirm System (`#modernConfirmModal`)
+- **Visual Presentation:** Replaces native OS alert/confirm dialogs with an animated, centered modal card layered over a backdrop blur (`bg-slate-900/60 backdrop-blur-md`).
+- **Semantic Type Indicators:**
+  - `success:` Emerald icon badge with checkmark circle.
+  - `warning:` Amber icon badge with alert triangle.
+  - `danger:` Rose icon badge with octagonal stop sign.
+  - `info:` Indigo icon badge with information circle.
+- **Dynamic Action Badges:** Displays active entity badges (e.g. `BATCH-01`) above the main confirmation title for zero-ambiguity administrative actions.
+- **Keyboard Trapping:** Automatically handles `Escape` (Cancel / dismiss) and `Enter` (Confirm).
+
+### 4.5 Custom Animated Dropdown Menus (`.modern-dropdown-menu`)
+- **Presentation:** Floating menu (`z-50`), rounded corners (`rounded-2xl`), frosted glass (`bg-white/95 dark:bg-slate-800/95 backdrop-blur-md`), and subtle border shadows.
+- **Item States:** Active item highlighted with emerald badge pill, checkmark indicator, and smooth hover backgrounds (`hover:bg-indigo-50 dark:hover:bg-slate-700/60`).
+- **Resilience:** Backed by hidden native `<select>` controls to ensure 100% backward compatibility with automated test scripts and programmatic event dispatches.
 
 ---
 

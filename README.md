@@ -1,11 +1,11 @@
-# 🛡️ ExamShield LAN — Enterprise Hardened Edition (v2.5.0)
+# 🛡️ ExamShield LAN — Enterprise Hardened Edition (v2.5.16)
 
 > **High-Performance 100% Offline Campus Examination Platform & Anti-Cheat Proctoring Engine**  
 > *Engineered for Schools, Colleges, Universities, and Professional Certification Labs.*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform: Windows](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011-0078D6.svg?logo=windows)](https://microsoft.com)
-[![Version: 2.5.0](https://img.shields.io/badge/Version-2.5.0-success.svg)](https://github.com/PatelPrem123/ExamShield-LAN)
+[![Version: 2.5.16](https://img.shields.io/badge/Version-2.5.16-success.svg)](https://github.com/PatelPrem123/ExamShield-LAN)
 [![Offline: Air-Gapped](https://img.shields.io/badge/Operation-100%25%20Offline%20Air--Gapped-darkgreen.svg)](#)
 [![Database: SQLite WAL](https://img.shields.io/badge/Database-SQLite%20WAL%20(Zero--Deadlock)-blueviolet.svg)](#)
 
@@ -79,6 +79,19 @@ Unlike cloud-based assessment software that demands continuous high-speed intern
 * **Smooth Horizontal Tab Navigation:** Touch-drag, mouse-wheel swipe, and navigation arrows with boundary snapping and scroll-padding for tablets and mobile devices.
 * **Ambient Lighting Themes:** Dynamic Dark and Light modes with subtle glowing accents and zero UI clipping.
 
+### 11. 🔤 Accessibility: Question Font Size Zoomer (`A / A+ / A++`)
+* **Multi-Display Lab Compatibility:** Designed for institutional labs with mixed monitor sizes (from compact 14" screens to large 24" displays).
+* **3-Pill Segmented Adjuster:** Students can toggle between **Standard (100% / `1rem`)**, **Large (118% / `1.18rem`)**, and **Extra Large (138% / `1.38rem`)** directly from the top navigation bar.
+* **Persistent & Offline:** Preferences are stored in `localStorage` (`examshield_font_size`) and persist across page refreshes or device reboots.
+
+### 12. 🎨 Hallmark Modern-Minimal Design & Custom UI Overlays
+* **Custom Glassmorphic Modals:** Replaced native browser `alert()` and `confirm()` dialogs with sleek modern modals featuring backdrop-blur, dynamic action badges (`BATCH-01`), status-specific icons (Success / Warning / Danger), and keyboard `Esc` / `Enter` support.
+* **Custom Dropdown Menus:** Replaced rigid OS-native `<select>` dropdowns with animated, rounded, theme-aware menus with checkmarks and active batch badges.
+
+### 13. 🔌 100% Offline-First Bundling (Local Tailwind Runtime)
+* **Air-Gapped LAN Autonomy:** Completely bundles `tailwind.cdn.js` directly within the local Express server (`src/public/tailwind.cdn.js` and `src/teacher-ui/tailwind.cdn.js`).
+* **Zero CDN Hangs:** Eliminates external internet lookups to `cdn.tailwindcss.com`, preventing layout breaks or rendering freezes when operating on an isolated, non-internet lab network switch.
+
 ---
 
 ## 🛠️ Technology Stack
@@ -92,14 +105,14 @@ Unlike cloud-based assessment software that demands continuous high-speed intern
 | **Packaging** | Windows Forms (.NET 4.8 / C#) | Native Setup Installer with Desktop Shortcut & Start Menu |
 | **Documents** | Mammoth, Docx (v9.x) | Word `.docx` parsing & Base64 diagram extraction |
 | **Spreadsheets**| ExcelJS | Multi-column styled Excel workbook generation |
-| **Frontend** | HTML5, Tailwind CSS, Vanilla JS | Zero-dependency dark/light responsive UI |
+| **Frontend** | HTML5, Bundled Tailwind CSS, Vanilla JS | Zero-dependency dark/light responsive UI |
 
 ---
 
 ## 🚀 Getting Started
 
 ### Option 1: Windows Setup Installer (Recommended)
-1. Run **`ExamShield_LAN_v2.5.0_Setup.exe`**.
+1. Run **`ExamShield_LAN_v2.5.16_Setup.exe`**.
 2. Select destination directory (Default: `C:\ExamShield LAN`).
 3. The installer creates a Desktop shortcut (`ExamShield LAN - Teacher Control Center`) with custom shield icon and Start Menu program entries.
 4. Launch and start testing!

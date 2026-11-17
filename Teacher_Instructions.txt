@@ -1,6 +1,6 @@
 ================================================================================
    EXAMSHIELD LAN 🛡️ — TEACHER & ADMINISTRATOR OPERATIONS GUIDE
-   Version 2.5.0 (Enterprise Hardened Edition — with 1-Click Data Portability)
+   Version 2.5.16 (Enterprise Hardened Edition — with 1-Click Data Portability)
    100% Offline Air-Gapped Campus Examination System
 ================================================================================
 
@@ -161,6 +161,27 @@ A: No. ExamShield LAN runs 100% server-side validation. Correct answers are comp
 - Final Submit Safeguard: On clicking "Finish & Submit Exam", the candidate's
   complete answer dictionary is transmitted and verified against the server,
   guaranteeing zero answer loss.
+
+
+13. STUDENT ACCESSIBILITY (FONT SIZE ZOOMER: A / A+ / A++)
+--------------------------------------------------------------------------------
+- Lab Hardware Adaptability: In many computer laboratories, monitors vary in physical
+  size (e.g. 14-inch compact screens vs. 22-inch/24-inch widescreen monitors).
+- Font Size Adjuster: Students can click the segmented font zoomer in their top bar:
+  * [A]   : Standard text size (100% / 1.00rem)
+  * [A+]  : Large text size (118% / 1.18rem)
+  * [A++] : Extra Large text size (138% / 1.38rem)
+- Automatic Persistence: The student's choice is saved in browser storage and remembered
+  if the page is refreshed, preventing eye strain throughout the exam.
+
+
+14. MODERN IN-APP CONFIRMATIONS & BATCH DROPDOWNS
+--------------------------------------------------------------------------------
+- Modern Dialogs: All teacher action prompts (e.g. "Launch Live Exam?", "Stop Exam",
+  "Collect All Papers") are displayed using clean in-app dialog cards with clear
+  action badges (e.g. "BATCH-01") instead of standard browser popups.
+- Batch Filtering: Use the modern "Filter" dropdown menu in the Live Monitor and
+  Results tabs to view all connected students or filter by specific batch cohorts.
 
 ================================================================================
   ExamShield LAN 🛡️ — Developed for Rock-Solid Offline Educational Integrity
