@@ -53,6 +53,27 @@
     }
   </script>
   <style>
+    /* Accessibility: Font Size Zoomer System */
+    :root {
+      --q-font-size: 1rem;
+      --opt-font-size: 0.875rem;
+    }
+    #questionContentArea {
+      font-size: var(--q-font-size) !important;
+      line-height: 1.65;
+      transition: font-size 0.15s ease-out;
+    }
+    #questionContentArea p, #questionContentArea span, #questionContentArea div, #questionContentArea pre, #questionContentArea code {
+      font-size: inherit !important;
+    }
+    .option-text-container {
+      font-size: var(--opt-font-size) !important;
+      transition: font-size 0.15s ease-out;
+    }
+    .option-text-container * {
+      font-size: inherit;
+    }
+
     /* Hallmark Modern-Minimal Base & Floor Rules */
     html, body {
       overflow-x: clip;
@@ -874,6 +895,25 @@
             Auto-Saved
           </span>
 
+          <!-- Font Size Zoomer (A / A+ / A++) -->
+          <div class="flex items-center bg-slate-100 dark:bg-slate-800/90 p-0.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs" title="Adjust Question Font Size (Accessibility)">
+            <button type="button" onclick="setFontSize('normal')" id="fontSizeBtn-normal"
+              class="px-2 py-1 text-xs font-black rounded-lg transition select-none cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs border border-indigo-200/50 dark:border-indigo-500/30 active:scale-95"
+              title="Standard Text Size (100%)">
+              A
+            </button>
+            <button type="button" onclick="setFontSize('large')" id="fontSizeBtn-large"
+              class="px-2 py-1 text-xs font-bold rounded-lg transition select-none cursor-pointer text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-transparent active:scale-95"
+              title="Large Text Size (118%)">
+              A+
+            </button>
+            <button type="button" onclick="setFontSize('xlarge')" id="fontSizeBtn-xlarge"
+              class="px-2 py-1 text-xs font-bold rounded-lg transition select-none cursor-pointer text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-transparent active:scale-95"
+              title="Extra Large Text Size (138%)">
+              A++
+            </button>
+          </div>
+
           <!-- Audio Switcher -->
           <button onclick="toggleAudio()" id="headerSoundBtn" title="Toggle Audio"
             class="p-2 rounded-xl bg-white/95 dark:bg-slate-800/95 text-slate-700 dark:text-slate-200 hover:text-indigo-600 text-xs font-bold transition flex items-center gap-1.5 border border-slate-200 dark:border-slate-700 shadow-xs hover:border-indigo-400 active:scale-95 cursor-pointer">
@@ -1450,6 +1490,58 @@
     // Apply saved theme immediately on script load
     const activeSavedTheme = localStorage.getItem('examshield_theme') || 'dark';
     applyTheme(activeSavedTheme);
+
+    // ========================================================
+    // ACCESSIBILITY: FONT SIZE ZOOM ENGINE
+    // ========================================================
+    const FONT_ZOOM_LEVELS = {
+      normal: { q: '1rem', opt: '0.875rem', label: 'Standard (100%)' },
+      large: { q: '1.18rem', opt: '1.02rem', label: 'Large (118%)' },
+      xlarge: { q: '1.38rem', opt: '1.18rem', label: 'Extra Large (138%)' }
+    };
+    let currentFontSize = 'normal';
+    window.currentFontSize = currentFontSize;
+
+    function setFontSize(sizeKey, showNotification = true) {
+      if (!FONT_ZOOM_LEVELS[sizeKey]) sizeKey = 'normal';
+      currentFontSize = sizeKey;
+      window.currentFontSize = sizeKey;
+      const config = FONT_ZOOM_LEVELS[sizeKey];
+
+      document.documentElement.style.setProperty('--q-font-size', config.q);
+      document.documentElement.style.setProperty('--opt-font-size', config.opt);
+
+      // Update Segmented Pill Active Styles
+      ['normal', 'large', 'xlarge'].forEach(key => {
+        const btn = document.getElementById(`fontSizeBtn-${key}`);
+        if (!btn) return;
+        if (key === sizeKey) {
+          btn.className = "px-2 py-1 text-xs font-black rounded-lg transition select-none cursor-pointer bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs border border-indigo-200/50 dark:border-indigo-500/30 active:scale-95";
+        } else {
+          btn.className = "px-2 py-1 text-xs font-bold rounded-lg transition select-none cursor-pointer text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-transparent active:scale-95";
+        }
+      });
+
+      try {
+        localStorage.setItem('examshield_font_size', sizeKey);
+      } catch (e) {}
+
+      if (showNotification && typeof showToast === 'function') {
+        showToast(`Text Size: ${config.label}`, 'info');
+      }
+    }
+    window.setFontSize = setFontSize;
+
+    function initFontSize() {
+      let saved = 'normal';
+      try {
+        saved = localStorage.getItem('examshield_font_size') || 'normal';
+      } catch (e) {}
+      setFontSize(saved, false);
+    }
+
+    // Apply saved font size immediately on script load
+    initFontSize();
 
 
     // Fetch active exam title & marking scheme on start
@@ -2353,7 +2445,7 @@
             class="merged-option-card option-card-modern p-3.5 sm:p-4 rounded-2xl border cursor-pointer transition flex items-center gap-3.5 ${cardStyle}">
             <input type="${inputType}" name="q_${q.id}" ${isSelected ? 'checked' : ''}
               class="accent-indigo-600 cursor-pointer w-4 h-4 shrink-0 pointer-events-none" />
-            <div class="flex-1 text-xs md:text-sm text-slate-800 dark:text-slate-100 font-medium select-none pointer-events-none">
+            <div class="option-text-container flex-1 text-xs md:text-sm text-slate-800 dark:text-slate-100 font-medium select-none pointer-events-none">
               <span class="inline-flex items-center justify-center font-bold mr-2 text-indigo-600 dark:text-indigo-400">(${opt.display_letter})</span>
               ${opt.html}
             </div>
