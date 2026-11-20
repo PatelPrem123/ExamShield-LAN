@@ -4242,10 +4242,10 @@ Loading history...
 
       <!-- Action Buttons -->
       <div id="modernConfirmActions" class="flex items-center gap-3 pt-2">
-        <button id="modernConfirmCancelBtn" type="button" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl transition border border-slate-200 dark:border-slate-700 active:scale-95 cursor-pointer">
+        <button id="modernConfirmCancelBtn" onclick="closeModernConfirm(false)" type="button" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl transition border border-slate-200 dark:border-slate-700 active:scale-95 cursor-pointer">
           Cancel
         </button>
-        <button id="modernConfirmOkBtn" type="button" class="flex-1 py-2.5 text-white font-bold text-xs rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer">
+        <button id="modernConfirmOkBtn" onclick="closeModernConfirm(true)" type="button" class="flex-1 py-2.5 text-white font-bold text-xs rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer">
           <span id="modernConfirmOkIcon"></span>
           <span id="modernConfirmOkText">Confirm</span>
         </button>
@@ -4472,18 +4472,18 @@ Loading history...
     }
 
     // Attach Dialog and Dropdown listeners
-    document.addEventListener('DOMContentLoaded', () => {
+    function initModernControls() {
       const modal = document.getElementById('modernConfirmModal');
       const okBtn = document.getElementById('modernConfirmOkBtn');
       const cancelBtn = document.getElementById('modernConfirmCancelBtn');
 
-      if (okBtn) okBtn.addEventListener('click', () => closeModernConfirm(true));
-      if (cancelBtn) cancelBtn.addEventListener('click', () => closeModernConfirm(false));
+      if (okBtn) okBtn.onclick = () => closeModernConfirm(true);
+      if (cancelBtn) cancelBtn.onclick = () => closeModernConfirm(false);
 
       if (modal) {
-        modal.addEventListener('click', (e) => {
+        modal.onclick = (e) => {
           if (e.target === modal) closeModernConfirm(false);
-        });
+        };
       }
 
       document.addEventListener('keydown', (e) => {
@@ -4505,7 +4505,13 @@ Loading history...
       updateModernDropdownUI('monitorBatchFilter');
       updateModernDropdownUI('resultsBatchFilter');
       updateModernDropdownUI('previewTopicFilter');
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initModernControls);
+    } else {
+      initModernControls();
+    }
   </script>
 
 </body>
