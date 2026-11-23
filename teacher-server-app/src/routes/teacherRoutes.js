@@ -475,6 +475,24 @@ router.get('/teacher/students', requireAdminAuth, asyncHandler(async (req, res) 
   });
 }));
 
+// ----------------------------------------------------------------------------
+// REAL-TIME ANSWER HEATMAP & CLASS BOTTLENECK ANALYTICS
+// ----------------------------------------------------------------------------
+router.get('/teacher/analytics/heatmap', requireAdminAuth, asyncHandler(async (req, res) => {
+  const exam = db.getActiveExam();
+  if (!exam) {
+    return res.status(404).json({ success: false, error: 'No active exam found.' });
+  }
+
+  const batchFilter = req.query.batch;
+  const heatmapData = db.getLiveQuestionHeatmap(exam.id, batchFilter);
+
+  res.json({
+    success: true,
+    ...heatmapData
+  });
+}));
+
 router.post('/teacher/freeze', requireAdminAuth, asyncHandler(async (req, res) => {
   const { session_id, reason } = req.body;
   const session = db.getSessionById(session_id);

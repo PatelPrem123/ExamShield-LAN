@@ -99,6 +99,7 @@ function initDb() {
   safeAddColumn('batches', "ended_at DATETIME");
   safeAddColumn('student_sessions', "violations_count INTEGER DEFAULT 0");
   safeAddColumn('student_sessions', "violations_json TEXT DEFAULT '[]'");
+  safeAddColumn('student_sessions', "current_question_id INTEGER");
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS batches (
@@ -522,9 +523,9 @@ function saveAnswer(sessionId, questionId, answersArray) {
 
   db.prepare(`
     UPDATE student_sessions
-    SET answers_json = ?, last_heartbeat = CURRENT_TIMESTAMP
+    SET answers_json = ?, current_question_id = ?, last_heartbeat = CURRENT_TIMESTAMP
     WHERE id = ?
-  `).run(JSON.stringify(currentAnswers), sessionId);
+  `).run(JSON.stringify(currentAnswers), (questionId !== undefined && questionId !== null) ? Number(questionId) : null, sessionId);
 
   return currentAnswers;
 }
@@ -713,6 +714,7 @@ function parseSessionRecord(row) {
     passed: !!row.passed,
     allow_review: !!row.allow_review,
     auth_token: row.auth_token || '',
+    current_question_id: (row.current_question_id !== undefined && row.current_question_id !== null) ? Number(row.current_question_id) : null,
     is_waiting: !!(row.is_waiting || row.status === 'waiting'),
     correct_count: correctCount ?? 0,
     wrong_count: wrongCount ?? 0,
@@ -809,6 +811,215 @@ function restoreDatabase(sourcePath) {
   return true;
 }
 
+function updateStudentCurrentQuestion(sessionId, questionId) {
+  try {
+    if (!sessionId) return false;
+    const qId = (questionId !== undefined && questionId !== null) ? Number(questionId) : null;
+    db.prepare(`
+      UPDATE student_sessions
+      SET current_question_id = ?, last_heartbeat = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `).run(qId, sessionId);
+    return true;
+  } catch (err) {
+    console.error('[DB] Failed to update current_question_id:', err.message);
+    return false;
+  }
+}
+
+function normalizeOptionKey(key, options) {
+  if (key === undefined || key === null) return '';
+  const str = String(key).trim();
+  if (str.startsWith('opt_')) return str;
+  const found = (options || []).find(o => (o.letter && o.letter.toUpperCase() === str.toUpperCase()) || (o.key === str));
+  return found ? found.key : str;
+}
+
+function getLiveQuestionHeatmap(examId, batchCode) {
+  const questions = getQuestionsByExam(examId) || [];
+  const sessions = getAllStudentSessions(examId, batchCode) || [];
+
+  const examSessions = sessions.filter(s => !s.is_waiting && s.status !== 'waiting');
+  const cohortSessions = examSessions.length > 0 ? examSessions : sessions;
+
+  const totalStudents = cohortSessions.length;
+  const inProgressStudents = cohortSessions.filter(s => s.status === 'in_progress').length;
+  const submittedStudents = cohortSessions.filter(s => s.status === 'submitted').length;
+  const frozenStudents = cohortSessions.filter(s => s.status === 'frozen').length;
+
+  let cohortTotalAttempts = 0;
+  let mostDifficultQ = null;
+  let lowestAccuracy = 101;
+  let mostStuckQ = null;
+  let maxStuckCount = 0;
+
+  const questionStats = questions.map((q, idx) => {
+    const qId = q.id;
+    const correctKeys = (q.correct_keys || []).map(k => String(k));
+    const options = q.options || [];
+
+    const optionCounts = {};
+    options.forEach(opt => {
+      optionCounts[opt.key] = {
+        key: opt.key,
+        letter: opt.letter || '',
+        text: opt.text || '',
+        count: 0,
+        percentage: 0,
+        is_correct: correctKeys.includes(String(opt.key))
+      };
+    });
+
+    let attemptedCount = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let activeStuckCount = 0;
+
+    for (const s of cohortSessions) {
+      if (s.status === 'in_progress') {
+        if (s.current_question_id === qId) {
+          activeStuckCount++;
+        } else if (!s.current_question_id && idx === 0) {
+          activeStuckCount++;
+        }
+      }
+
+      const rawAns = s.answers ? s.answers[qId] : null;
+      let ansList = [];
+      if (Array.isArray(rawAns)) {
+        ansList = rawAns;
+      } else if (rawAns !== undefined && rawAns !== null && rawAns !== '') {
+        ansList = [rawAns];
+      }
+
+      if (ansList.length > 0) {
+        attemptedCount++;
+        const normalizedAns = ansList.map(k => normalizeOptionKey(k, options));
+
+        normalizedAns.forEach(k => {
+          if (optionCounts[k]) {
+            optionCounts[k].count++;
+          }
+        });
+
+        const isCorrect = normalizedAns.length === correctKeys.length &&
+          normalizedAns.every(k => correctKeys.includes(k));
+
+        if (isCorrect) {
+          correctCount++;
+        } else {
+          wrongCount++;
+        }
+      }
+    }
+
+    cohortTotalAttempts += attemptedCount;
+
+    const attemptRate = totalStudents > 0 ? Math.round((attemptedCount / totalStudents) * 100) : 0;
+    const accuracyRate = attemptedCount > 0 ? Math.round((correctCount / attemptedCount) * 100) : 0;
+    const unattemptedCount = Math.max(0, totalStudents - attemptedCount);
+
+    let trapOption = null;
+    let maxWrongCount = 0;
+    Object.values(optionCounts).forEach(opt => {
+      opt.percentage = attemptedCount > 0 ? Math.round((opt.count / attemptedCount) * 100) : 0;
+      if (!opt.is_correct && opt.count > maxWrongCount) {
+        maxWrongCount = opt.count;
+        trapOption = {
+          key: opt.key,
+          letter: opt.letter,
+          text: opt.text,
+          count: opt.count,
+          percentage: opt.percentage
+        };
+      }
+    });
+
+    let difficulty = 'PENDING';
+    let difficultyColor = 'slate';
+    if (attemptedCount > 0) {
+      if (accuracyRate >= 70) {
+        difficulty = 'EASY';
+        difficultyColor = 'emerald';
+      } else if (accuracyRate >= 40) {
+        difficulty = 'MODERATE';
+        difficultyColor = 'amber';
+      } else {
+        difficulty = 'HARD';
+        difficultyColor = 'rose';
+      }
+
+      if (accuracyRate < lowestAccuracy) {
+        lowestAccuracy = accuracyRate;
+        mostDifficultQ = {
+          id: q.id,
+          question_number: q.question_number || (idx + 1),
+          topic: q.topic || 'General',
+          accuracy_rate: accuracyRate,
+          attempted_count: attemptedCount,
+          correct_count: correctCount,
+          wrong_count: wrongCount,
+          difficulty,
+          trap_option: trapOption
+        };
+      }
+    }
+
+    if (activeStuckCount > maxStuckCount) {
+      maxStuckCount = activeStuckCount;
+      mostStuckQ = {
+        id: q.id,
+        question_number: q.question_number || (idx + 1),
+        topic: q.topic || 'General',
+        active_students: activeStuckCount
+      };
+    }
+
+    return {
+      id: q.id,
+      question_number: q.question_number || (idx + 1),
+      topic: q.topic || 'General',
+      question_text: q.question_text || '',
+      points: q.points || 1,
+      is_multiple_choice: !!q.is_multiple_choice,
+      total_students: totalStudents,
+      attempted_count: attemptedCount,
+      unattempted_count: unattemptedCount,
+      attempt_rate: attemptRate,
+      correct_count: correctCount,
+      wrong_count: wrongCount,
+      accuracy_rate: accuracyRate,
+      active_stuck_count: activeStuckCount,
+      difficulty,
+      difficulty_color: difficultyColor,
+      options_distribution: Object.values(optionCounts),
+      trap_option: trapOption
+    };
+  });
+
+  const totalPossibleAttempts = totalStudents * (questions.length || 1);
+  const cohortProgressPercent = totalPossibleAttempts > 0
+    ? Math.min(100, Math.round((cohortTotalAttempts / totalPossibleAttempts) * 100))
+    : 0;
+
+  return {
+    summary: {
+      exam_id: examId,
+      batch_code: batchCode || 'all',
+      total_students: totalStudents,
+      in_progress_students: inProgressStudents,
+      submitted_students: submittedStudents,
+      frozen_students: frozenStudents,
+      total_questions: questions.length,
+      cohort_total_attempts: cohortTotalAttempts,
+      cohort_progress_percent: cohortProgressPercent,
+      most_difficult_question: mostDifficultQ,
+      most_stuck_question: mostStuckQ
+    },
+    questions: questionStats
+  };
+}
+
 // Ensure database schema and default tables are initialized on module load
 initDb();
 
@@ -853,5 +1064,7 @@ module.exports = {
   setStudentAllowReview,
   isReviewAllowed,
   addAuditLog,
-  getRecentAuditLogs
+  getRecentAuditLogs,
+  updateStudentCurrentQuestion,
+  getLiveQuestionHeatmap
 };
