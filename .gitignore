@@ -28,6 +28,7 @@ ExamShield LAN * - Student Portal/
 
 # Scratch directory
 scratch/
+backups/
 
 # Keep launcher binaries & scripts
 !ExamShield_Student.exe
