@@ -2288,11 +2288,13 @@
             updateTimerDisplay();
           }
 
-          // Heartbeat sync every 10 seconds
+          // Heartbeat sync every 10 seconds with active question reconciliation
           if (remainingSeconds % 10 === 0) {
+            const currentQId = (questions && questions[currentIndex]) ? questions[currentIndex].id : null;
             socket.emit('heartbeat', {
               sessionId: currentSession.id,
-              remainingSeconds
+              remainingSeconds,
+              currentQuestionId: currentQId
             });
           }
 
@@ -2493,6 +2495,21 @@
       }
 
       renderPalette();
+
+      // Emit live question navigation telemetry for Real-Time Answer Heatmap
+      try {
+        const sId = currentSession?.id || sessionStorage.getItem('examshield_session_id');
+        const sToken = currentSession?.student_token || sessionStorage.getItem('examshield_student_token') || '';
+        if (socket && socket.connected && sId && q && q.id !== undefined) {
+          socket.emit('question_view', {
+            sessionId: sId,
+            questionId: q.id,
+            studentToken: sToken
+          });
+        }
+      } catch (e) {
+        // Non-blocking telemetry emission guard
+      }
     }
 
     function selectOption(optKey, isMultiple) {

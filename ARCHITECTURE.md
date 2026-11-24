@@ -151,6 +151,35 @@ sequenceDiagram
     Note over Candidate: Overlay removed; exam resumes instantly
 ```
 
+### 3.3 Real-Time Answer Heatmap & Question Focus Telemetry Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Candidate as Student Browser
+    participant Socket as Socket.IO Engine
+    participant DB as SQLite (WAL)
+    actor Proctor as Teacher Dashboard
+
+    Note over Candidate: Student navigates to Question Q_i
+    Candidate->>Socket: emit('question_view', { sessionId, questionId, studentToken })
+    Socket->>DB: updateStudentCurrentQuestion(sessionId, questionId)
+    Socket->>Proctor: emit('student_focus_question', { sessionId, questionId, studentName, batchCode })
+    Note over Proctor: Live Heatmap increments active stuck counter on Q_i
+
+    Note over Candidate: Student clicks an option
+    Candidate->>Socket: emit('save_answer', { sessionId, questionId, answers, studentToken })
+    Socket->>DB: saveAnswer(sessionId, questionId, answers)
+    Socket->>Proctor: emit('student_progress_update', { sessionId, answeredCount, questionId, batchCode })
+    Socket->>Candidate: emit('answer_saved_ack', { questionId, success: true, answeredCount })
+    Note over Proctor: Heatmap recalibrates attempt rate, difficulty & trap options
+
+    Note over Candidate,Socket: Every 10 seconds: Heartbeat reconciles active focus
+    Candidate->>Socket: emit('heartbeat', { sessionId, remainingSeconds, currentQuestionId })
+    Socket->>DB: updateHeartbeat & updateStudentCurrentQuestion
+    Socket->>Proctor: emit('student_heartbeat_update', { sessionId, remainingSeconds, currentQuestionId })
+```
+
 ---
 
 ## 4. Air-Gapped Client Architecture & Offline Isolation

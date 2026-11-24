@@ -5,8 +5,9 @@
  * Handles live candidate telemetry:
  * - student_join       : Authenticated room subscription
  * - save_answer        : Real-time atomic answer persistence
+ * - question_view      : Real-time question navigation & heatmap telemetry
  * - toggle_review      : Question review bookmarking
- * - heartbeat          : Dynamic timer synchronization
+ * - heartbeat          : Dynamic timer & navigation synchronization
  * - focus_lost         : Anti-cheating tripwire (Alt+Tab, window blur, minimize)
  * - teacher_join       : Authenticated teacher room subscription
  * - disconnect         : Offline candidate status broadcast
@@ -82,10 +83,36 @@ function setupProctoringSocket(io) {
         const answeredCount = Object.keys(updatedAnswers).length;
         io.to('teacher').emit('student_progress_update', {
           sessionId,
-          answeredCount
+          answeredCount,
+          questionId: Number(questionId),
+          batchCode: session.batch_code || 'BATCH-01'
         });
         socket.emit('answer_saved_ack', { questionId, success: true, answeredCount });
       }
+    });
+
+    // Real-time candidate question navigation / active focus tracking for Heatmap
+    socket.on('question_view', ({ sessionId, questionId, studentToken }) => {
+      if (!sessionId || questionId === undefined || questionId === null) return;
+
+      const session = db.getSessionById(sessionId);
+      if (!session || session.status === 'submitted') return;
+
+      if (socket.sessionId && socket.sessionId !== sessionId) return;
+
+      if (session.auth_token) {
+        const token = studentToken || socket.studentToken;
+        if (token && token !== session.auth_token) return;
+      }
+
+      db.updateStudentCurrentQuestion(sessionId, questionId);
+
+      io.to('teacher').emit('student_focus_question', {
+        sessionId,
+        questionId: Number(questionId),
+        studentName: session.student_name,
+        batchCode: session.batch_code || 'BATCH-01'
+      });
     });
 
     // Question bookmarking for review
@@ -95,13 +122,17 @@ function setupProctoringSocket(io) {
       socket.emit('review_toggled_ack', { questionId, marks });
     });
 
-    // Heartbeat and remaining timer sync
-    socket.on('heartbeat', ({ sessionId, remainingSeconds }) => {
+    // Heartbeat and remaining timer sync with automatic active question reconciliation
+    socket.on('heartbeat', ({ sessionId, remainingSeconds, currentQuestionId }) => {
       if (socket.sessionId && socket.sessionId !== sessionId) return;
       db.updateHeartbeat(sessionId, remainingSeconds);
+      if (currentQuestionId !== undefined && currentQuestionId !== null) {
+        db.updateStudentCurrentQuestion(sessionId, currentQuestionId);
+      }
       io.to('teacher').emit('student_heartbeat_update', {
         sessionId,
-        remainingSeconds
+        remainingSeconds,
+        currentQuestionId: (currentQuestionId !== undefined && currentQuestionId !== null) ? Number(currentQuestionId) : undefined
       });
     });
 

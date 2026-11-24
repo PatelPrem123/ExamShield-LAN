@@ -240,6 +240,7 @@ Retrieves answer key, solutions, and explanations if unlocked by the instructor.
 
 | Method | Endpoint | Description |
 |---|---|---|
+| `GET` | `/api/teacher/analytics/heatmap` | Retrieve real-time question answer heatmap, bottleneck radar, difficulty distribution, and misconception trap data for active exam/batch. |
 | `GET` | `/api/export/excel` | Stream Master Excel spreadsheet (`.xlsx`) with formulas and styling. |
 | `GET` | `/api/history` | Read plain-text and CSV audit history of all past examinations. |
 | `POST` | `/api/teacher/review-permission/all` | Toggle global answer review permissions for all candidates. |
@@ -253,15 +254,25 @@ Retrieves answer key, solutions, and explanations if unlocked by the instructor.
 
 ### 4.1 Client to Server (`Client ➔ Server`)
 - `student_join`: `{ sessionId, studentName, studentToken }`
-- `teacher_join`: `{ adminToken }`
-- `heartbeat`: `{ sessionId, remainingSeconds }`
-- `focus_lost`: `{ sessionId, reason }`
-- `force_submit_request`: `{ sessionId }`
+- `teacher_join`: `{ token }`
+- `question_view`: `{ sessionId, questionId, studentToken }` — Real-time candidate navigation telemetry for live answer heatmap.
+- `save_answer`: `{ sessionId, questionId, answers, studentToken }` — Real-time atomic answer persistence.
+- `toggle_review`: `{ sessionId, questionId, isMarked }` — Question bookmarking for review.
+- `heartbeat`: `{ sessionId, remainingSeconds, currentQuestionId }` — Dynamic timer synchronization & active question reconciliation.
+- `focus_lost`: `{ sessionId, studentName, reason }` — Anti-cheating tripwire (Alt+Tab, window blur, minimize).
+- `force_submit_request`: `{ sessionId }` — Client request to terminate session.
 
-### 4.2 Server to Client (`Server ➔ Client`)
-- `exam_started`: Broadcast to waiting students when exam begins.
-- `exam_frozen`: `{ reason, violations_count }` locked on candidate terminal.
+### 4.2 Server to Teacher Dashboard (`Server ➔ Teacher Room`)
+- `student_focus_question`: `{ sessionId, questionId, studentName, batchCode }` — Live candidate position update on heatmap.
+- `student_progress_update`: `{ sessionId, answeredCount, questionId, batchCode }` — Question submission telemetry & class progress.
+- `student_heartbeat_update`: `{ sessionId, remainingSeconds, currentQuestionId }` — Timer countdown & state reconciliation.
+- `red_alert`: `{ sessionId, studentName, reason, timestamp, remainingSeconds, violations_count, violations_history }` — Proactive focus violation alert.
+- `student_connected` / `student_disconnected`: Real-time presence indicators.
+
+### 4.3 Server to Student Terminal (`Server ➔ Student Client`)
+- `exam_started`: Broadcast to waiting lounge students when exam begins.
+- `exam_frozen`: `{ reason, timestamp, violations_count, violations_history }` locked on candidate terminal.
 - `exam_unfrozen`: `{ token }` sent to student when proctor unfreezes.
 - `force_submitted`: `{ ...scoreData, violations, violations_count }` ends student session.
-- `red_alert`: `{ student_name, reason, count }` broadcast to proctors on infraction.
-- `student_connected` / `student_disconnected`: Real-time presence indicators.
+- `answer_saved_ack`: `{ questionId, success, answeredCount }` — Confirmation of atomic persistence.
+- `review_toggled_ack`: `{ questionId, marks }` — Confirmation of question bookmarking.

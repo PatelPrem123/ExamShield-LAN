@@ -41,7 +41,13 @@ Unlike cloud-based assessment software that demands continuous high-speed intern
 * **Teacher Invigilation Dashboard:** Real-time red violation alert with student name, violation reason, and counter.
 * **1-Click Live Unfreeze:** Teachers can inspect the student's workstation and click *Unfreeze* to restore their session with all previously saved answers intact.
 
-### 4. Flexible Marking Schemes
+### 4. 📊 Live Real-Time Answer Heatmap & Class Bottleneck Radar
+* **Live Question Friction Matrix:** Color-coded difficulty tiles (Emerald = Easy $\ge 70\%$, Amber = Moderate $40-69\%$, Rose = Hard $<40\%$).
+* **"Kahan Atke Hain" Active Focus Telemetry:** Real-time badge showing how many students are currently viewing or stuck on each question in the cohort.
+* **Misconception & Trap Option Radar:** Instant detection of which wrong options students are selecting most often, pinpointing concept gaps during the exam.
+* **Air-Gapped Telemetry Sync:** Zero external cloud dependencies; lightweight Socket.IO events (`question_view`, `save_answer`, `heartbeat`) with automatic reconciliation.
+
+### 5. Flexible Marking Schemes
 * **Standard Marking Scheme:** +1 mark for correct answers, 0 for wrong, 0 for unattempted.
 * **Competitive Negative Marking (JEE / NEET / GATE Pattern):** +4 marks for correct answers, -1 mark penalty for wrong answers, and 0 for skipped questions (total percentage clamped at minimum 0%).
 * **Mutual Exclusivity:** Competitive Mode automatically adjusts timer rules to avoid conflicting timer conditions.
