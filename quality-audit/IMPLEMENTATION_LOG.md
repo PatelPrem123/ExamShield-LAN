@@ -325,3 +325,16 @@ All changes were performed under the **Execution Contract** (safe, reversible, l
      - Built compressed payload and updated `ExamShield LAN 🛡️ - Teacher Control Center.zip` (56.83 MB).
      - Compiled native Windows setup installer `ExamShield_LAN_v2.5.16_Setup.exe` (57.26 MB).
    - Git Commit & Push: Pushed to GitHub `main` branch.
+
+---
+
+## 6. Phase 3 & 4: Live Question Heatmap UI & Drill-Down (26 November 2026)
+
+### A. `teacher-server-app/src/teacher-ui/index.html`
+- Added **Live Heatmap** tab (`#tabBtn-heatmap`, `#tabContent-heatmap`) with Cohort Progress, Hardest Question (Trap), and Bottleneck Radar KPI cards.
+- Added color-coded Question Matrix (`#heatmapGrid`) and Question Drill-Down Modal (`#heatmapDrilldownModal`) showing option-wise distribution bars and trap highlights.
+- Wired `student_focus_question`, `student_progress_update`, and `student_submitted` socket events to debounced `scheduleHeatmapRefresh()` (600ms) to prevent DOM thrashing.
+
+### B. Verification
+- `node unitTests.js`: **22/22 PASSED** (11.70s).
+- `node scratch/cdp_full_audit.js`: **0 exceptions, 0 console errors** across Student Portal and Teacher Console.

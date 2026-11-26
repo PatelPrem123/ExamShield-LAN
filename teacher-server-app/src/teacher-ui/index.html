@@ -678,6 +678,10 @@ Loading history...
           <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
           <span>Results & Reports</span>
         </button>
+        <button onclick="switchTab('heatmap')" id="tabBtn-heatmap" class="tab-btn py-2 px-3 sm:px-4 rounded-xl border-b-2 border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 flex items-center gap-2 whitespace-nowrap transition shrink-0 cursor-pointer">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          <span>Live Heatmap</span>
+        </button>
       </div>
 
 
@@ -1414,6 +1418,78 @@ Loading history...
       </div>
     </section>
 
+    <!-- TAB 6: LIVE QUESTION HEATMAP -->
+    <section id="tabContent-heatmap" class="space-y-6 hidden">
+      <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+            <span>🔥 Live Question Heatmap &amp; Bottleneck Radar</span>
+            <span id="heatmapLiveBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">LIVE SYNC</span>
+          </h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Real-time accuracy, active student positions, and misconception traps across the active exam.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <select id="heatmapBatchFilter" onchange="loadLiveHeatmap()" class="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-200 outline-none">
+            <option value="all">All Batches</option>
+          </select>
+          <button onclick="loadLiveHeatmap()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition cursor-pointer flex items-center gap-1.5">
+            <span>↻ Refresh</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary KPI Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Cohort Progress</p>
+          <p id="heatmapCohortProgress" class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1">0%</p>
+          <p id="heatmapCohortMeta" class="text-xs text-slate-500 dark:text-slate-400 mt-1">0 students • 0 questions</p>
+        </div>
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Hardest Question (Trap)</p>
+          <p id="heatmapHardestQ" class="text-lg font-extrabold text-rose-600 dark:text-rose-400 mt-1">—</p>
+          <p id="heatmapHardestMeta" class="text-xs text-slate-500 dark:text-slate-400 mt-1">Waiting for attempts</p>
+        </div>
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Bottleneck Radar (Most Viewed)</p>
+          <p id="heatmapStuckQ" class="text-lg font-extrabold text-amber-600 dark:text-amber-400 mt-1">—</p>
+          <p id="heatmapStuckMeta" class="text-xs text-slate-500 dark:text-slate-400 mt-1">No active bottleneck</p>
+        </div>
+      </div>
+
+      <!-- Heatmap Grid -->
+      <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">Question Matrix (Click any tile for option breakdown)</h3>
+          <div class="flex items-center gap-3 text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Easy (≥70%)</span>
+            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> Moderate (40–69%)</span>
+            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span> Hard (&lt;40%)</span>
+            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block"></span> Pending</span>
+          </div>
+        </div>
+        <div id="heatmapGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+          <div class="col-span-full text-center py-10 text-sm text-slate-500 dark:text-slate-400">Loading live heatmap...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Heatmap Question Drill-Down Modal -->
+    <div id="heatmapDrilldownModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-xl w-full p-5 sm:p-6 space-y-4 max-h-[85vh] overflow-y-auto">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <span id="drilldownQBadge" class="text-xs font-extrabold px-2.5 py-1 rounded-lg bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300">Q1</span>
+            <span id="drilldownQTopic" class="text-xs font-semibold text-slate-500 dark:text-slate-400 ml-2">General</span>
+          </div>
+          <button onclick="closeHeatmapDrilldown()" class="text-slate-400 hover:text-slate-700 dark:hover:text-white text-lg font-bold cursor-pointer">✕</button>
+        </div>
+        <p id="drilldownQText" class="text-sm font-semibold text-slate-800 dark:text-slate-100 leading-relaxed"></p>
+        <div id="drilldownStatsRow" class="grid grid-cols-3 gap-2 text-center bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl text-xs"></div>
+        <div id="drilldownOptionsList" class="space-y-2.5"></div>
+      </div>
+    </div>
+
   </main>
 
   <!-- JAVASCRIPT LOGIC -->
@@ -1924,10 +2000,139 @@ Loading history...
     socket.on('student_online', () => { refreshStudentList(); refreshExamLifecycleStatus(); });
     socket.on('student_registered', () => { refreshStudentList(); refreshExamLifecycleStatus(); });
     socket.on('exam_status_changed', () => { refreshStudentList(); refreshExamLifecycleStatus(); });
-    socket.on('student_progress_update', (d) => updateStudentProgress(d));
+    socket.on('student_progress_update', (d) => { updateStudentProgress(d); scheduleHeatmapRefresh(); });
     socket.on('student_heartbeat_update', (d) => updateStudentTimer(d));
-    socket.on('student_submitted', () => refreshStudentList());
+    socket.on('student_focus_question', () => scheduleHeatmapRefresh());
+    socket.on('student_submitted', () => { refreshStudentList(); scheduleHeatmapRefresh(); });
     socket.on('student_unfrozen', () => refreshStudentList());
+
+    let heatmapCache = null;
+    let heatmapRefreshTimer = null;
+
+    function scheduleHeatmapRefresh() {
+      const sec = document.getElementById('tabContent-heatmap');
+      if (!sec || sec.classList.contains('hidden')) return;
+      if (heatmapRefreshTimer) clearTimeout(heatmapRefreshTimer);
+      heatmapRefreshTimer = setTimeout(() => { loadLiveHeatmap(); }, 600);
+    }
+
+    async function loadLiveHeatmap() {
+      const grid = document.getElementById('heatmapGrid');
+      if (!grid) return;
+      const batch = (document.getElementById('heatmapBatchFilter')?.value || 'all');
+      try {
+        const res = await fetch(`/api/teacher/analytics/heatmap?batch=${encodeURIComponent(batch)}`, {
+          headers: typeof getAuthHeaders === 'function' ? getAuthHeaders() : {}
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          grid.innerHTML = `<div class="col-span-full text-center py-10 text-sm text-slate-500 dark:text-slate-400">${escapeHtml(data.error || 'No active exam found.')}</div>`;
+          return;
+        }
+        heatmapCache = data;
+        renderHeatmapDashboard(data);
+      } catch (err) {
+        grid.innerHTML = `<div class="col-span-full text-center py-10 text-sm text-rose-500">Failed to load heatmap: ${escapeHtml(err.message)}</div>`;
+      }
+    }
+
+    function renderHeatmapDashboard(data) {
+      const s = data.summary || {};
+      const qs = data.questions || [];
+      const progEl = document.getElementById('heatmapCohortProgress');
+      const metaEl = document.getElementById('heatmapCohortMeta');
+      const hardEl = document.getElementById('heatmapHardestQ');
+      const hardMetaEl = document.getElementById('heatmapHardestMeta');
+      const stuckEl = document.getElementById('heatmapStuckQ');
+      const stuckMetaEl = document.getElementById('heatmapStuckMeta');
+
+      if (progEl) progEl.textContent = `${s.cohort_progress_percent || 0}%`;
+      if (metaEl) metaEl.textContent = `${s.total_students || 0} students • ${s.total_questions || 0} questions`;
+
+      if (s.most_difficult_question && hardEl && hardMetaEl) {
+        const md = s.most_difficult_question;
+        hardEl.textContent = `Q${md.question_number} (${md.accuracy_rate}% acc)`;
+        hardMetaEl.textContent = md.trap_option ? `Trap: Option ${md.trap_option.letter} (${md.trap_option.percentage}%)` : `${md.wrong_count} wrong`;
+      } else if (hardEl && hardMetaEl) {
+        hardEl.textContent = '—';
+        hardMetaEl.textContent = 'Waiting for attempts';
+      }
+
+      if (s.most_stuck_question && stuckEl && stuckMetaEl) {
+        const ms = s.most_stuck_question;
+        stuckEl.textContent = `Q${ms.question_number} (${ms.active_students} viewing)`;
+        stuckMetaEl.textContent = escapeHtml(ms.topic || 'General');
+      } else if (stuckEl && stuckMetaEl) {
+        stuckEl.textContent = '—';
+        stuckMetaEl.textContent = 'No active bottleneck';
+      }
+
+      const grid = document.getElementById('heatmapGrid');
+      if (!grid) return;
+      if (qs.length === 0) {
+        grid.innerHTML = '<div class="col-span-full text-center py-10 text-sm text-slate-500">No questions in active exam.</div>';
+        return;
+      }
+
+      const colorMap = {
+        emerald: 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200',
+        amber: 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-800 text-amber-800 dark:text-amber-200',
+        rose: 'bg-rose-50 dark:bg-rose-950/40 border-rose-300 dark:border-rose-800 text-rose-800 dark:text-rose-200',
+        slate: 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+      };
+
+      grid.innerHTML = qs.map(q => {
+        const cls = colorMap[q.difficulty_color] || colorMap.slate;
+        const activeBadge = q.active_stuck_count > 0
+          ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-indigo-600 text-white">👁 ${q.active_stuck_count}</span>`
+          : '';
+        return `
+          <button onclick="openHeatmapDrilldown(${q.id})" class="p-3 rounded-xl border text-left transition hover:scale-[1.02] cursor-pointer ${cls}">
+            <div class="flex items-center justify-between gap-1">
+              <span class="text-xs font-black">Q${q.question_number}</span>
+              ${activeBadge}
+            </div>
+            <div class="text-lg font-black mt-1">${q.attempted_count > 0 ? q.accuracy_rate + '%' : '—'}</div>
+            <div class="text-[10px] opacity-80 truncate">${q.attempted_count}/${q.total_students} tried</div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function openHeatmapDrilldown(qId) {
+      if (!heatmapCache || !heatmapCache.questions) return;
+      const q = heatmapCache.questions.find(item => item.id === qId);
+      if (!q) return;
+      document.getElementById('drilldownQBadge').textContent = `Q${q.question_number}`;
+      document.getElementById('drilldownQTopic').textContent = q.topic || 'General';
+      document.getElementById('drilldownQText').textContent = q.question_text || '';
+      document.getElementById('drilldownStatsRow').innerHTML = `
+        <div><div class="text-slate-400 font-bold">ACCURACY</div><div class="text-sm font-black text-emerald-600 dark:text-emerald-400">${q.accuracy_rate}%</div></div>
+        <div><div class="text-slate-400 font-bold">ATTEMPTED</div><div class="text-sm font-black text-slate-800 dark:text-white">${q.attempted_count}/${q.total_students}</div></div>
+        <div><div class="text-slate-400 font-bold">VIEWING NOW</div><div class="text-sm font-black text-indigo-600 dark:text-indigo-400">${q.active_stuck_count}</div></div>
+      `;
+      const opts = q.options_distribution || [];
+      document.getElementById('drilldownOptionsList').innerHTML = opts.map(opt => {
+        const barColor = opt.is_correct ? 'bg-emerald-500' : (q.trap_option && q.trap_option.key === opt.key ? 'bg-rose-500' : 'bg-indigo-500');
+        const tag = opt.is_correct ? ' ✓ Correct' : (q.trap_option && q.trap_option.key === opt.key ? ' ⚠ Trap' : '');
+        return `
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs font-semibold">
+              <span class="truncate pr-2">${escapeHtml(opt.letter)}. ${escapeHtml(opt.text || '')}${tag}</span>
+              <span class="shrink-0 font-bold">${opt.count} (${opt.percentage}%)</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
+              <div class="h-full ${barColor} rounded-full" style="width: ${opt.percentage}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('heatmapDrilldownModal').classList.remove('hidden');
+    }
+
+    function closeHeatmapDrilldown() {
+      document.getElementById('heatmapDrilldownModal').classList.add('hidden');
+    }
     socket.on('questions_updated', () => loadSystemInfo());
     socket.on('exam_config_updated', (cfg) => {
       if (currentExam && cfg) {
@@ -1957,7 +2162,7 @@ Loading history...
 
     // Switch Tabs
     function switchTab(tabId) {
-      const tabs = ['monitor', 'questions', 'settings', 'batches', 'results'];
+      const tabs = ['monitor', 'questions', 'settings', 'batches', 'results', 'heatmap'];
       tabs.forEach(t => {
         const btn = document.getElementById(`tabBtn-${t}`);
         const content = document.getElementById(`tabContent-${t}`);
@@ -1972,6 +2177,7 @@ Loading history...
       if (tabId === 'results') refreshStudentList();
       if (tabId === 'batches') loadBatches();
       if (tabId === 'questions') loadQuestionsPreview();
+      if (tabId === 'heatmap') loadLiveHeatmap();
 
       const nav = document.getElementById('teacherTabsNav');
       if (tabId === 'monitor') {
