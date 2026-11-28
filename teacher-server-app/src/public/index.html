@@ -2498,13 +2498,28 @@
 
       // Emit live question navigation telemetry for Real-Time Answer Heatmap
       try {
+        if (typeof window.__qTimeMap === 'undefined') {
+          window.__qTimeMap = {};
+          window.__qActiveId = null;
+          window.__qStartTs = Date.now();
+        }
+        if (window.__qActiveId !== null && q && q.id !== undefined && window.__qActiveId !== q.id) {
+          const elapsed = Math.max(0, Math.round((Date.now() - window.__qStartTs) / 1000));
+          window.__qTimeMap[window.__qActiveId] = (window.__qTimeMap[window.__qActiveId] || 0) + elapsed;
+          window.__qStartTs = Date.now();
+        } else if (window.__qActiveId === null) {
+          window.__qStartTs = Date.now();
+        }
+        if (q && q.id !== undefined) window.__qActiveId = q.id;
+
         const sId = currentSession?.id || sessionStorage.getItem('examshield_session_id');
         const sToken = currentSession?.student_token || sessionStorage.getItem('examshield_student_token') || '';
         if (socket && socket.connected && sId && q && q.id !== undefined) {
           socket.emit('question_view', {
             sessionId: sId,
             questionId: q.id,
-            studentToken: sToken
+            studentToken: sToken,
+            questionTimes: window.__qTimeMap
           });
         }
       } catch (e) {

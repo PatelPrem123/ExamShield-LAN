@@ -100,6 +100,7 @@ function initDb() {
   safeAddColumn('student_sessions', "violations_count INTEGER DEFAULT 0");
   safeAddColumn('student_sessions', "violations_json TEXT DEFAULT '[]'");
   safeAddColumn('student_sessions', "current_question_id INTEGER");
+  safeAddColumn('student_sessions', "question_times_json TEXT DEFAULT '{}'");
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS batches (
@@ -835,6 +836,21 @@ function normalizeOptionKey(key, options) {
   return found ? found.key : str;
 }
 
+function updateStudentQuestionTimes(sessionId, questionTimes) {
+  if (!sessionId || !questionTimes || typeof questionTimes !== 'object') return;
+  const row = db.prepare('SELECT question_times_json FROM student_sessions WHERE id = ?').get(sessionId);
+  if (!row) return;
+  let existing = {};
+  try { existing = JSON.parse(row.question_times_json || '{}'); } catch (_) { existing = {}; }
+  for (const [qId, sec] of Object.entries(questionTimes)) {
+    const val = Number(sec);
+    if (Number.isFinite(val) && val >= 0) {
+      existing[String(qId)] = Math.max(Number(existing[String(qId)] || 0), Math.round(val));
+    }
+  }
+  db.prepare('UPDATE student_sessions SET question_times_json = ? WHERE id = ?').run(JSON.stringify(existing), sessionId);
+}
+
 function getLiveQuestionHeatmap(examId, batchCode) {
   const questions = getQuestionsByExam(examId) || [];
   const sessions = getAllStudentSessions(examId, batchCode) || [];
@@ -975,6 +991,27 @@ function getLiveQuestionHeatmap(examId, batchCode) {
       };
     }
 
+    // Per-question time tracking aggregation
+    let timeSum = 0;
+    let timeCount = 0;
+    const studentTimes = [];
+    cohortSessions.forEach(s => {
+      let qt = {};
+      try { qt = JSON.parse(s.question_times_json || '{}'); } catch (_) { qt = {}; }
+      const sec = Number(qt[String(q.id)]);
+      if (Number.isFinite(sec) && sec > 0) {
+        timeSum += sec;
+        timeCount++;
+        studentTimes.push({
+          student_name: s.student_name,
+          batch_code: s.batch_code || 'BATCH-01',
+          seconds: Math.round(sec)
+        });
+      }
+    });
+    studentTimes.sort((a, b) => b.seconds - a.seconds);
+    const avgTimeSeconds = timeCount > 0 ? Math.round(timeSum / timeCount) : 0;
+
     return {
       id: q.id,
       question_number: q.question_number || (idx + 1),
@@ -990,12 +1027,30 @@ function getLiveQuestionHeatmap(examId, batchCode) {
       wrong_count: wrongCount,
       accuracy_rate: accuracyRate,
       active_stuck_count: activeStuckCount,
+      avg_time_seconds: avgTimeSeconds,
+      student_times: studentTimes,
       difficulty,
       difficulty_color: difficultyColor,
       options_distribution: Object.values(optionCounts),
       trap_option: trapOption
     };
   });
+
+  // Topic-Wise Mastery aggregation
+  const topicMap = {};
+  questionStats.forEach(q => {
+    const t = q.topic || 'General';
+    if (!topicMap[t]) {
+      topicMap[t] = { topic: t, total_questions: 0, attempted_count: 0, correct_count: 0 };
+    }
+    topicMap[t].total_questions++;
+    topicMap[t].attempted_count += q.attempted_count;
+    topicMap[t].correct_count += q.correct_count;
+  });
+  const topicMastery = Object.values(topicMap).map(tm => ({
+    ...tm,
+    accuracy_rate: tm.attempted_count > 0 ? Math.round((tm.correct_count / tm.attempted_count) * 100) : 0
+  }));
 
   const totalPossibleAttempts = totalStudents * (questions.length || 1);
   const cohortProgressPercent = totalPossibleAttempts > 0
@@ -1014,7 +1069,8 @@ function getLiveQuestionHeatmap(examId, batchCode) {
       cohort_total_attempts: cohortTotalAttempts,
       cohort_progress_percent: cohortProgressPercent,
       most_difficult_question: mostDifficultQ,
-      most_stuck_question: mostStuckQ
+      most_stuck_question: mostStuckQ,
+      topic_mastery: topicMastery
     },
     questions: questionStats
   };
@@ -1066,5 +1122,6 @@ module.exports = {
   addAuditLog,
   getRecentAuditLogs,
   updateStudentCurrentQuestion,
+  updateStudentQuestionTimes,
   getLiveQuestionHeatmap
 };

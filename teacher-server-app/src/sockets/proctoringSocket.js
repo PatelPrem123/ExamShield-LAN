@@ -92,7 +92,7 @@ function setupProctoringSocket(io) {
     });
 
     // Real-time candidate question navigation / active focus tracking for Heatmap
-    socket.on('question_view', ({ sessionId, questionId, studentToken }) => {
+    socket.on('question_view', ({ sessionId, questionId, studentToken, questionTimes }) => {
       if (!sessionId || questionId === undefined || questionId === null) return;
 
       const session = db.getSessionById(sessionId);
@@ -106,6 +106,9 @@ function setupProctoringSocket(io) {
       }
 
       db.updateStudentCurrentQuestion(sessionId, questionId);
+      if (questionTimes && typeof questionTimes === 'object') {
+        db.updateStudentQuestionTimes(sessionId, questionTimes);
+      }
 
       io.to('teacher').emit('student_focus_question', {
         sessionId,
