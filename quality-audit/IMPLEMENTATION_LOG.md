@@ -338,3 +338,14 @@ All changes were performed under the **Execution Contract** (safe, reversible, l
 ### B. Verification
 - `node unitTests.js`: **22/22 PASSED** (11.70s).
 - `node scratch/cdp_full_audit.js`: **0 exceptions, 0 console errors** across Student Portal and Teacher Console.
+
+---
+
+## 7. Heatmap Analytics Upgrades & Per-Student Time Tracking (28 November 2026)
+
+### A. Backend & Student Portal
+- **`teacher-server-app/src/database.js`:** Added `question_times_json` via `safeAddColumn()`, `updateStudentQuestionTimes()`, and `avg_time_seconds`, `student_times`, `summary.topic_mastery` in `getLiveQuestionHeatmap()`.
+- **`teacher-server-app/src/sockets/proctoringSocket.js` & `src/public/index.html`:** Tracked per-question elapsed seconds (`window.__qTimeMap`) and persisted via `question_view` telemetry.
+
+### B. Teacher Control Center UI
+- **`teacher-server-app/src/teacher-ui/index.html`:** Added Topic-Wise Mastery Bar, average time per question on heatmap tiles, Per-Student Time Spent breakdown in the Drill-Down modal, and `exportHeatmapCsv()` CSV export.

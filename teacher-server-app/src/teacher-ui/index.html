@@ -1435,7 +1435,16 @@ Loading history...
           <button onclick="loadLiveHeatmap()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition cursor-pointer flex items-center gap-1.5">
             <span>↻ Refresh</span>
           </button>
+          <button onclick="exportHeatmapCsv()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition cursor-pointer flex items-center gap-1.5">
+            <span>⬇ Export CSV</span>
+          </button>
         </div>
+      </div>
+
+      <!-- Topic-Wise Mastery Bar -->
+      <div id="heatmapTopicMasteryBar" class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs hidden">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5">Topic-Wise Mastery</p>
+        <div id="heatmapTopicMasteryList" class="flex flex-wrap gap-2"></div>
       </div>
 
       <!-- Summary KPI Cards -->
@@ -1487,6 +1496,10 @@ Loading history...
         <p id="drilldownQText" class="text-sm font-semibold text-slate-800 dark:text-slate-100 leading-relaxed"></p>
         <div id="drilldownStatsRow" class="grid grid-cols-3 gap-2 text-center bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl text-xs"></div>
         <div id="drilldownOptionsList" class="space-y-2.5"></div>
+        <div id="drilldownStudentTimesSection" class="pt-2 border-t border-slate-200 dark:border-slate-700 hidden">
+          <p class="text-xs font-bold text-slate-600 dark:text-slate-300 mb-2">⏱ Per-Student Time Spent</p>
+          <div id="drilldownStudentTimesList" class="max-h-36 overflow-y-auto space-y-1 text-xs"></div>
+        </div>
       </div>
     </div>
 
@@ -2069,6 +2082,27 @@ Loading history...
 
       const grid = document.getElementById('heatmapGrid');
       if (!grid) return;
+
+      // Render Topic-Wise Mastery Bar
+      const topicBar = document.getElementById('heatmapTopicMasteryBar');
+      const topicList = document.getElementById('heatmapTopicMasteryList');
+      const topics = s.topic_mastery || [];
+      if (topicBar && topicList) {
+        if (topics.length > 0) {
+          topicBar.classList.remove('hidden');
+          topicList.innerHTML = topics.map(t => {
+            const badgeCls = t.accuracy_rate >= 70
+              ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+              : (t.accuracy_rate >= 40
+                ? 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
+                : 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800');
+            return `<span class="px-3 py-1.5 rounded-xl border text-xs font-bold ${badgeCls}">${escapeHtml(t.topic)}: ${t.accuracy_rate}% <span class="opacity-70 font-normal">(${t.total_questions} Qs)</span></span>`;
+          }).join('');
+        } else {
+          topicBar.classList.add('hidden');
+        }
+      }
+
       if (qs.length === 0) {
         grid.innerHTML = '<div class="col-span-full text-center py-10 text-sm text-slate-500">No questions in active exam.</div>';
         return;
@@ -2093,7 +2127,7 @@ Loading history...
               ${activeBadge}
             </div>
             <div class="text-lg font-black mt-1">${q.attempted_count > 0 ? q.accuracy_rate + '%' : '—'}</div>
-            <div class="text-[10px] opacity-80 truncate">${q.attempted_count}/${q.total_students} tried</div>
+            <div class="text-[10px] opacity-80 truncate">${q.attempted_count}/${q.total_students} tried${q.avg_time_seconds > 0 ? ' • ⏱ ' + q.avg_time_seconds + 's' : ''}</div>
           </button>
         `;
       }).join('');
@@ -2128,6 +2162,53 @@ Loading history...
         `;
       }).join('');
       document.getElementById('heatmapDrilldownModal').classList.remove('hidden');
+      const stSec = document.getElementById('drilldownStudentTimesSection');
+      const stList = document.getElementById('drilldownStudentTimesList');
+      if (stSec && stList) {
+        const times = q.student_times || [];
+        if (times.length > 0) {
+          stSec.classList.remove('hidden');
+          stList.innerHTML = times.map(st => `
+            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900/50">
+              <span class="font-semibold text-slate-700 dark:text-slate-200 truncate">${escapeHtml(st.student_name)} <span class="text-[10px] opacity-60">(${escapeHtml(st.batch_code)})</span></span>
+              <span class="font-bold text-indigo-600 dark:text-indigo-400 shrink-0">${st.seconds}s</span>
+            </div>
+          `).join('');
+        } else {
+          stSec.classList.add('hidden');
+        }
+      }
+    }
+
+    function exportHeatmapCsv() {
+      if (!heatmapCache || !heatmapCache.questions || heatmapCache.questions.length === 0) {
+        alert('No heatmap data available to export.');
+        return;
+      }
+      const rows = [['Question #', 'Topic', 'Attempted', 'Total Students', 'Accuracy %', 'Avg Time (s)', 'Difficulty', 'Trap Option']];
+      heatmapCache.questions.forEach(q => {
+        const trap = q.trap_option ? `Option ${q.trap_option.letter} (${q.trap_option.percentage}%)` : 'None';
+        rows.push([
+          `Q${q.question_number}`,
+          `"${String(q.topic || 'General').replace(/"/g, '""')}"`,
+          q.attempted_count,
+          q.total_students,
+          `${q.accuracy_rate}%`,
+          q.avg_time_seconds || 0,
+          q.difficulty,
+          `"${trap}"`
+        ]);
+      });
+      const csvContent = '\uFEFF' + rows.map(r => r.join(',')).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ExamShield_Heatmap_Report_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
 
     function closeHeatmapDrilldown() {
